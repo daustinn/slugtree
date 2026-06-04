@@ -50,7 +50,7 @@
     "build:website": "turbo run build --filter=website",
     "build:lib": "tsc",
     "test": "turbo run //#test:lib",
-    "test:lib": "vitest run",
+    "test:lib": "node -e \"const fs=require('fs');fs.mkdirSync('src/generated',{recursive:true});['tree.js','nodes.js','meta.js','slugs.js'].forEach(f=>{if(!fs.existsSync('src/generated/'+f))fs.writeFileSync('src/generated/'+f,'export default {}')})\" && vitest run",
     "lint": "turbo run lint --filter=website //#lint:lib",
     "lint:website": "turbo run lint --filter=website",
     "lint:lib": "eslint ."
