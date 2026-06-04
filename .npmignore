@@ -3,6 +3,7 @@ website/
 
 # source code (consumers use dist/)
 src/
+scripts/
 
 # generated data (user-specific, written at dev/build time)
 dist/generated/
