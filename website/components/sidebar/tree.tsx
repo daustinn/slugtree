@@ -64,7 +64,7 @@ function NodeExpandible({
   index: number
 }) {
   const [expanded, setExpanded] = React.useState(false)
-  const Icon = folder.icon ? (Icons as any)[folder.icon] : null
+  const Icon = folder.icon ? Icons[folder.icon as keyof typeof Icons] : null
 
   return (
     <li>

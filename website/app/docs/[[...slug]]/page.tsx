@@ -33,7 +33,7 @@ export default async function DocPage({ params }: PageProps) {
 
   if (!data) notFound()
   const Icon = data.frontMatter.icon
-    ? (Icons as any)[data.frontMatter.icon]
+    ? Icons[data.frontMatter.icon as keyof typeof Icons]
     : null
 
   return (
