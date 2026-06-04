@@ -5,7 +5,8 @@ import { generateContent } from './generator.js'
 export async function startWatcher(
   resolvedContentDir: string,
   resolvedOutputDir: string,
-  basePath: string
+  basePath: string,
+  resolvedDistOutputDir?: string
 ): Promise<void> {
   let chokidar: typeof import('chokidar')
   try {
@@ -28,7 +29,12 @@ export async function startWatcher(
         console.log(
           pc.cyan(`slugtree: change detected in ${filename}, rebuilding...`)
         )
-        generateContent(resolvedContentDir, resolvedOutputDir, basePath)
+        generateContent(
+          resolvedContentDir,
+          resolvedOutputDir,
+          basePath,
+          resolvedDistOutputDir
+        )
       }, 100)
     }
   })

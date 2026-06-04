@@ -7,7 +7,8 @@ import { buildDirNodes } from './builder.js'
 export function generateContent(
   resolvedContentDir: string,
   resolvedOutputDir: string,
-  basePath: string
+  basePath: string,
+  resolvedDistOutputDir?: string
 ): void {
   const allNodesData: NodeData[] = []
   const tree = buildDirNodes(resolvedContentDir, [], basePath, allNodesData)
@@ -36,6 +37,46 @@ export function generateContent(
     path.join(resolvedOutputDir, 'slugs.ts'),
     `export default ${JSON.stringify(uniqueSlugs)} as string[][]\n`
   )
+
+  if (resolvedDistOutputDir && fs.existsSync(path.dirname(resolvedDistOutputDir))) {
+    fs.mkdirSync(resolvedDistOutputDir, { recursive: true })
+
+    fs.writeFileSync(
+      path.join(resolvedDistOutputDir, 'tree.js'),
+      `export default ${JSON.stringify(tree)};\n`
+    )
+    fs.writeFileSync(
+      path.join(resolvedDistOutputDir, 'tree.d.ts'),
+      `import type { Node } from '../types.js';\ndeclare const _default: Node[];\nexport default _default;\n`
+    )
+
+    fs.writeFileSync(
+      path.join(resolvedDistOutputDir, 'nodes.js'),
+      `export default ${JSON.stringify(allNodesData)};\n`
+    )
+    fs.writeFileSync(
+      path.join(resolvedDistOutputDir, 'nodes.d.ts'),
+      `import type { NodeData } from '../types.js';\ndeclare const _default: NodeData[];\nexport default _default;\n`
+    )
+
+    fs.writeFileSync(
+      path.join(resolvedDistOutputDir, 'meta.js'),
+      `export default ${JSON.stringify(basePath)};\n`
+    )
+    fs.writeFileSync(
+      path.join(resolvedDistOutputDir, 'meta.d.ts'),
+      `declare const _default: string;\nexport default _default;\n`
+    )
+
+    fs.writeFileSync(
+      path.join(resolvedDistOutputDir, 'slugs.js'),
+      `export default ${JSON.stringify(uniqueSlugs)};\n`
+    )
+    fs.writeFileSync(
+      path.join(resolvedDistOutputDir, 'slugs.d.ts'),
+      `declare const _default: string[][];\nexport default _default;\n`
+    )
+  }
 
   console.log(pc.green('slugtree: content generated'))
 }

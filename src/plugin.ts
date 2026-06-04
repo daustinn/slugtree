@@ -69,12 +69,24 @@ export function withSlugtree(
     : path.resolve(cwd, opts.outputDir)
   const basePath = opts.basePath
 
+  const resolvedDistOutputDir = path.resolve(__dirname, '..', 'dist', 'generated')
+
   console.log(pc.magenta(`\n> slugtree initializing...`))
 
-  generateContent(resolvedContentDir, resolvedOutputDir, basePath)
+  generateContent(
+    resolvedContentDir,
+    resolvedOutputDir,
+    basePath,
+    resolvedDistOutputDir
+  )
 
   if (isDevMode()) {
-    startWatcher(resolvedContentDir, resolvedOutputDir, basePath)
+    startWatcher(
+      resolvedContentDir,
+      resolvedOutputDir,
+      basePath,
+      resolvedDistOutputDir
+    )
   }
 
   return nextConfig
