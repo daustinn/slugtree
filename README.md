@@ -14,7 +14,7 @@ Slugtree is a content layer that reads your MDX files and turns them into a stro
 ## 📦 Installation
 
 ```bash
-bun add slugtree
+pnpm add slugtree
 ```
 
 ## 📖 Documentation

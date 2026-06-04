@@ -6,5 +6,14 @@ export default tseslint.config(
   ...tseslint.configs.recommended,
   {
     ignores: ['dist/', 'src/generated/', 'website/', 'node_modules/']
+  },
+  {
+    files: ['scripts/**/*.js'],
+    languageOptions: {
+      globals: {
+        process: 'readonly',
+        console: 'readonly'
+      }
+    }
   }
 )

@@ -45,7 +45,7 @@ export default function HomePage() {
           copy={false}
           className="mx-1 my-0! p-0! relative border-0! bg-transparent!"
         >
-          ~ bun add slugtree@latest
+          ~ pnpm add slugtree@latest
         </BlockCode>
       </header>
       <footer className="px-7 lg:px-16 relative space-y-5 pt-6 lg:pt-10 pb-10">

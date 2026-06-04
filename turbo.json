@@ -1,23 +1,23 @@
 {
-  "$schema": "https://turbo.build/schema.json",
+  "$schema": "https://turborepo.dev/schema.json",
   "tasks": {
     "dev": {
-      "cache": false,
-      "persistent": true
-    },
-    "//#dev:lib": {
+      "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
     },
     "build": {
-      "dependsOn": ["//#build:lib"]
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**"]
     },
-    "//#build:lib": {
-      "outputs": ["dist/**"]
+    "lint": {
+      "dependsOn": ["^lint"]
     },
-    "lint": {},
-    "//#lint:lib": {},
-    "test": {},
-    "//#test:lib": {}
+    "test": {
+      "dependsOn": ["^test"]
+    },
+    "start": {
+      "persistent": true
+    }
   }
 }

@@ -13,6 +13,7 @@
     "clsx": "2.1.1",
     "cmdk": "1.1.1",
     "geist": "1.7.2",
+    "mdx": "0.3.1",
     "next": "16.2.7",
     "next-mdx-remote": "6.0.0",
     "postprocessing": "6.39.1",
@@ -27,13 +28,14 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/mdx": "2.0.13",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/three": "0.184.1",
     "eslint": "^9",
     "eslint-config-next": "16.2.7",
-    "slugtree": "file:..",
+    "slugtree": "workspace:*",
     "tailwindcss": "^4",
     "typescript": "^5"
   },
