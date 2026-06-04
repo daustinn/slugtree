@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Slugtree Config",
+  "description": "Configuration file for slugtree navigation ordering and metadata",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Overrides the display name of this folder in the sidebar"
+    },
+    "icon": {
+      "type": "string",
+      "description": "Optional icon name to display next to this folder in the sidebar"
+    },
+    "nodes": {
+      "type": "array",
+      "description": "List of files, subdirectories, or labels to include in this folder, in exact order",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false
+}
