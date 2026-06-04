@@ -1,7 +1,7 @@
 {
   "name": "slugtree",
   "version": "0.1.0",
-  "description": "A robust, highly customizable MDX documentation builder for Next.js",
+  "description": "Write in MDX. Let Slugtree build the tree",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -93,8 +93,7 @@
     "react": "^19.0.0",
     "turbo": "2.9.16",
     "typescript": "^5.9.2",
-    "typescript-eslint": "8.60.1",
     "vitest": "^2.0.0"
   },
-  "packageManager": "bun@1.2.22"
+  "packageManager": "npm@10.8.1"
 }

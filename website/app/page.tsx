@@ -30,7 +30,7 @@ export default function HomePage() {
           slugtree
         </h1>
         <h2 className="ont-pixel text-xl relative">
-          Write in MDX, we&apos;ll build the tree.
+          Write in MDX. Let Slugtree build the tree
         </h2>
         <Link
           href="/docs"

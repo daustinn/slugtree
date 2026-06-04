@@ -8,6 +8,7 @@ import {
 
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
+import { siteConfig } from '@/const/metadata'
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import remarkGfm from 'remark-gfm'
 import rehypeSlug from 'rehype-slug'
@@ -130,10 +131,36 @@ export async function generateMetadata({
   const node = getNode(slug)
 
   if (!node || node.type === 'label')
-    return { title: "slugtree | Write in MDX, we'll build the tree." }
+    return {
+      title: siteConfig.name,
+      description: siteConfig.description
+    }
+
+  const url = `${siteConfig.url}${node.href || '/docs'}`
 
   return {
-    title: node.title + ' | slugtree',
-    description: node.description
+    title: node.title,
+    description: node.description || siteConfig.description,
+    alternates: {
+      canonical: url
+    },
+    openGraph: {
+      title: node.title,
+      description: node.description || siteConfig.description,
+      url,
+      images: [
+        {
+          url: siteConfig.ogImageDocs,
+          width: 1200,
+          height: 630,
+          alt: node.title
+        }
+      ]
+    },
+    twitter: {
+      title: node.title,
+      description: node.description || siteConfig.description,
+      images: [siteConfig.ogImageDocs]
+    }
   }
 }

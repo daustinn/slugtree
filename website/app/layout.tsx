@@ -11,9 +11,11 @@ const mono = GeistMono
 
 const pixel = GeistPixelSquare
 
+import { sharedMetadata } from '@/const/metadata'
+
 export const metadata: Metadata = {
-  title: 'Slugtree',
-  description: 'Documentation built with slugtree',
+  ...sharedMetadata,
+  title: 'slugtree | Write in MDX. Let Slugtree build the tree',
   icons: {
     icon: '/favicon.svg'
   }
