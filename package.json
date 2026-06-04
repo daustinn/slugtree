@@ -48,9 +48,9 @@
     "dev:lib": "tsc --watch",
     "build": "turbo run build --filter=website //#build:lib",
     "build:website": "turbo run build --filter=website",
-    "build:lib": "node -e \"const fs=require('fs');fs.mkdirSync('src/generated',{recursive:true});['tree.ts','nodes.ts','meta.ts','slugs.ts'].forEach(f=>{if(!fs.existsSync('src/generated/'+f))fs.writeFileSync('src/generated/'+f,'export default [] as any')})\" && tsc",
+    "build:lib": "node scripts/mock-generated.js && tsc",
     "test": "turbo run //#test:lib",
-    "test:lib": "node -e \"const fs=require('fs');fs.mkdirSync('src/generated',{recursive:true});['tree.ts','nodes.ts','meta.ts','slugs.ts'].forEach(f=>{if(!fs.existsSync('src/generated/'+f))fs.writeFileSync('src/generated/'+f,'export default [] as any')})\" && vitest run",
+    "test:lib": "node scripts/mock-generated.js && vitest run",
     "lint": "turbo run lint --filter=website //#lint:lib",
     "lint:website": "turbo run lint --filter=website",
     "lint:lib": "eslint ."
