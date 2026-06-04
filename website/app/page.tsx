@@ -29,7 +29,7 @@ export default function HomePage() {
         <h1 className="text-5xl relative tracking-tight sm:text-7xl lg:text-[8rem]">
           slugtree
         </h1>
-        <h2 className="ont-pixel text-xl relative">
+        <h2 className="font-pixel text-xl relative">
           Write in MDX. Let Slugtree build the tree
         </h2>
         <Link

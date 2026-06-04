@@ -1,0 +1,22 @@
+{
+  "nodes": [
+    "get-tree",
+    "get-node",
+    "get-node-children",
+    "get-node-parent",
+    "get-node-siblings",
+    "get-node-path",
+    "get-node-section",
+    "get-node-data",
+    "get-all-nodes",
+    "get-page-nodes",
+    "get-slugs",
+    "get-base-path",
+    "is-node-active",
+    "find-nodes",
+    "get-nodes-by-front-matter",
+    "get-node-toc",
+    "get-node-pagination",
+    "get-node-breadcrumbs"
+  ]
+}

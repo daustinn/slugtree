@@ -35,7 +35,7 @@ export const sharedMetadata: Metadata = {
       url: 'https://daustinn.com'
     }
   ],
-  creator: 'Daustinn',
+  creator: 'Slugtree',
   openGraph: {
     type: 'website',
     locale: 'en_US',

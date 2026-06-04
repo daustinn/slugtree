@@ -18,6 +18,7 @@ import Link from 'next/link'
 import React from 'react'
 import { cn } from '@/lib/cn'
 import { ChevronLeft, ChevronRight } from '@/components/icons'
+import * as Icons from '@/components/icons'
 
 interface PageProps {
   params: Promise<{ slug?: string[] }>
@@ -31,6 +32,9 @@ export default async function DocPage({ params }: PageProps) {
   const pagination = getNodePagination(slug)
 
   if (!data) notFound()
+  const Icon = data.frontMatter.icon
+    ? (Icons as any)[data.frontMatter.icon]
+    : null
 
   return (
     <>
@@ -55,7 +59,8 @@ export default async function DocPage({ params }: PageProps) {
             </nav>
           )}
           <nav className="max-w-2xl px-3 mx-auto w-full">
-            <h1 className="text-3xl font-pixel font-bold pb-2">
+            <h1 className="text-3xl font-pixel font-bold pb-2 flex items-center">
+              {Icon && <Icon width={30} className="mr-4" />}
               {data.frontMatter.title}
             </h1>
             <p className="text-lg pb-3 font-pixel opacity-70">

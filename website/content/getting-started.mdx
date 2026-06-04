@@ -1,6 +1,7 @@
 ---
 title: Getting started
 description: Learn the core concepts of slugtree and how to structure your documentation.
+icon: FlashOutline
 ---
 
 `slugtree` is a lightweight, framework-agnostic content layer designed specifically for building modern MDX-based documentation sites.
@@ -75,7 +76,9 @@ If an `.mdx` file exists in your folder but is _not_ listed in `config.json`, it
 Your documentation pages are standard `.mdx` files. `slugtree` automatically parses **YAML Frontmatter** at the top of each file to extract essential metadata.
 
 ```mdx
-## [[[title:"content/index.mdx"]]]
+[[[title:"content/index.mdx"]]]
+
+---
 
 title: Advanced Routing
 description: Learn how to handle dynamic routes and catch-all segments.

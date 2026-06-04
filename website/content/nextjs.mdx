@@ -1,6 +1,7 @@
 ---
 title: Next.js
 description: Full setup guide for using slugtree with Next.js App Router.
+icon: NextjsOutline
 ---
 
 slugtree integrates with Next.js through a plugin and a React provider. The plugin runs at build time to generate content data, and the provider makes that data available to all components in your app.
@@ -26,10 +27,10 @@ The plugin scans your content directory and writes generated files into the pack
 
 ### Plugin options
 
-| Option | Type | Default | Description |
-|---|---|---|---|
-| `basePath` | `string` | `'/docs'` | The URL prefix for all documentation routes. All node `href` values are prefixed with this path. |
-| `contentDir` | `string` | `'./content'` | Path to your content directory, relative to the project root. |
+| Option       | Type     | Default       | Description                                                                                      |
+| ------------ | -------- | ------------- | ------------------------------------------------------------------------------------------------ |
+| `basePath`   | `string` | `'/docs'`     | The URL prefix for all documentation routes. All node `href` values are prefixed with this path. |
+| `contentDir` | `string` | `'./content'` | Path to your content directory, relative to the project root.                                    |
 
 ## Provider
 
