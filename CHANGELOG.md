@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/daustinn/slugtree/compare/slugtree-v0.2.0...slugtree-v0.3.0) (2026-06-04)
+
+
+### Features
+
+* implement content generation and dev-mode file watcher for slugtree plugin ([64c8165](https://github.com/daustinn/slugtree/commit/64c8165b7168bee9d6bae8a803590e6506a78684))
+
 ## [0.2.0](https://github.com/daustinn/slugtree/compare/slugtree-v0.1.0...slugtree-v0.2.0) (2026-06-04)
 
 
