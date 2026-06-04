@@ -23,11 +23,5 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build
-        run: pnpm turbo build
-
-      - name: Lint
-        run: pnpm turbo lint
-
-      - name: Test
-        run: pnpm turbo test
+      - name: Build, Lint, and Test
+        run: pnpm turbo run build lint test
