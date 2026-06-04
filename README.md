@@ -16,6 +16,7 @@ Slugtree is a content layer that reads your MDX files and turns them into a stro
 ```bash
 pnpm add slugtree
 ```
+*(Note: Requires Next.js 14 or higher)*
 
 ## 📖 Documentation
 
