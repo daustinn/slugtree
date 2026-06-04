@@ -1,0 +1,129 @@
+---
+title: Next.js
+description: Full setup guide for using slugtree with Next.js App Router.
+---
+
+slugtree integrates with Next.js through a plugin and a React provider. The plugin runs at build time to generate content data, and the provider makes that data available to all components in your app.
+
+## Plugin
+
+Add `withSlugtree` to your `next.config.ts`:
+
+```ts
+[[[title:"next.config.ts"]]]
+import type { NextConfig } from 'next'
+import { withSlugtree } from 'slugtree/next'
+
+const nextConfig: NextConfig = {}
+
+export default withSlugtree(nextConfig, {
+  basePath: '/docs',    // where your docs route lives
+  contentDir: './content' // relative to project root
+})
+```
+
+The plugin scans your content directory and writes generated files into the package. It also starts a file watcher in development mode so the tree stays in sync as you add or edit files.
+
+### Plugin options
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `basePath` | `string` | `'/docs'` | The URL prefix for all documentation routes. All node `href` values are prefixed with this path. |
+| `contentDir` | `string` | `'./content'` | Path to your content directory, relative to the project root. |
+
+## Provider
+
+Wrap your root layout with `SlugtreeProvider` so all client hooks can access the data:
+
+```tsx
+[[[title:"app/layout.tsx"]]]
+import { SlugtreeProvider } from 'slugtree/react'
+
+export default function RootLayout({
+  children
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <SlugtreeProvider>
+      <html lang="en">
+        <body>{children}</body>
+      </html>
+    </SlugtreeProvider>
+  )
+}
+```
+
+`SlugtreeProvider` is a React Server Component that reads the generated data at request time and injects it into a client context. You do not need to pass any props.
+
+## Catch-all route
+
+Create a catch-all route at `app/docs/[[...slug]]/page.tsx` to render any documentation page:
+
+```tsx
+[[[title:"app/docs/[[...slug]]/page.tsx"]]]
+import { getNodeData, getSlugs } from 'slugtree'
+import { notFound } from 'next/navigation'
+import { MDXRemote } from 'next-mdx-remote/rsc'
+
+interface PageProps {
+  params: Promise<{ slug?: string[] }>
+}
+
+export default async function DocPage({ params }: PageProps) {
+  const { slug = [] } = await params
+  const data = getNodeData(slug)
+
+  if (!data) notFound()
+
+  return (
+    <article>
+      <h1>{data.frontMatter.title}</h1>
+      <MDXRemote source={data.rawContent} />
+    </article>
+  )
+}
+
+export function generateStaticParams() {
+  return getSlugs().map((slug) => ({ slug }))
+}
+```
+
+`getNodeData` returns the full `NodeData` object including `rawContent`, `frontMatter`, and `toc`. Pass `rawContent` to your MDX renderer of choice (`next-mdx-remote`, `@mdx-js/react`, etc.).
+
+## Static exports
+
+When using `output: 'export'` in Next.js, `generateStaticParams` must cover every possible slug, including the root route (empty slug array). Spread in an empty entry to handle the index page:
+
+```ts
+[[[title:"app/docs/[[...slug]]/page.tsx"]]]
+export function generateStaticParams() {
+  return [...getSlugs(), []].map((slug) => ({ slug }))
+}
+```
+
+Without the empty entry, visiting the root `/docs` path will result in a 404 during static export.
+
+## Generating metadata
+
+Use `getNodeData` inside `generateMetadata` to produce per-page `<title>` and `<meta>` tags automatically:
+
+```tsx
+[[[title:"app/docs/[[...slug]]/page.tsx"]]]
+import { getNodeData, getSlugs } from 'slugtree'
+import type { Metadata } from 'next'
+
+interface PageProps {
+  params: Promise<{ slug?: string[] }>
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug = [] } = await params
+  const data = getNodeData(slug)
+
+  return {
+    title: data?.frontMatter.title,
+    description: data?.frontMatter.description,
+  }
+}
+```

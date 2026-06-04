@@ -1,0 +1,32 @@
+---
+title: useNodeParent()
+description: Returns the parent Node of the given slug from the client context.
+---
+
+Client hook equivalent of `getNodeParent()`. Returns the parent `Node` of the given slug, or `null` if the node is at the root level.
+
+```tsx
+'use client'
+
+import { useNodeParent } from 'slugtree/react'
+
+export default function BackToSection({ slug }: { slug: string[] }) {
+  const parent = useNodeParent(slug)
+
+  if (!parent || parent.type !== 'folder') return null
+
+  return <a href={parent.href}>← Back to {parent.title}</a>
+}
+```
+
+## Parameters
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `slug` | `string[]` | `[]` | Slug of the node whose parent you want. |
+
+## Return value
+
+Returns `Node | null`. Returns `null` for root-level nodes or when the slug is not found. Passing an empty array always returns `null`.
+
+Must be used inside a component wrapped by `SlugtreeProvider`.

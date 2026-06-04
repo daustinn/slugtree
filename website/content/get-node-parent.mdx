@@ -1,0 +1,51 @@
+---
+title: getNodeParent()
+description: Returns the parent Node of a given slug.
+---
+
+Traverses the tree to find which folder contains the given slug as a direct child, then returns that folder node. Returns `null` for root-level nodes or when the slug is not found.
+
+```ts
+import { getNodeParent } from 'slugtree'
+
+const parent = getNodeParent(['guides', 'routing'])
+// returns the NodeFolder at ['guides']
+```
+
+## Parameters
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `slug` | `string[]` | `[]` | Slug of the node whose parent you want to find. |
+
+## Return value
+
+Returns a `Node` (typically `NodeFolder`), or `null` if the node lives at the root level or the slug is not found. Passing an empty array always returns `null`.
+
+## Usage
+
+Useful for contextual navigation, "back to section" links, or building dynamic layouts that adapt based on the current section:
+
+```ts
+import { getNodeParent } from 'slugtree'
+
+const parent = getNodeParent(currentSlug)
+
+if (parent?.type === 'folder') {
+  console.log(parent.title, parent.href)
+}
+```
+
+```tsx
+import { getNodeParent } from 'slugtree'
+
+export default function BackLink({ slug }: { slug: string[] }) {
+  const parent = getNodeParent(slug)
+
+  if (!parent || parent.type !== 'folder') return null
+
+  return <a href={parent.href}>← Back to {parent.title}</a>
+}
+```
+
+To get all ancestors in order (root to target), use [`getNodePath()`](/docs/get-node-path).

@@ -1,0 +1,41 @@
+---
+title: useNodeBreadcrumbs()
+description: Returns the breadcrumb trail for the given slug from the client context.
+---
+
+Client hook equivalent of `getNodeBreadcrumbs()`. Returns an ordered `BreadcrumbItem[]` from root to the given slug.
+
+```tsx
+'use client'
+
+import { useNodeBreadcrumbs } from 'slugtree/react'
+
+export default function Breadcrumbs({ slug }: { slug: string[] }) {
+  const crumbs = useNodeBreadcrumbs(slug)
+
+  return (
+    <nav>
+      {crumbs.map((crumb, i) => (
+        <span key={crumb.href}>
+          <a href={crumb.href}>{crumb.title}</a>
+          {i < crumbs.length - 1 && ' / '}
+        </span>
+      ))}
+    </nav>
+  )
+}
+```
+
+## Parameters
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `slug` | `string[]` | `[]` | Slug of the target page. |
+
+## Return value
+
+Returns `BreadcrumbItem[]` ordered from root to the target. Each item is `{ title: string; href: string | undefined }`.
+
+For full `Node` objects at each level (e.g. to access `type`, `slug`, or `children`), use [`useNodePath()`](/docs/react-hooks/use-node-path).
+
+Must be used inside a component wrapped by `SlugtreeProvider`.

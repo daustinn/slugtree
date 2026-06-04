@@ -1,0 +1,44 @@
+---
+title: useNodePath()
+description: Returns the ancestor chain from root to the target node as Node[].
+---
+
+Client hook equivalent of `getNodePath()`. Returns an ordered `Node[]` from root down to the given slug, useful for rich breadcrumb components that need access to full node properties.
+
+```tsx
+'use client'
+
+import { useNodePath } from 'slugtree/react'
+
+export default function Breadcrumbs({ slug }: { slug: string[] }) {
+  const path = useNodePath(slug)
+
+  return (
+    <nav>
+      {path.map((node, i) => {
+        if (node.type === 'label') return null
+        return (
+          <span key={node.href}>
+            <a href={node.href}>{node.title}</a>
+            {i < path.length - 1 && ' / '}
+          </span>
+        )
+      })}
+    </nav>
+  )
+}
+```
+
+## Parameters
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `slug` | `string[]` | `[]` | Slug of the target node. |
+
+## Return value
+
+Returns `Node[]` ordered from root to the target. Returns an empty array when `slug` is empty or no nodes are found along the path.
+
+For lightweight `{ title, href }` items instead of full nodes, use [`useNodeBreadcrumbs()`](/docs/react-hooks/use-node-breadcrumbs).
+
+Must be used inside a component wrapped by `SlugtreeProvider`.

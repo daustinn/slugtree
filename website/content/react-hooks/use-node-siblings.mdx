@@ -1,0 +1,40 @@
+---
+title: useNodeSiblings()
+description: Returns sibling nodes at the same level as the given slug.
+---
+
+Client hook equivalent of `getNodeSiblings()`. Returns all nodes at the same level as the given slug, excluding the current node and label nodes.
+
+```tsx
+'use client'
+
+import { useNodeSiblings } from 'slugtree/react'
+
+export default function InThisSection({ slug }: { slug: string[] }) {
+  const siblings = useNodeSiblings(slug)
+
+  if (siblings.length === 0) return null
+
+  return (
+    <ul>
+      {siblings.map((node) => (
+        <li key={node.href}>
+          <a href={node.href}>{node.title}</a>
+        </li>
+      ))}
+    </ul>
+  )
+}
+```
+
+## Parameters
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `slug` | `string[]` | `[]` | Slug of the node whose siblings you want. |
+
+## Return value
+
+Returns `Node[]`. The current node and label nodes are excluded. For root-level nodes, returns all other root-level non-label nodes. Returns an empty array when `slug` is empty or not found.
+
+Must be used inside a component wrapped by `SlugtreeProvider`.

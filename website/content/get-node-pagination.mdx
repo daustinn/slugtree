@@ -1,0 +1,57 @@
+---
+title: getNodePagination()
+description: Returns the previous and next page nodes for a given slug.
+---
+
+Returns a `Pagination` object with `prev` and `next` entries based on the flat list of page nodes in tree order. Either can be `null` if the current page is at the start or end of the list.
+
+```ts
+import { getNodePagination } from 'slugtree'
+
+const pagination = getNodePagination(['guides', 'routing'])
+// { prev: PaginationItem | null, next: PaginationItem | null }
+```
+
+## Parameters
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `slug` | `string[]` | `[]` | Slug of the current page. |
+
+## Return value
+
+Returns `Pagination | null`. Returns `null` if the slug is not found in the page list.
+
+```ts
+interface Pagination {
+  prev: PaginationItem | null
+  next: PaginationItem | null
+}
+
+interface PaginationItem {
+  title: string
+  description?: string
+  href: string
+  slug: string[]
+}
+```
+
+## Usage
+
+```tsx
+import { getNodePagination } from 'slugtree'
+
+export default function PageFooter({ slug }: { slug: string[] }) {
+  const pagination = getNodePagination(slug)
+  if (!pagination) return null
+
+  return (
+    <footer>
+      {pagination.prev && <a href={pagination.prev.href}>← {pagination.prev.title}</a>}
+      {pagination.next && <a href={pagination.next.href}>{pagination.next.title} →</a>}
+    </footer>
+  )
+}
+```
+
+For client components, use [`useNodePagination()`](/docs/react-hooks/use-node-pagination) from `slugtree/react`.

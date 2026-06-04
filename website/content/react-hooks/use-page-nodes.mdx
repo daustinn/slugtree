@@ -1,0 +1,34 @@
+---
+title: usePageNodes()
+description: Returns only page-type NodeData from the client context.
+---
+
+Client hook equivalent of `getPageNodes()`. Returns a flat `NodeData[]` of every node where `type === 'page'`, excluding folders and labels.
+
+```tsx
+'use client'
+
+import { usePageNodes } from 'slugtree/react'
+
+export default function AllPages() {
+  const pages = usePageNodes()
+
+  return (
+    <ul>
+      {pages.map((page) => (
+        <li key={page.href}>
+          <a href={page.href}>{page.frontMatter.title}</a>
+        </li>
+      ))}
+    </ul>
+  )
+}
+```
+
+## Return value
+
+Returns `NodeData[]` containing only `type === 'page'` entries.
+
+For both pages and folders, use [`useAllNodes()`](/docs/react-hooks/use-all-nodes). For custom filtering, use [`useFindNodes()`](/docs/react-hooks/use-find-nodes).
+
+Must be used inside a component wrapped by `SlugtreeProvider`.

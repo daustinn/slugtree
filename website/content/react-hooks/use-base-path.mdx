@@ -1,0 +1,24 @@
+---
+title: useBasePath()
+description: Returns the configured base path from the client context.
+---
+
+Client hook equivalent of `getBasePath()`. Returns the `basePath` string configured in `withSlugtree`, available anywhere inside `SlugtreeProvider`.
+
+```tsx
+'use client'
+
+import { useBasePath } from 'slugtree/react'
+
+export default function HomeLink() {
+  const basePath = useBasePath()
+
+  return <a href={basePath}>Documentation</a>
+}
+```
+
+## Return value
+
+Returns `string`. The value matches the `basePath` option passed to `withSlugtree` (defaults to `'/docs'`). All node `href` values are already prefixed with this path, so you typically only need this hook for custom navigation or redirects.
+
+Must be used inside a component wrapped by `SlugtreeProvider`.

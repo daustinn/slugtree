@@ -1,0 +1,32 @@
+---
+title: useNodeSection()
+description: Returns the root-level folder section for the given slug.
+---
+
+Client hook equivalent of `getNodeSection()`. Returns the top-level `NodeFolder` containing the given slug, regardless of nesting depth. Returns `null` for root-level slugs.
+
+```tsx
+'use client'
+
+import { useNodeSection } from 'slugtree/react'
+
+export default function SectionBadge({ slug }: { slug: string[] }) {
+  const section = useNodeSection(slug)
+
+  if (!section) return null
+
+  return <span>{section.title}</span>
+}
+```
+
+## Parameters
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `slug` | `string[]` | `[]` | Slug of the target node. |
+
+## Return value
+
+Returns `NodeFolder | null`. Returns `null` when the slug is empty, at the root level, or not found.
+
+Must be used inside a component wrapped by `SlugtreeProvider`.

@@ -1,0 +1,31 @@
+---
+title: getAllNodes()
+description: Returns all flattened nodes — pages and folders combined.
+---
+
+Returns a flat `NodeData[]` array containing every node slugtree knows about, including both pages and folders. The order follows the tree traversal used during generation.
+
+```ts
+import { getAllNodes } from 'slugtree'
+
+const nodes = getAllNodes()
+```
+
+## Return value
+
+Returns `NodeData[]`. Both `type === 'page'` and `type === 'folder'` entries are included. Label nodes are not present in the flat list — they only appear in the tree structure returned by `getTree()`.
+
+## Usage
+
+Filter by `type` when you need only one category:
+
+```ts
+import { getAllNodes } from 'slugtree'
+
+const nodes = getAllNodes()
+
+const folders = nodes.filter((n) => n.type === 'folder')
+const pages = nodes.filter((n) => n.type === 'page')
+```
+
+If you only need pages (excluding folders), use [`getPageNodes()`](/docs/get-page-nodes) instead — it's a direct shorthand. If you need to filter by a custom condition, prefer [`findNodes()`](/docs/find-nodes).

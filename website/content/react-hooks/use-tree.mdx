@@ -1,0 +1,32 @@
+---
+title: useTree()
+description: Returns the full navigation tree from the client context.
+---
+
+Client-side hook that returns the root `Node[]` array from the slugtree context. Equivalent to `getTree()` but reactive and usable inside Client Components.
+
+```tsx
+[[[title:"components/sidebar.tsx"]]]
+'use client'
+
+import { useTree } from 'slugtree/react'
+
+export default function Sidebar() {
+  const tree = useTree()
+
+  return (
+    <nav>
+      {tree.map((node) => {
+        if (node.type === 'label') return <p key={node.label}>{node.label}</p>
+        return <a key={node.href} href={node.href}>{node.title}</a>
+      })}
+    </nav>
+  )
+}
+```
+
+## Return value
+
+Returns `Node[]`. Same shape as `getTree()` — each element is a `NodePage`, `NodeFolder`, or `NodeLabel`.
+
+Must be used inside a component wrapped by `SlugtreeProvider`. For server components, use `getTree()` directly.

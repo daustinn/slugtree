@@ -1,0 +1,40 @@
+---
+title: Introduction
+description: slugtree is a lightweight content layer for building MDX documentation sites with a strongly-typed navigation tree.
+---
+
+`slugtree` is a lightweight, framework-agnostic content layer built for modern MDX documentation sites.
+
+It reads your folder of markdown files and transforms them into a **strongly-typed, deeply navigable data tree** — giving you sidebar navigation, breadcrumbs, pagination, table of contents, and full-text search out of the box, without locking you into any framework or UI convention.
+
+## How it works
+
+When you run your dev server or build, the `withSlugtree` Next.js plugin scans your content directory and writes pre-processed data into generated files that are bundled with your app. All API functions read from these generated files synchronously — no database, no network calls, no runtime file I/O.
+
+```bash
+content/
+├── config.json          ← controls order and visibility
+├── index.mdx            ← /docs
+├── getting-started.mdx  ← /docs/getting-started
+└── guides/
+    ├── config.json
+    └── routing.mdx      ← /docs/guides/routing
+```
+
+## What slugtree gives you
+
+- **Tree API** — navigate the full folder/page hierarchy via `getTree()`, `getNode()`, `getNodeChildren()`, and more.
+- **Page data** — access raw MDX, frontmatter, and a pre-parsed table of contents for every page via `getNodeData()`.
+- **Navigation utilities** — breadcrumbs, pagination, siblings, ancestors, and active state helpers.
+- **React hooks** — every server function has a client-side hook equivalent exported from `slugtree/react`, backed by `SlugtreeProvider`.
+- **Full-text search** — `searchContent()` returns hierarchical results scored by title, description, and heading matches.
+
+## Design philosophy
+
+slugtree does **one thing**: turn a directory of MDX files into structured navigation data. It intentionally has no opinion on rendering, styling, or routing — that is your job. This makes it trivially composable with any UI layer, from a custom Next.js app to a fully bespoke design system.
+
+## Next steps
+
+- Follow the [Getting Started](/docs/getting-started) guide to understand the folder structure and configuration format.
+- Set up the [Next.js integration](/docs/nextjs) to connect slugtree to the App Router.
+- Browse the [Core API](/docs/get-tree) reference to see every available function.

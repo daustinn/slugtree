@@ -1,0 +1,41 @@
+---
+title: Provider
+description: React Server Component that provides all slugtree data to client hooks.
+---
+
+`SlugtreeProvider` is a React Server Component exported from `slugtree/react`. It reads the generated tree, nodes, and basePath at request time and injects them into a client-side context so all slugtree hooks work anywhere in the component tree.
+
+```tsx
+[[[title:"app/layout.tsx"]]]
+import { SlugtreeProvider } from 'slugtree/react'
+
+export default function RootLayout({
+  children
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <SlugtreeProvider>
+      <html lang="en">
+        <body>{children}</body>
+      </html>
+    </SlugtreeProvider>
+  )
+}
+```
+
+Place it at the outermost level of your layout, wrapping `<html>`. No props are required — the provider reads all data from generated files automatically.
+
+## Behavior
+
+- Runs only on the server (RSC). It has no client-side overhead beyond serializing the data into the context payload.
+- Any component wrapped inside `SlugtreeProvider` can call any of the `use*` hooks from `slugtree/react`.
+- Without this provider, hooks will throw a context error.
+
+## When to use server functions instead
+
+If you are inside a Server Component and do not need reactivity, use the server functions directly from `slugtree` (`getTree`, `getNodeData`, etc.) — they are simpler and avoid the context entirely.
+
+`SlugtreeProvider` is only needed when:
+- You have Client Components that call `use*` hooks.
+- You need the tree data available in deeply nested client components without prop drilling.

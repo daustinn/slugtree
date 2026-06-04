@@ -1,0 +1,44 @@
+---
+title: findNodes()
+description: Generic filter over all nodes using a custom predicate.
+---
+
+Filters the full flat node list using any predicate function, returning matching `NodeData[]`. This is the most flexible query function in the API and acts as a general-purpose escape hatch when the built-in helpers don't cover your use case.
+
+```ts
+import { findNodes } from 'slugtree'
+
+const featuredPages = findNodes((node) => node.frontMatter.icon === 'star')
+```
+
+## Parameters
+
+| Parameter | Type | Description |
+|---|---|---|
+| `predicate` | `(node: NodeData) => boolean` | Function called for each node. Return `true` to include the node in the result. |
+
+## Return value
+
+Returns `NodeData[]` containing every node for which the predicate returned `true`.
+
+## Usage
+
+Because it operates on `NodeData`, you have access to the full data including raw content and frontmatter:
+
+```ts
+import { findNodes } from 'slugtree'
+
+// Pages with a description
+const withDescription = findNodes((n) => !!n.frontMatter.description)
+
+// Only folder nodes
+const folders = findNodes((n) => n.type === 'folder')
+
+// Pages whose content mentions a keyword
+const mentionsAPI = findNodes((n) => n.rawContent.includes('API'))
+
+// Pages matching a custom frontmatter field
+const drafts = findNodes((n) => n.frontMatter.draft === true)
+```
+
+For filtering by a single frontmatter key/value pair, [`getNodesByFrontMatter()`](/docs/get-nodes-by-front-matter) is a more concise alternative.

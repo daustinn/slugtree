@@ -1,0 +1,66 @@
+---
+title: getTree()
+description: Returns the full structured navigation tree.
+---
+
+Returns the root-level `Node[]` array representing the entire folder and page hierarchy as it was built from your content directory. Each element can be a `NodePage`, `NodeFolder`, or `NodeLabel`.
+
+```ts
+import { getTree } from 'slugtree'
+
+const tree = getTree()
+```
+
+## Node types
+
+The tree is a union of three node shapes:
+
+```ts
+type Node = NodePage | NodeFolder | NodeLabel
+
+interface NodePage {
+  type: 'page'
+  slug: string[]
+  href: string
+  title: string
+}
+
+interface NodeFolder {
+  type: 'folder'
+  slug: string[]
+  href: string | undefined
+  title: string
+  children: Node[]
+}
+
+interface NodeLabel {
+  type: 'label'
+  slug: string[]
+  label: string
+}
+```
+
+Always check `node.type` before accessing type-specific fields like `children` or `href`.
+
+## Usage
+
+Use `getTree()` in a Server Component to render a navigation sidebar:
+
+```tsx
+import { getTree } from 'slugtree'
+
+export default function Sidebar() {
+  const tree = getTree()
+
+  return (
+    <nav>
+      {tree.map((node) => {
+        if (node.type === 'label') return <p key={node.label}>{node.label}</p>
+        return <a key={node.href} href={node.href}>{node.title}</a>
+      })}
+    </nav>
+  )
+}
+```
+
+For reactive access inside Client Components, use [`useTree()`](/docs/react-hooks/use-tree) from `slugtree/react`.

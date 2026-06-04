@@ -1,0 +1,103 @@
+---
+title: Getting started
+description: Learn the core concepts of slugtree and how to structure your documentation.
+---
+
+`slugtree` is a lightweight, framework-agnostic content layer designed specifically for building modern MDX-based documentation sites.
+
+Unlike heavy, all-in-one frameworks, `slugtree` focuses on one thing and does it exceptionally well: **reading your folder of markdown files and transforming it into a strongly-typed, deeply navigable data tree.**
+
+With `slugtree`, you bring your own UI components and framework (like Next.js, Astro, or Remix). `slugtree` simply gives you the structured data—like sidebar navigation trees, breadcrumbs, pagination, and tables of contents—to power that UI.
+
+## Installation
+
+Add `slugtree` to your project using your preferred package manager:
+
+```bash
+bun add slugtree
+# or
+npm install slugtree
+# or
+pnpm add slugtree
+```
+
+## Structuring Your Content
+
+`slugtree` builds its navigation hierarchy directly from your file system. By default, it looks for a directory named `content` at the root of your project (or inside `src/content`).
+
+Here is a typical folder structure:
+
+```bash
+content/
+├── config.json           # Root configuration
+├── index.mdx             # The /docs landing page
+├── getting-started.mdx   # /docs/getting-started
+└── guides/               # /docs/guides/*
+    ├── config.json       # Guides folder configuration
+    ├── index.mdx         # The /docs/guides index page
+    └── routing.mdx       # /docs/guides/routing
+```
+
+Each `.mdx` file becomes a "Page Node", and each directory becomes a "Folder Node".
+
+## The Configuration File
+
+To maintain complete control over the order of your navigation sidebar, `slugtree` requires a `config.json` file in any directory that you want to expose.
+
+This file dictates exactly what appears in the navigation tree and in what order.
+
+```json
+[[[title:"content/config.json"]]]
+{
+  "title": "My Documentation",
+  "nodes": [
+    "--- Introduction ---",
+    "index",
+    "getting-started",
+    "--- Deep Dives ---",
+    "guides"
+  ]
+}
+```
+
+### Configuration Options
+
+- **`title`**: (Optional) For the root `config.json`, this is the name of your documentation. For subdirectories, this overrides the auto-generated folder name.
+- **`nodes`**: An array that defines the sidebar items. Items can be:
+  - **Labels**: Any string matching the format `"--- Label Name ---"`. These render as non-clickable section headers in your sidebar.
+  - **Pages**: The exact filename of an `.mdx` file, excluding the extension (e.g., `"getting-started"` for `getting-started.mdx`).
+  - **Folders**: The exact name of a subdirectory (e.g., `"guides"`).
+
+If an `.mdx` file exists in your folder but is _not_ listed in `config.json`, it will simply not appear in the generated navigation tree.
+
+## Writing Content
+
+Your documentation pages are standard `.mdx` files. `slugtree` automatically parses **YAML Frontmatter** at the top of each file to extract essential metadata.
+
+```mdx
+## [[[title:"content/index.mdx"]]]
+
+title: Advanced Routing
+description: Learn how to handle dynamic routes and catch-all segments.
+icon: Route
+
+---
+
+# Your Documentation
+
+Write your content here using standard Markdown and custom React components!
+```
+
+### Supported Frontmatter
+
+- **`title`**: The display name of the page. If omitted, `slugtree` will fallback to title-casing the filename.
+- **`description`**: A short summary of the page, accessible via the API for meta tags or search descriptions.
+- **`icon`**: An optional string to map to an icon component in your UI.
+
+## What's Next?
+
+Now that you understand the structure, it's time to connect `slugtree` to your application.
+
+Since `slugtree` is fully decoupled from the view layer, you can use it anywhere. However, we've provided first-class support for **Next.js**.
+
+Head over to the [Next.js Setup Guide](/docs/nextjs) to see how to integrate `slugtree` with the App Router in just a few lines of code.

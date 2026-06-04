@@ -1,0 +1,45 @@
+---
+title: getNodeSection()
+description: Returns the root-level folder section for the given slug.
+---
+
+Traverses up from the given slug to return the top-level `NodeFolder` that contains it, regardless of how deeply nested the target node is. Returns `null` if the slug is already at the root level or not found.
+
+```ts
+import { getNodeSection } from 'slugtree'
+
+const section = getNodeSection(['guides', 'advanced', 'routing'])
+// returns the NodeFolder at ['guides']
+```
+
+## Parameters
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `slug` | `string[]` | `[]` | Slug of the target node. |
+
+## Return value
+
+Returns a `NodeFolder` representing the top-level section, or `null` when the slug is empty, at the root level, or not found.
+
+## Usage
+
+Useful for rendering section-specific navigation headers or highlighting the active primary section in a top navigation bar:
+
+```tsx
+import { getNodeSection } from 'slugtree'
+
+export default function SectionHeader({ slug }: { slug: string[] }) {
+  const section = getNodeSection(slug)
+
+  if (!section) return null
+
+  return (
+    <header>
+      <span>You are in: {section.title}</span>
+    </header>
+  )
+}
+```
+
+To get the immediate parent (which may be an intermediate folder, not the root section), use [`getNodeParent()`](/docs/get-node-parent).

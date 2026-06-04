@@ -1,0 +1,27 @@
+---
+title: useAllNodes()
+description: Returns all NodeData from the client context.
+---
+
+Client hook equivalent of `getAllNodes()`. Returns the full flat `NodeData[]` including both pages and folders.
+
+```tsx
+'use client'
+
+import { useAllNodes } from 'slugtree/react'
+
+export default function NodeCount() {
+  const nodes = useAllNodes()
+  const pageCount = nodes.filter((n) => n.type === 'page').length
+
+  return <span>{pageCount} pages</span>
+}
+```
+
+## Return value
+
+Returns `NodeData[]`. Includes both `type === 'page'` and `type === 'folder'` entries. Label nodes are not present in the flat list.
+
+For only page nodes, use [`usePageNodes()`](/docs/react-hooks/use-page-nodes). For custom filtering, use [`useFindNodes()`](/docs/react-hooks/use-find-nodes).
+
+Must be used inside a component wrapped by `SlugtreeProvider`.

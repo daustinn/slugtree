@@ -1,0 +1,10 @@
+{
+  "packages": {
+    ".": {
+      "release-type": "node",
+      "exclude-paths": [
+        "website"
+      ]
+    }
+  }
+}

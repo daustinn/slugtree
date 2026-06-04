@@ -1,0 +1,51 @@
+---
+title: isNodeActive()
+description: Checks if a slug is part of the currently active route.
+---
+
+Returns `true` if the given `slug` is equal to or an ancestor of `currentSlug`. Useful for highlighting active and expanded items in sidebars.
+
+```ts
+import { isNodeActive } from 'slugtree'
+
+isNodeActive(['guides'], ['guides', 'routing'])            // true  — ancestor
+isNodeActive(['guides', 'routing'], ['guides', 'routing']) // true  — exact match
+isNodeActive(['api'], ['guides', 'routing'])               // false — different branch
+```
+
+## Parameters
+
+| Parameter | Type | Description |
+|---|---|---|
+| `slug` | `string[]` | The slug of the node to test. |
+| `currentSlug` | `string[]` | The slug of the currently active page. |
+
+## Return value
+
+Returns `boolean`. Returns `false` if either argument is an empty array.
+
+## Usage
+
+Typical sidebar usage — apply an active style to both the current page and any expanded folder ancestors:
+
+```tsx
+import { getTree, isNodeActive } from 'slugtree'
+
+function NavItem({
+  node,
+  currentSlug,
+}: {
+  node: { slug: string[]; href: string; title: string }
+  currentSlug: string[]
+}) {
+  const active = isNodeActive(node.slug, currentSlug)
+
+  return (
+    <a href={node.href} data-active={active}>
+      {node.title}
+    </a>
+  )
+}
+```
+
+For client components, use [`useIsNodeActive()`](/docs/react-hooks/use-is-node-active) from `slugtree/react`.

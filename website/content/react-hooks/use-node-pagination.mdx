@@ -1,0 +1,41 @@
+---
+title: useNodePagination()
+description: Returns the previous and next page nodes from the client context.
+---
+
+Client hook equivalent of `getNodePagination()`. Returns a `Pagination` object with `prev` and `next` entries, or `null` if the slug is not found in the page list.
+
+```tsx
+'use client'
+
+import { useNodePagination } from 'slugtree/react'
+
+export default function PageNav({ slug }: { slug: string[] }) {
+  const pagination = useNodePagination(slug)
+
+  if (!pagination) return null
+
+  return (
+    <footer>
+      {pagination.prev && (
+        <a href={pagination.prev.href}>← {pagination.prev.title}</a>
+      )}
+      {pagination.next && (
+        <a href={pagination.next.href}>{pagination.next.title} →</a>
+      )}
+    </footer>
+  )
+}
+```
+
+## Parameters
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `slug` | `string[]` | `[]` | Slug of the current page. |
+
+## Return value
+
+Returns `Pagination | null`. Returns `null` when the slug is not found. Each `PaginationItem` has `title`, `description`, `href`, and `slug`.
+
+Must be used inside a component wrapped by `SlugtreeProvider`.

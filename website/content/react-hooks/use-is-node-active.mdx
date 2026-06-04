@@ -1,0 +1,41 @@
+---
+title: useIsNodeActive()
+description: Checks if a slug is part of the current active route in the client context.
+---
+
+Client hook equivalent of `isNodeActive()`. Returns `true` if the given `slug` is equal to or an ancestor of `currentSlug`. The primary hook for sidebar active state highlighting.
+
+```tsx
+'use client'
+
+import { useIsNodeActive } from 'slugtree/react'
+
+export default function NavItem({
+  node,
+  currentSlug,
+}: {
+  node: { slug: string[]; href: string; title: string }
+  currentSlug: string[]
+}) {
+  const active = useIsNodeActive(node.slug, currentSlug)
+
+  return (
+    <a href={node.href} data-active={active}>
+      {node.title}
+    </a>
+  )
+}
+```
+
+## Parameters
+
+| Parameter | Type | Description |
+|---|---|---|
+| `slug` | `string[]` | The slug of the node to test. |
+| `currentSlug` | `string[]` | The slug of the currently active page. |
+
+## Return value
+
+Returns `boolean`. Returns `false` if either argument is an empty array.
+
+Must be used inside a component wrapped by `SlugtreeProvider`.

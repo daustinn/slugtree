@@ -1,0 +1,51 @@
+---
+title: getNodePath()
+description: Returns the ancestor chain from root to the target node as Node[].
+---
+
+Returns an ordered array of `Node` objects representing every ancestor from the root down to the target slug. Unlike `getNodeBreadcrumbs()`, this returns full `Node` objects rather than lightweight `{ title, href }` items, giving access to all node properties including `children`, `slug`, and `type`.
+
+```ts
+import { getNodePath } from 'slugtree'
+
+const path = getNodePath(['guides', 'advanced', 'routing'])
+// [NodeFolder('guides'), NodeFolder('advanced'), NodePage('routing')]
+```
+
+## Parameters
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `slug` | `string[]` | `[]` | Slug of the target node. |
+
+## Return value
+
+Returns `Node[]` ordered from root to the target node. Returns an empty array if `slug` is empty or no matching nodes are found along the path.
+
+## Usage
+
+Useful when you need full node data for each ancestor, such as rendering rich breadcrumb components with icons or descriptions:
+
+```tsx
+import { getNodePath } from 'slugtree'
+
+export default function Breadcrumbs({ slug }: { slug: string[] }) {
+  const path = getNodePath(slug)
+
+  return (
+    <nav>
+      {path.map((node, i) => {
+        if (node.type === 'label') return null
+        return (
+          <span key={node.href}>
+            <a href={node.href}>{node.title}</a>
+            {i < path.length - 1 && ' / '}
+          </span>
+        )
+      })}
+    </nav>
+  )
+}
+```
+
+For lightweight `{ title, href }` breadcrumb items instead of full nodes, use [`getNodeBreadcrumbs()`](/docs/get-node-breadcrumbs).

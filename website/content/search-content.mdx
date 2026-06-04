@@ -1,0 +1,88 @@
+---
+title: searchContent()
+description: Full-text search across all page nodes.
+---
+
+Searches all page nodes' titles, descriptions, TOC headings, and raw MDX content for the given query string. Returns a hierarchical result tree sorted by relevance score descending.
+
+```ts
+import { searchContent } from 'slugtree'
+
+const results = searchContent('routing')
+```
+
+## Parameters
+
+| Parameter | Type | Description |
+|---|---|---|
+| `query` | `string` | The text string to search for. Case-insensitive. |
+
+## Return value
+
+Returns `SearchResult[]` sorted by `matchScore` descending. Returns an empty array for blank or whitespace-only queries.
+
+```ts
+interface SearchResult {
+  id: string               // slug joined by '/'
+  title: string
+  description?: string
+  href: string
+  matchScore: number       // higher = more relevant
+  children: SearchResultChild[]
+}
+
+interface SearchResultChild {
+  id: string               // '{slug}#{headingId}'
+  title: string            // heading text
+  href: string             // '{pageHref}#{headingId}'
+  type: 'title' | 'subtitle'
+  content: string          // excerpt of content below the heading (~200 chars)
+  matchScore: number
+}
+```
+
+## Scoring
+
+| Match location | Score added |
+|---|---|
+| Page title | +10 |
+| Page description | +5 |
+| H1 / H2 heading text | +4 |
+| H3+ heading text | +2 |
+| Each occurrence in raw content | +1 |
+
+## Usage
+
+Typical usage with a search input in a Client Component:
+
+```tsx
+'use client'
+
+import { searchContent } from 'slugtree'
+import { useState } from 'react'
+
+export default function Search() {
+  const [query, setQuery] = useState('')
+  const results = searchContent(query)
+
+  return (
+    <>
+      <input value={query} onChange={(e) => setQuery(e.target.value)} />
+      <ul>
+        {results.map((r) => (
+          <li key={r.id}>
+            <a href={r.href}>{r.title}</a>
+            {r.children.map((child) => (
+              <a key={child.id} href={child.href}>
+                {child.title}
+              </a>
+            ))}
+          </li>
+        ))}
+      </ul>
+    </>
+  )
+}
+```
+
+`searchContent` runs synchronously against the pre-generated data. For large content sets, consider debouncing the query input before calling it.

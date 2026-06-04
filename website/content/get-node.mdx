@@ -1,0 +1,42 @@
+---
+title: getNode()
+description: Retrieves a specific Node from the tree by its slug.
+---
+
+Traverses the tree and returns the matching `Node` for the given slug array, or `null` if not found. Works for both page and folder nodes.
+
+```ts
+import { getNode } from 'slugtree'
+
+const node = getNode(['guides', 'routing'])
+```
+
+## Parameters
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `slug` | `string[]` | `[]` | Array of path segments identifying the target node. |
+
+## Return value
+
+Returns a `Node` (union of `NodePage | NodeFolder | NodeLabel`), or `null` when no matching node is found. Passing an empty array returns `null` — use `getTree()` for root-level access.
+
+## Usage
+
+Narrow the type using `node.type` before accessing shape-specific fields:
+
+```ts
+import { getNode } from 'slugtree'
+
+const node = getNode(['guides', 'routing'])
+
+if (node?.type === 'page') {
+  console.log(node.title, node.href)
+}
+
+if (node?.type === 'folder') {
+  console.log(node.children)
+}
+```
+
+To get the full data object for a page (raw content, frontmatter, TOC), use [`getNodeData()`](/docs/get-node-data) instead.

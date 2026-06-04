@@ -1,0 +1,37 @@
+# website (docs site, not part of the npm package)
+website/
+
+# source code (consumers use dist/)
+src/
+
+# generated data (user-specific, written at dev/build time)
+dist/generated/
+
+# config and tooling
+tsconfig*.json
+vitest.config.ts
+turbo.json
+.turbo/
+.prettierrc*
+.eslintrc*
+
+# lock files
+bun.lock
+bun.lockb
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# editor and OS
+.vscode/
+.DS_Store
+Thumbs.db
+
+# git
+.git/
+.gitignore
+
+# misc
+*.tsbuildinfo
+.env
+.env.*

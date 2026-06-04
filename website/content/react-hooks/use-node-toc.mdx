@@ -1,0 +1,43 @@
+---
+title: useNodeToc()
+description: Returns the table of contents for a page node from the client context.
+---
+
+Client hook equivalent of `getNodeToc()`. Returns the `TocItem[]` array for the given slug, or an empty array if the node is not found.
+
+```tsx
+'use client'
+
+import { useNodeToc } from 'slugtree/react'
+
+export default function TocPanel({ slug }: { slug: string[] }) {
+  const toc = useNodeToc(slug)
+
+  if (toc.length === 0) return null
+
+  return (
+    <ul>
+      {toc.map((item) => (
+        <li
+          key={item.id}
+          style={{ paddingLeft: `${(item.depth - 1) * 12}px` }}
+        >
+          <a href={`#${item.id}`}>{item.text}</a>
+        </li>
+      ))}
+    </ul>
+  )
+}
+```
+
+## Parameters
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `slug` | `string[]` | `[]` | Slug of the target page node. |
+
+## Return value
+
+Returns `TocItem[]`. Each item has `id` (heading anchor), `text` (heading text), and `depth` (1 = h1, 2 = h2, etc.). Returns an empty array when the node is not found or has no headings.
+
+Must be used inside a component wrapped by `SlugtreeProvider`.

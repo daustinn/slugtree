@@ -1,0 +1,45 @@
+---
+title: getNodeChildren()
+description: Returns the direct children of a folder node.
+---
+
+Given a slug that points to a `NodeFolder`, returns its direct `children` array. Returns an empty array if the node is not a folder or the slug is not found.
+
+```ts
+import { getNodeChildren } from 'slugtree'
+
+const children = getNodeChildren(['guides'])
+```
+
+## Parameters
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `slug` | `string[]` | `[]` | Slug of the folder node whose children you want. |
+
+## Return value
+
+Returns `Node[]`. Each child can be a `NodePage`, `NodeFolder`, or `NodeLabel`. Always check `child.type` before accessing type-specific fields.
+
+## Usage
+
+The primary way to build section index pages that list all pages inside a folder:
+
+```tsx
+import { getNodeChildren } from 'slugtree'
+
+export default function GuideIndex() {
+  const children = getNodeChildren(['guides'])
+
+  return (
+    <ul>
+      {children.map((child) => {
+        if (child.type === 'label') return null
+        return <li key={child.href}><a href={child.href}>{child.title}</a></li>
+      })}
+    </ul>
+  )
+}
+```
+
+Children can themselves be folders or pages. Recurse into folder children when you need a full subtree, or use [`getTree()`](/docs/get-tree) for the complete hierarchy.

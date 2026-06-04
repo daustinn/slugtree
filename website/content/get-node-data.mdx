@@ -1,0 +1,74 @@
+---
+title: getNodeData()
+description: Retrieves the full data object for a page node by its slug.
+---
+
+Returns the full `NodeData` object for the given page slug, which includes the raw MDX content, parsed frontmatter, and the table of contents. Returns `undefined` if the node is not found or is a folder without an `index.mdx`.
+
+```ts
+import { getNodeData } from 'slugtree'
+
+const data = getNodeData(['guides', 'routing'])
+```
+
+## Parameters
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `slug` | `string[]` | `[]` | Array of path segments identifying the page. |
+
+## Return value
+
+Returns `NodeData | undefined`. The `NodeData` shape:
+
+```ts
+interface NodeData {
+  type: 'page' | 'folder'
+  slug: string[]
+  href: string | undefined
+  rawContent: string
+  toc: TocItem[]
+  frontMatter: {
+    title: string
+    description?: string
+    icon?: string
+    [key: string]: unknown
+  }
+}
+```
+
+## Usage
+
+This is the primary function used to retrieve the data required to render a documentation page:
+
+```tsx
+[[[title:"app/docs/[[...slug]]/page.tsx"]]]
+import { getNodeData, getSlugs } from 'slugtree'
+import { notFound } from 'next/navigation'
+import { MDXRemote } from 'next-mdx-remote/rsc'
+
+interface PageProps {
+  params: Promise<{ slug?: string[] }>
+}
+
+export default async function DocPage({ params }: PageProps) {
+  const { slug = [] } = await params
+  const data = getNodeData(slug)
+
+  if (!data) notFound()
+
+  return (
+    <main>
+      <h1>{data.frontMatter.title}</h1>
+      <p>{data.frontMatter.description}</p>
+      <MDXRemote source={data.rawContent} />
+    </main>
+  )
+}
+
+export function generateStaticParams() {
+  return getSlugs().map((slug) => ({ slug }))
+}
+```
+
+To retrieve only the tree node structure (without content), use [`getNode()`](/docs/get-node).

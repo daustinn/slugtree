@@ -1,0 +1,39 @@
+---
+title: useNodeData()
+description: Returns the full NodeData for a page node from the client context.
+---
+
+Client hook equivalent of `getNodeData()`. Returns the `NodeData` object for the given slug, including raw content, frontmatter, and table of contents. Returns `undefined` if not found.
+
+```tsx
+'use client'
+
+import { useNodeData } from 'slugtree/react'
+
+export default function PageMeta({ slug }: { slug: string[] }) {
+  const data = useNodeData(slug)
+
+  if (!data) return null
+
+  return (
+    <header>
+      <h1>{data.frontMatter.title}</h1>
+      <p>{data.frontMatter.description}</p>
+    </header>
+  )
+}
+```
+
+## Parameters
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `slug` | `string[]` | `[]` | Slug of the target page node. |
+
+## Return value
+
+Returns `NodeData | undefined`. The `NodeData` includes `rawContent`, `frontMatter`, `toc`, `slug`, `href`, and `type`.
+
+For rendering MDX content on the server (where you need `rawContent` to pass to an RSC-compatible MDX renderer), use `getNodeData()` from `slugtree` in a Server Component instead.
+
+Must be used inside a component wrapped by `SlugtreeProvider`.

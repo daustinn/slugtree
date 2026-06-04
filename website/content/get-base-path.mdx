@@ -1,0 +1,32 @@
+---
+title: getBasePath()
+description: Returns the configured base path for all documentation routes.
+---
+
+Returns the `basePath` string you configured in `withSlugtree`. All `href` values on nodes are already prefixed with this path.
+
+```ts
+import { getBasePath } from 'slugtree'
+
+const basePath = getBasePath()
+// e.g. '/docs'
+```
+
+## Return value
+
+Returns `string`. Defaults to `'/docs'` unless overridden in the plugin options.
+
+## Usage
+
+Use it to build links or redirects without hardcoding the path in your components:
+
+```tsx
+import { getBasePath } from 'slugtree'
+import { redirect } from 'next/navigation'
+
+export default function RootPage() {
+  redirect(getBasePath())
+}
+```
+
+For client components, use [`useBasePath()`](/docs/react-hooks/use-base-path) from `slugtree/react`.

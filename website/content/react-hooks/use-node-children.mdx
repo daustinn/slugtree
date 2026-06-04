@@ -1,0 +1,38 @@
+---
+title: useNodeChildren()
+description: Returns the direct children of a folder node from the client context.
+---
+
+Client hook equivalent of `getNodeChildren()`. Returns the `children` array of the folder at the given slug, or an empty array if the node is not a folder.
+
+```tsx
+[[[title:"components/section-list.tsx"]]]
+'use client'
+
+import { useNodeChildren } from 'slugtree/react'
+
+export default function SectionList({ slug }: { slug: string[] }) {
+  const children = useNodeChildren(slug)
+
+  return (
+    <ul>
+      {children.map((child) => {
+        if (child.type === 'label') return null
+        return <li key={child.href}><a href={child.href}>{child.title}</a></li>
+      })}
+    </ul>
+  )
+}
+```
+
+## Parameters
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `slug` | `string[]` | `[]` | Slug of the folder node whose children you want. |
+
+## Return value
+
+Returns `Node[]`. Returns an empty array when the slug points to a page, a label, or is not found. Each child can be a `NodePage`, `NodeFolder`, or `NodeLabel` — check `child.type` before accessing type-specific fields.
+
+Must be used inside a component wrapped by `SlugtreeProvider`.

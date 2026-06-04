@@ -1,0 +1,59 @@
+---
+title: getNodeBreadcrumbs()
+description: Generates the breadcrumb trail from root to the current page.
+---
+
+Returns an array of `BreadcrumbItem` representing the path from the root to the given slug, ordered from root to leaf. Each item contains a `title` and `href`.
+
+```ts
+import { getNodeBreadcrumbs } from 'slugtree'
+
+const crumbs = getNodeBreadcrumbs(['guides', 'advanced', 'routing'])
+// [
+//   { title: 'Guides', href: '/docs/guides' },
+//   { title: 'Advanced', href: '/docs/guides/advanced' },
+//   { title: 'Routing', href: '/docs/guides/advanced/routing' },
+// ]
+```
+
+## Parameters
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `slug` | `string[]` | `[]` | Slug of the target page. |
+
+## Return value
+
+Returns `BreadcrumbItem[]` ordered from root to the target. Each segment of the slug is resolved — first against `NodeData` (pages), then against folder nodes. Segments with no matching node are skipped.
+
+```ts
+interface BreadcrumbItem {
+  title: string
+  href: string | undefined
+}
+```
+
+## Usage
+
+```tsx
+import { getNodeBreadcrumbs } from 'slugtree'
+
+export default function Breadcrumbs({ slug }: { slug: string[] }) {
+  const crumbs = getNodeBreadcrumbs(slug)
+
+  return (
+    <nav>
+      {crumbs.map((crumb, i) => (
+        <span key={crumb.href}>
+          <a href={crumb.href}>{crumb.title}</a>
+          {i < crumbs.length - 1 && ' / '}
+        </span>
+      ))}
+    </nav>
+  )
+}
+```
+
+If you need full `Node` objects instead of lightweight items (e.g. to access `type`, `slug`, or `children`), use [`getNodePath()`](/docs/get-node-path).
+
+For client components, use [`useNodeBreadcrumbs()`](/docs/react-hooks/use-node-breadcrumbs) from `slugtree/react`.

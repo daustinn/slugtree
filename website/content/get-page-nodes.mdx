@@ -1,0 +1,42 @@
+---
+title: getPageNodes()
+description: Returns all page-type nodes, excluding folders and labels.
+---
+
+Returns a flat `NodeData[]` of every node where `type === 'page'`. Folder nodes are excluded. The primary use case is generating sitemaps and feed files.
+
+```ts
+import { getPageNodes } from 'slugtree'
+
+const pages = getPageNodes()
+```
+
+## Return value
+
+Returns `NodeData[]` containing only `type === 'page'` entries. The order matches the tree traversal order from `getAllNodes()`.
+
+## Usage
+
+### Generating a sitemap in Next.js
+
+```ts
+[[[title:"app/sitemap.ts"]]]
+import { getPageNodes } from 'slugtree'
+
+export default function sitemap() {
+  return getPageNodes().map((page) => ({
+    url: `https://example.com${page.href}`,
+    lastModified: new Date(),
+  }))
+}
+```
+
+### Counting pages
+
+```ts
+import { getPageNodes } from 'slugtree'
+
+const pageCount = getPageNodes().length
+```
+
+For both pages and folders, use [`getAllNodes()`](/docs/get-all-nodes). For custom filtering conditions, use [`findNodes()`](/docs/find-nodes).

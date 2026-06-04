@@ -1,0 +1,45 @@
+---
+title: getNodeSiblings()
+description: Returns all sibling nodes at the same level as the given slug.
+---
+
+Returns all nodes that share the same parent as the given slug, excluding the node itself and any label nodes. For root-level nodes, returns all other root-level non-label nodes.
+
+```ts
+import { getNodeSiblings } from 'slugtree'
+
+const siblings = getNodeSiblings(['guides', 'routing'])
+```
+
+## Parameters
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `slug` | `string[]` | `[]` | Slug of the node whose siblings you want. |
+
+## Return value
+
+Returns `Node[]`. The current node is excluded from the result. Label nodes are also excluded. Returns an empty array if `slug` is empty or the node is not found.
+
+## Usage
+
+Useful for "In this section" navigation panels or "Related pages" components:
+
+```tsx
+import { getNodeSiblings } from 'slugtree'
+
+export default function InThisSection({ slug }: { slug: string[] }) {
+  const siblings = getNodeSiblings(slug)
+
+  return (
+    <ul>
+      {siblings.map((node) => {
+        if (node.type === 'label') return null
+        return <li key={node.href}><a href={node.href}>{node.title}</a></li>
+      })}
+    </ul>
+  )
+}
+```
+
+To get the parent folder itself rather than its children, use [`getNodeParent()`](/docs/get-node-parent).

@@ -1,0 +1,38 @@
+---
+title: useFindNodes()
+description: Generic predicate filter over all nodes in the client context.
+---
+
+Client hook equivalent of `findNodes()`. Accepts a predicate and returns all `NodeData` entries for which it returns `true`.
+
+```tsx
+'use client'
+
+import { useFindNodes } from 'slugtree/react'
+
+export default function FeaturedPages() {
+  const featured = useFindNodes((n) => n.frontMatter.icon === 'star')
+
+  return (
+    <ul>
+      {featured.map((page) => (
+        <li key={page.href}><a href={page.href}>{page.frontMatter.title}</a></li>
+      ))}
+    </ul>
+  )
+}
+```
+
+## Parameters
+
+| Parameter | Type | Description |
+|---|---|---|
+| `predicate` | `(node: NodeData) => boolean` | Function called for each node. Return `true` to include the node in the result. |
+
+## Return value
+
+Returns `NodeData[]` containing every node for which the predicate returned `true`.
+
+The predicate re-evaluates on every render. If it depends on values that change frequently or involves expensive computation, wrap it in `useCallback` to keep it stable.
+
+Must be used inside a component wrapped by `SlugtreeProvider`.

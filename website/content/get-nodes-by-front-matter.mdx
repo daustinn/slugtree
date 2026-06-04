@@ -1,0 +1,46 @@
+---
+title: getNodesByFrontMatter()
+description: Filters nodes by a frontmatter key/value pair.
+---
+
+Returns all `NodeData` entries where `frontMatter[key] === value`. Useful for building tag pages, filtering by category, or any frontmatter-driven grouping.
+
+```ts
+import { getNodesByFrontMatter } from 'slugtree'
+
+const guides = getNodesByFrontMatter('category', 'guide')
+const featured = getNodesByFrontMatter('featured', true)
+```
+
+## Parameters
+
+| Parameter | Type | Description |
+|---|---|---|
+| `key` | `string` | The frontmatter field name to match against. |
+| `value` | `unknown` | The value to compare using strict equality (`===`). |
+
+## Return value
+
+Returns `NodeData[]` where every entry has `frontMatter[key] === value`.
+
+## Usage
+
+The key accepts any string and is matched against the raw frontmatter object, so you can use custom fields beyond the built-in `title`, `description`, and `icon`:
+
+```mdx
+[[[title:"content/guides/routing.mdx"]]]
+---
+title: Advanced Routing
+category: guide
+featured: true
+---
+```
+
+```ts
+import { getNodesByFrontMatter } from 'slugtree'
+
+const featuredGuides = getNodesByFrontMatter('category', 'guide')
+  .filter((n) => n.frontMatter.featured === true)
+```
+
+For more complex conditions — multiple fields, computed values, content matching — use [`findNodes()`](/docs/find-nodes) instead.
