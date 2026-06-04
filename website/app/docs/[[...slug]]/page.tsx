@@ -139,7 +139,7 @@ export async function generateMetadata({
   const url = `${siteConfig.url}${node.href || '/docs'}`
 
   return {
-    title: node.title,
+    title: `${node.title} | slugtree Docs`,
     description: node.description || siteConfig.description,
     alternates: {
       canonical: url
