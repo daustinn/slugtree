@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Slugtree Config",
+  "title": "RawConfigJson",
   "description": "Configuration file for slugtree navigation ordering and metadata",
   "type": "object",
   "properties": {
@@ -20,5 +20,7 @@
       }
     }
   },
+  "allowComments": true,
+  "allowTrailingCommas": true,
   "additionalProperties": false
 }
