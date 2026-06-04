@@ -36,6 +36,7 @@ export interface NodeFolder {
   slug: string[]
   href: string | undefined
   children: Node[]
+  icon?: string
 }
 
 export type Node = NodeLabel | NodePage | NodeFolder
