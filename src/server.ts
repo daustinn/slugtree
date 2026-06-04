@@ -114,7 +114,7 @@ export function getNodeSiblings(slug: string[] = []): Node[] {
   const siblings = parent && parent.type === 'folder' ? parent.children : tree
 
   return siblings.filter(
-    (n) => n.type !== 'label' && n.slug.join('/') !== slugPath
+    (n: Node) => n.type !== 'label' && n.slug.join('/') !== slugPath
   )
 }
 
@@ -166,7 +166,7 @@ export function getBasePath(): string {
  */
 export function getNodeData(slug: string[] = []): NodeData | undefined {
   const slugPath = slug.join('/')
-  return nodes.find((node) => node.slug.join('/') === slugPath)
+  return nodes.find((node: NodeData) => node.slug.join('/') === slugPath)
 }
 
 /**
@@ -185,7 +185,7 @@ export function getAllNodes(): NodeData[] {
  * @returns An array of NodeData objects where type is 'page'.
  */
 export function getPageNodes(): NodeData[] {
-  return nodes.filter((node) => node.type === 'page')
+  return nodes.filter((node: NodeData) => node.type === 'page')
 }
 
 /**
@@ -212,7 +212,7 @@ export function findNodes(predicate: (node: NodeData) => boolean): NodeData[] {
  */
 export function getNodesByFrontMatter(key: string, value: unknown): NodeData[] {
   return nodes.filter(
-    (node) =>
+    (node: NodeData) =>
       (node.frontMatter as unknown as Record<string, unknown>)[key] === value
   )
 }
@@ -263,8 +263,8 @@ export interface Pagination {
  */
 export function getNodePagination(slug: string[] = []): Pagination | null {
   const slugPath = slug.join('/')
-  const flatPages = nodes.filter((node) => node.type === 'page')
-  const index = flatPages.findIndex((node) => node.slug.join('/') === slugPath)
+  const flatPages = nodes.filter((node: NodeData) => node.type === 'page')
+  const index = flatPages.findIndex((node: NodeData) => node.slug.join('/') === slugPath)
 
   if (index === -1) return null
 
@@ -294,7 +294,7 @@ export function getNodeBreadcrumbs(slug: string[] = []): BreadcrumbItem[] {
     const partialSlug = slug.slice(0, i)
     const partialPath = partialSlug.join('/')
 
-    const node = nodes.find((node) => node.slug.join('/') === partialPath)
+    const node = nodes.find((node: NodeData) => node.slug.join('/') === partialPath)
     if (node) {
       crumbs.push({ title: node.frontMatter.title, href: node.href })
       continue
