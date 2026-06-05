@@ -1,0 +1,8 @@
+{
+  "name": "Slugtree",
+  "short_name": "Slugtree",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff"
+}

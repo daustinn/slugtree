@@ -62,5 +62,6 @@ export const sharedMetadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   alternates: {
     canonical: '/'
-  }
+  },
+  applicationName: 'Slugtree'
 }
