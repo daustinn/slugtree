@@ -160,6 +160,7 @@ const Item = ({
     <Command.Item
       onSelect={() => {
         router.push(href)
+        document.documentElement.classList.remove('sidebar')
         setOpen(false)
       }}
       value={href}
