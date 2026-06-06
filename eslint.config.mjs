@@ -5,7 +5,7 @@ export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    ignores: ['dist/', 'src/generated/', 'website/', 'node_modules/']
+    ignores: ['dist/', 'src/generated/', 'website/', 'node_modules/', 'vitest.config.ts.timestamp-*']
   },
   {
     files: ['scripts/**/*.js'],
