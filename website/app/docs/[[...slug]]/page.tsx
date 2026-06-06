@@ -38,8 +38,8 @@ export default async function DocPage({ params }: PageProps) {
 
   return (
     <>
-      <section className="grow flex flex-col font-sans">
-        <header className="pt-10 pb-10">
+      <section className="grow max-lg:overflow-auto flex flex-col font-sans">
+        <header className="py-3 lg:py-10">
           {breadcrumbs.length > 0 && (
             <nav className="max-w-2xl px-3 flex pb-4 text-sm w-full mx-auto">
               {breadcrumbs.map((b, i) => (
@@ -59,16 +59,18 @@ export default async function DocPage({ params }: PageProps) {
             </nav>
           )}
           <nav className="max-w-2xl px-3 mx-auto w-full">
-            <h1 className="text-3xl font-pixel font-bold pb-2 flex items-center">
-              {Icon && <Icon width={30} className="mr-4 opacity-40" />}
+            <h1 className="text-2xl lg:text-3xl font-pixel font-bold pb-2 flex items-center">
+              {Icon && (
+                <Icon className="mr-4 w-[25px] lg:w-[30px] opacity-40" />
+              )}
               {data.frontMatter.title}
             </h1>
-            <p className="text-lg pb-3 font-pixel opacity-70">
+            <p className="lg:text-lg pb-3 font-pixel opacity-70">
               {data.frontMatter.description}
             </p>
           </nav>
         </header>
-        <article className="grow max-w-2xl px-3 mx-auto w-full">
+        <article className="grow max-w-2xl px-5 lg:px-3 max-lg:overflow-auto mx-auto w-full">
           <MDXRemote
             source={data.rawContent}
             components={mdxComponents}

@@ -51,14 +51,14 @@ export default function DocsSearch() {
       </button>
       {open && (
         <div
-          className="fixed inset-0 px-5 flex justify-center pt-5 lg:pt-40 font-sans text-sm bg-white/50 dark:bg-black/5"
+          className="fixed inset-0 px-2 lg:px-5 flex justify-center pt-2 lg:pt-40 font-sans text-sm bg-white/50 dark:bg-black/5"
           onClick={(e) => {
             if (e.currentTarget === e.target) {
               setOpen(false)
             }
           }}
         >
-          <Command className="h-fit max-w-[700px] overflow-hidden w-[700px] relative flex flex-col dark:border-neutral-700/80 dark:bg-neutral-950  bg-background dark:shadow-[0_0_20px_5px_rgba(0,0,0,1),0_0_60px_10px_rgba(0,0,0,1)] shadow-[0_0_40px_10px_rgba(0,0,0,.05)] rounded-xl border ">
+          <Command className="h-fit max-w-[700px] overflow-hidden w-[700px] relative flex flex-col dark:border-neutral-700/80 dark:bg-neutral-950 bg-background dark:shadow-[0_0_20px_5px_rgba(0,0,0,1),0_0_60px_10px_rgba(0,0,0,1)] shadow-[0_0_40px_10px_rgba(0,0,0,.05)] rounded-xl border ">
             <label className="flex relative items-center">
               <div className="absolute left-4 flex items-center gap-3">
                 <Search width={18} className="opacity-50" />
@@ -119,6 +119,14 @@ export default function DocsSearch() {
           </Command>
         </div>
       )}
+      <button
+        onClick={() => {
+          document.documentElement.classList.remove('sidebar')
+        }}
+        className="px-3 flex lg:hidden"
+      >
+        <Icons.Xmark width={20} />
+      </button>
     </>
   )
 }

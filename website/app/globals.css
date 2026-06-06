@@ -2,6 +2,7 @@
 @custom-variant dark (&:where([data-theme-resolved=dark], [data-theme-resolved=dark] *));
 @custom-variant light (&:where([data-theme=light], [data-theme=light] *));
 @custom-variant system (&:where([data-theme=system], [data-theme=system] *));
+@custom-variant sidebar (&:where(.sidebar, .sidebar *));
 
 :root {
   --background: #ffffff;

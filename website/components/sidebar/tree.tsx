@@ -118,6 +118,9 @@ function NodeComp({
   const Comp = asChild ? Slot.Root : 'button'
   return (
     <Comp
+      onClick={() => {
+        document.documentElement.classList.remove('sidebar')
+      }}
       data-current={isCurrent ? '' : undefined}
       className={cn(
         'cursor-pointer w-full text-left py-2 gap-2 text-sm data-current:text-foreground text-foreground/60 rounded-lg hover:text-foreground/80 flex items-center',
