@@ -11,7 +11,7 @@ import * as Icons from '@/components/icons'
 
 export default function Tree({ tree }: { tree: Tree }) {
   return (
-    <ul>
+    <ul className="font-sans">
       {tree.map((node, i) => (
         <Node key={i} node={node} index={i} />
       ))}
@@ -23,7 +23,7 @@ function Node({ node, index }: { node: Node; index: number }) {
   if (node.type === 'label') {
     return (
       <li
-        className={cn('font-pixel font-semibold uppercase text-xs pb-1', {
+        className={cn('font-semibold uppercase text-xs pb-1', {
           'mt-6': index !== 0
         })}
       >
@@ -37,14 +37,14 @@ function Node({ node, index }: { node: Node; index: number }) {
   }
 
   if (node.type === 'page') {
-    const Icon = node.icon ? (Icons as any)[node.icon] : null
+    const Icon = node.icon ? Icons[node.icon as keyof typeof Icons] : null
 
     return (
       <li>
         <NodeComp href={node.href} asChild>
           <Link href={node.href}>
             <div className="w-[20px] flex justify-center items-center">
-              {Icon && <Icon width={17} />}
+              {Icon && <Icon width={18} />}
             </div>
             <span className="inline-block grow"> {node.title}</span>
           </Link>
@@ -74,7 +74,7 @@ function NodeExpandible({
         }}
       >
         <div className="w-[20px] flex justify-center items-center">
-          {Icon && <Icon width={17} />}
+          {Icon && <Icon width={18} />}
         </div>
         <span className="inline-block grow"> {folder.title}</span>
         <ChevronRight
@@ -120,7 +120,7 @@ function NodeComp({
     <Comp
       data-current={isCurrent ? '' : undefined}
       className={cn(
-        'cursor-pointer w-full text-left py-2 gap-2 font-pixel text-sm data-current:text-foreground text-foreground/60 rounded-lg hover:text-foreground/80 flex items-center',
+        'cursor-pointer w-full text-left py-2 gap-2 text-sm data-current:text-foreground text-foreground/60 rounded-lg hover:text-foreground/80 flex items-center',
         className
       )}
       {...props}

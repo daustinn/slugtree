@@ -26,8 +26,10 @@ interface NodeData {
   type: 'page' | 'folder'
   slug: string[]
   href: string | undefined
+  filePath: string
   rawContent: string
   toc: TocItem[]
+  children?: NodeData[]
   frontMatter: {
     title: string
     description?: string
@@ -71,4 +73,4 @@ export function generateStaticParams() {
 }
 ```
 
-To retrieve only the tree node structure (without content), use [`getNode()`](/docs/get-node).
+To retrieve only the tree node structure (without content), use [`getNode()`](/docs/functions/get-node).

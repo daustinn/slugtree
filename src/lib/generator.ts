@@ -38,7 +38,10 @@ export function generateContent(
     `export default ${JSON.stringify(uniqueSlugs)} as string[][]\n`
   )
 
-  if (resolvedDistOutputDir && fs.existsSync(path.dirname(resolvedDistOutputDir))) {
+  if (
+    resolvedDistOutputDir &&
+    fs.existsSync(path.dirname(resolvedDistOutputDir))
+  ) {
     fs.mkdirSync(resolvedDistOutputDir, { recursive: true })
 
     fs.writeFileSync(

@@ -102,6 +102,7 @@ export function parseDirConfig(raw: string): DirConfig {
 
     return {
       title: typeof parsed.title === 'string' ? parsed.title : undefined,
+      icon: typeof parsed.icon === 'string' ? parsed.icon : undefined,
       nodes: Array.isArray(parsed.nodes)
         ? parsed.nodes.filter((p: unknown) => typeof p === 'string')
         : undefined

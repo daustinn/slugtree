@@ -99,7 +99,7 @@ When using `output: 'export'` in Next.js, `generateStaticParams` must cover ever
 ```ts
 [[[title:"app/docs/[[...slug]]/page.tsx"]]]
 export function generateStaticParams() {
-  return [...getSlugs(), []].map((slug) => ({ slug }))
+  return getSlugs().map((slug) => ({ slug }))
 }
 ```
 
@@ -120,11 +120,16 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug = [] } = await params
-  const data = getNodeData(slug)
+  const node = getNode(slug)
+
+  if (!node)
+    return {
+      title: siteConfig.name,
+      description: siteConfig.description
+    }
 
   return {
-    title: data?.frontMatter.title,
-    description: data?.frontMatter.description,
+    title: "Docs",
   }
 }
 ```

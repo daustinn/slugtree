@@ -50,6 +50,7 @@ This file dictates exactly what appears in the navigation tree and in what order
 ```json
 [[[title:"content/config.json"]]]
 {
+  "$schema": "https://slugtree.daustinn.com/config.schema.json",
   "title": "My Documentation",
   "nodes": [
     "--- Introduction ---",
@@ -68,6 +69,8 @@ This file dictates exactly what appears in the navigation tree and in what order
   - **Labels**: Any string matching the format `"--- Label Name ---"`. These render as non-clickable section headers in your sidebar.
   - **Pages**: The exact filename of an `.mdx` file, excluding the extension (e.g., `"getting-started"` for `getting-started.mdx`).
   - **Folders**: The exact name of a subdirectory (e.g., `"guides"`).
+- **`icon`**: (Optional) For the root `config.json`, this is the name of your documentation. For subdirectories, this overrides the auto-generated folder name.
+- **`$schema`**: (Optional) The URL of the schema to use for validation.
 
 If an `.mdx` file exists in your folder but is _not_ listed in `config.json`, it will simply not appear in the generated navigation tree.
 

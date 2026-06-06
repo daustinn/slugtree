@@ -1,4 +1,6 @@
 {
+  "$schema": "https://slugtree.daustinn.com/config.schema.json",
+  "title": "Hooks",
   "nodes": [
     "use-tree",
     "use-node",

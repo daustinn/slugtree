@@ -1,4 +1,6 @@
 {
+  "$schema": "https://slugtree.daustinn.com/config.schema.json",
+  "title": "Functions",
   "nodes": [
     "get-tree",
     "get-node",
@@ -17,6 +19,7 @@
     "get-nodes-by-front-matter",
     "get-node-toc",
     "get-node-pagination",
-    "get-node-breadcrumbs"
+    "get-node-breadcrumbs",
+    "search-content"
   ]
 }

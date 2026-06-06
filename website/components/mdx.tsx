@@ -50,7 +50,7 @@ const mdxComponents: MDXComponents = {
     if (href.startsWith('http')) {
       return (
         <a
-          className="underline dark:text-blue-400 underline-offset-4 transition font-medium"
+          className="underline dark:text-blue-400 text-blue-700 underline-offset-4 transition font-medium"
           target="_blank"
           rel="noopener noreferrer"
           {...props}
@@ -60,7 +60,7 @@ const mdxComponents: MDXComponents = {
     return (
       <Link
         href={href}
-        className="underline dark:text-blue-400 underline-offset-4 transition font-medium"
+        className="underline dark:text-blue-400 text-blue-700 underline-offset-4 transition font-medium"
         {...props}
       />
     )
@@ -95,6 +95,7 @@ const mdxComponents: MDXComponents = {
     <code
       className={cn(
         'text-sm dark:bg-blue-700/30 dark:text-blue-200 border dark:border-blue-400/20 rounded-md px-1 py-px',
+        'bg-blue-100 text-blue-800 border border-blue-500/20',
         props.className
       )}
       {...props}

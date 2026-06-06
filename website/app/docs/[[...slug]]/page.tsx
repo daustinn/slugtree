@@ -46,7 +46,7 @@ export default async function DocPage({ params }: PageProps) {
                 <React.Fragment key={b.href + 'breadcrumb'}>
                   <Link
                     href={i === breadcrumbs.length - 1 ? b.href || '#' : '#'}
-                    className="data-last:cursor-text data-last:dark:text-blue-500"
+                    className="data-last:cursor-text data-last:text-blue-800 data-last:dark:text-blue-500"
                     data-last={i === breadcrumbs.length - 1 ? '' : undefined}
                   >
                     {b.title}
@@ -60,7 +60,7 @@ export default async function DocPage({ params }: PageProps) {
           )}
           <nav className="max-w-2xl px-3 mx-auto w-full">
             <h1 className="text-3xl font-pixel font-bold pb-2 flex items-center">
-              {Icon && <Icon width={30} className="mr-4" />}
+              {Icon && <Icon width={30} className="mr-4 opacity-40" />}
               {data.frontMatter.title}
             </h1>
             <p className="text-lg pb-3 font-pixel opacity-70">
@@ -135,7 +135,7 @@ export async function generateMetadata({
 
   const node = getNode(slug)
 
-  if (!node || node.type === 'label')
+  if (!node)
     return {
       title: siteConfig.name,
       description: siteConfig.description

@@ -131,7 +131,10 @@ export function buildFolderNode(
     : undefined
 
   const folderTitle = dirConfig.title ?? capitalize(dirName)
-  let folderFrontMatter: NodeData['frontMatter'] = { title: folderTitle }
+  let folderFrontMatter: NodeData['frontMatter'] = {
+    title: folderTitle,
+    icon: dirConfig.icon
+  }
   let folderRawContent = ''
   let folderToc: NodeData['toc'] = []
   const folderFilePath = indexPath
@@ -177,6 +180,7 @@ export function buildFolderNode(
     description: folderFrontMatter.description,
     slug,
     href: folderHref,
-    children
+    children,
+    icon: dirConfig.icon ?? folderFrontMatter.icon
   }
 }

@@ -6,6 +6,7 @@ export interface FrontMatter {
 
 export interface DirConfig {
   title?: string
+  icon?: string
   nodes?: string[]
 }
 

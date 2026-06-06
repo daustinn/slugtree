@@ -23,19 +23,22 @@ interface NodePage {
   slug: string[]
   href: string
   title: string
+  description?: string
+  icon?: string
 }
 
 interface NodeFolder {
   type: 'folder'
+  title: string
+  description?: string
   slug: string[]
   href: string | undefined
-  title: string
   children: Node[]
+  icon?: string
 }
 
 interface NodeLabel {
   type: 'label'
-  slug: string[]
   label: string
 }
 ```

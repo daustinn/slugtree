@@ -8,6 +8,7 @@ import type {
   Node,
   NodeData,
   NodeFolder,
+  NodePage,
   TocItem
 } from './types.js'
 
@@ -69,9 +70,11 @@ export function getTree(): Node[] {
  * @param slug - The slug array representing the path.
  * @returns The matching Node if found, or null if not.
  */
-export function getNode(slug: string[] = []): Node | null {
+export function getNode(slug: string[] = []): NodePage | NodeFolder | null {
   const slugPath = slug.join('/')
-  return findNode(tree, slugPath)
+  const node = findNode(tree, slugPath)
+  if (!node || node.type === 'label') return null
+  return node
 }
 
 /**
@@ -264,7 +267,9 @@ export interface Pagination {
 export function getNodePagination(slug: string[] = []): Pagination | null {
   const slugPath = slug.join('/')
   const flatPages = nodes.filter((node: NodeData) => node.type === 'page')
-  const index = flatPages.findIndex((node: NodeData) => node.slug.join('/') === slugPath)
+  const index = flatPages.findIndex(
+    (node: NodeData) => node.slug.join('/') === slugPath
+  )
 
   if (index === -1) return null
 
@@ -294,7 +299,9 @@ export function getNodeBreadcrumbs(slug: string[] = []): BreadcrumbItem[] {
     const partialSlug = slug.slice(0, i)
     const partialPath = partialSlug.join('/')
 
-    const node = nodes.find((node: NodeData) => node.slug.join('/') === partialPath)
+    const node = nodes.find(
+      (node: NodeData) => node.slug.join('/') === partialPath
+    )
     if (node) {
       crumbs.push({ title: node.frontMatter.title, href: node.href })
       continue
@@ -333,6 +340,7 @@ export interface SearchResult {
   id: string
   title: string
   description?: string
+  icon?: string
   href: string
   matchScore: number
   children: SearchResultChild[]
@@ -438,6 +446,7 @@ export function searchContent(query: string): SearchResult[] {
         id: node.slug.join('/'),
         title: node.frontMatter.title,
         description: node.frontMatter.description,
+        icon: node.frontMatter.icon,
         href: node.href!,
         matchScore: pageScore,
         children: matchingHeadings

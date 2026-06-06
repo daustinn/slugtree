@@ -33,8 +33,10 @@ export default async function BlockCode({
 
   const html = await codeToHtml(codeContent, {
     lang,
-    theme: 'kanagawa-dragon'
-    // theme: 'kanagawa-wave'
+    themes: {
+      light: 'vitesse-light',
+      dark: 'kanagawa-dragon'
+    }
   })
 
   const Icon = icons[lang as keyof typeof icons]?.[0] ?? icons.text[0]
@@ -43,7 +45,7 @@ export default async function BlockCode({
   return (
     <div
       className={cn(
-        'bg-border/10 text-sm relative rounded-2xl overflow-hidden border',
+        'bg-border/10 text-sm relative rounded-2xl overflow-hidden overflow-x-auto border',
         className
       )}
     >
@@ -53,7 +55,7 @@ export default async function BlockCode({
           <div className="">{title}</div>
         </div>
       )}
-      <div className="">
+      <div className="overflow-x-auto">
         <div
           className={cn('[&>_pre]:bg-transparent! p-3', {
             lineNumbers: !!lineNumbers
