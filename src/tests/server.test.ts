@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
+import type { NodePage, NodeFolder } from '../types.js'
 
 // Mock the generated files before importing server
 vi.mock('../generated/nodes.js', () => ({
@@ -147,7 +148,7 @@ describe('server utilities', () => {
     it('returns children if folder exists', () => {
       const children = getNodeChildren(['guides'])
       expect(children).toHaveLength(1)
-      expect((children[0] as any).title).toBe('Routing')
+      expect((children[0] as NodePage).title).toBe('Routing')
     })
 
     it('returns empty array if page/label or non-existent slug', () => {
@@ -161,7 +162,7 @@ describe('server utilities', () => {
       const parent = getNodeParent(['guides', 'routing'])
       expect(parent).not.toBeNull()
       expect(parent?.type).toBe('folder')
-      expect((parent as any)?.title).toBe('Guides')
+      expect((parent as NodeFolder)?.title).toBe('Guides')
     })
 
     it('returns null for root level nodes', () => {
@@ -174,8 +175,8 @@ describe('server utilities', () => {
     it('returns siblings at same level excluding self and labels', () => {
       const siblings = getNodeSiblings(['installation'])
       expect(siblings).toHaveLength(2)
-      expect((siblings[0] as any).title).toBe('Home')
-      expect((siblings[1] as any).title).toBe('Guides')
+      expect((siblings[0] as NodePage).title).toBe('Home')
+      expect((siblings[1] as NodeFolder).title).toBe('Guides')
     })
 
     it('returns empty array for empty slug', () => {
@@ -187,8 +188,8 @@ describe('server utilities', () => {
     it('returns list of nodes from root to page', () => {
       const path = getNodePath(['guides', 'routing'])
       expect(path).toHaveLength(2)
-      expect((path[0] as any).title).toBe('Guides')
-      expect((path[1] as any).title).toBe('Routing')
+      expect((path[0] as NodeFolder).title).toBe('Guides')
+      expect((path[1] as NodePage).title).toBe('Routing')
     })
   })
 
@@ -242,7 +243,7 @@ describe('server utilities', () => {
   describe('findNodes', () => {
     it('filters nodes based on predicate', () => {
       const matches = findNodes(
-        (n) => (n.frontMatter as any).category === 'getting-started'
+        (n) => (n.frontMatter as { category?: string }).category === 'getting-started'
       )
       expect(matches).toHaveLength(2)
     })

@@ -1,6 +1,6 @@
 import React from 'react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import type { Node, NodeData } from '../types.js'
+import type { Node, NodeData, NodeFolder } from '../types.js'
 import ClientProvider, {
   ClientContext,
   useTree,
@@ -117,13 +117,13 @@ describe('client-provider hooks', () => {
     expect(useNode([])).toEqual(mockTree[0])
     expect(useNode(['installation'])).toEqual(mockTree[1])
     expect(useNode(['guides', 'routing'])).toEqual(
-      (mockTree[2] as any).children[0]
+      (mockTree[2] as NodeFolder).children[0]
     )
     expect(useNode(['non-existent'])).toBeNull()
   })
 
   it('useNodeChildren retrieves children for a folder node', () => {
-    expect(useNodeChildren(['guides'])).toEqual((mockTree[2] as any).children)
+    expect(useNodeChildren(['guides'])).toEqual((mockTree[2] as NodeFolder).children)
     expect(useNodeChildren(['installation'])).toEqual([])
   })
 
@@ -146,7 +146,7 @@ describe('client-provider hooks', () => {
     const path = useNodePath(['guides', 'routing'])
     expect(path).toHaveLength(2)
     expect(path[0]).toEqual(mockTree[2])
-    expect(path[1]).toEqual((mockTree[2] as any).children[0])
+    expect(path[1]).toEqual((mockTree[2] as NodeFolder).children[0])
   })
 
   it('useNodeSection retrieves the top level root folder', () => {
