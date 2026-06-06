@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.5.1](https://github.com/daustinn/slugtree/compare/slugtree-v0.5.0...slugtree-v0.5.1) (2026-06-06)
+
+
+### Bug Fixes
+
+* resolve eslint vitest race condition and merge publish workflow ([84e53ec](https://github.com/daustinn/slugtree/commit/84e53ec1a4d6f5a15dd97d5200673961a8bdbc82))
+* update release workflow to streamline job conditions and outputs ([ebff86c](https://github.com/daustinn/slugtree/commit/ebff86c22305d700acb21f228fe404a3d5abb147))
+
 ## [0.5.0](https://github.com/daustinn/slugtree/compare/slugtree-v0.4.0...slugtree-v0.5.0) (2026-06-06)
 
 
