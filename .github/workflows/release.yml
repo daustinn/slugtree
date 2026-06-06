@@ -27,7 +27,6 @@ jobs:
         run: pnpm turbo build --filter=slugtree
 
       - name: Publish to NPM
-        # run: npm publish --access public
-        run: echo "🚀 SIMULACIÓN - Llegó al paso final. Si no estuviera comentado, aquí se publicaría a NPM."
-        # env:
-        #   NODE_AUTH_TOKEN: ${{ secrets.NPMJS_TOKEN }}
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPMJS_TOKEN }}
