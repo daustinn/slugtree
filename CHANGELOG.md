@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.2](https://github.com/daustinn/slugtree/compare/slugtree-v0.6.1...slugtree-v0.6.2) (2026-08-05)
+
+
+### Bug Fixes
+
+* add getNodeLabel to retrieve the nearest preceding label for a slug ([277063e](https://github.com/daustinn/slugtree/commit/277063e721a7606e29a70394addf12cde799b087))
+
 ## [0.6.1](https://github.com/daustinn/slugtree/compare/slugtree-v0.6.0...slugtree-v0.6.1) (2026-08-05)
 
 
