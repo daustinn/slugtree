@@ -6,6 +6,11 @@
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "workspaces": [
+    "prof/*",
+    "website/",
+    "."
+  ],
   "typesVersions": {
     "*": {
       "react": [
@@ -86,6 +91,7 @@
     "react-dom": ">=19.0.0",
     "turbo": "2.9.16",
     "typescript": "5.9.2",
+    "vite": ">=5.0.0",
     "vitest": "2.0.0"
   },
   "packageManager": "pnpm@9.4.0"
