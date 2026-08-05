@@ -8,6 +8,7 @@ import type {
   Node,
   NodeData,
   NodeFolder,
+  NodeLabel,
   NodePage,
   TocItem
 } from './types.js'
@@ -53,6 +54,31 @@ function findParentNode(treeNodes: Node[], slugPath: string): Node | null {
     }
   }
   return null
+}
+
+// Returns the last NodeLabel preceding the target node in its sibling list.
+// Returns null when the node is not found. Returns a sentinel symbol when the
+// node was found but had no preceding label, so the caller can distinguish
+// "found with no label" from "not found at all".
+const NOT_FOUND = Symbol('not_found')
+
+function findNodeLabel(
+  treeNodes: Node[],
+  slugPath: string
+): NodeLabel | null | typeof NOT_FOUND {
+  let lastLabel: NodeLabel | null = null
+  for (const node of treeNodes) {
+    if (node.type === 'label') {
+      lastLabel = node
+      continue
+    }
+    if (node.slug.join('/') === slugPath) return lastLabel
+    if (node.type === 'folder') {
+      const found = findNodeLabel(node.children, slugPath)
+      if (found !== NOT_FOUND) return found
+    }
+  }
+  return NOT_FOUND
 }
 
 export function normalizeSlug(slug: string | string[]): string[] {
@@ -176,6 +202,24 @@ export function getNodeSection(slug: string | string[] = []): NodeFolder | null 
  */
 export function getBasePath(): string {
   return basePath
+}
+
+/**
+ * Retrieves the last NodeLabel that groups the node identified by the given slug.
+ * A NodeLabel is a non-navigable label node used to visually group sibling nodes
+ * in the tree. This function searches at every depth level and returns the closest
+ * label that precedes the target node within its sibling list.
+ *
+ * @param slug - The slug array or string of the target node.
+ * @returns The NodeLabel if one precedes the node, or null if none exists or the node is not found.
+ */
+export function getNodeLabel(slug: string | string[] = []): NodeLabel | null {
+  const normalized = normalizeSlug(slug)
+  if (normalized.length === 0) return null
+  const slugPath = normalized.join('/')
+  const result = findNodeLabel(tree, slugPath)
+  if (result === NOT_FOUND) return null
+  return result
 }
 
 /**

@@ -19,6 +19,7 @@ export {
   getNodePagination,
   getNodeBreadcrumbs,
   getNodeToc,
+  getNodeLabel,
   searchContent
 } from './server.js'
 
