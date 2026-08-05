@@ -13,6 +13,9 @@
       ],
       "next": [
         "./dist/next.d.ts"
+      ],
+      "astro": [
+        "./dist/astro.d.ts"
       ]
     }
   },
@@ -29,6 +32,11 @@
       "types": "./dist/next.d.ts",
       "import": "./dist/next.js",
       "require": "./dist/next.js"
+    },
+    "./astro": {
+      "types": "./dist/astro.d.ts",
+      "import": "./dist/astro.js",
+      "require": "./dist/astro.js"
     }
   },
   "files": [
@@ -47,6 +55,7 @@
   "homepage": "https://slugtree.daustinn.com",
   "keywords": [
     "next.js",
+    "astro",
     "docs",
     "mdx",
     "documentation",
@@ -70,6 +79,7 @@
     "@types/chai": "5.2.3",
     "@types/node": "20",
     "@types/react": "19",
+    "astro": ">=6.0",
     "eslint": "10.4.1",
     "next": ">=16.0.0",
     "react": ">=19.0.0",
