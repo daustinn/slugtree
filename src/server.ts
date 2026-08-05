@@ -55,6 +55,16 @@ function findParentNode(treeNodes: Node[], slugPath: string): Node | null {
   return null
 }
 
+export function normalizeSlug(slug: string | string[]): string[] {
+  if (Array.isArray(slug)) return slug
+  if (typeof slug === 'string') {
+    let s = slug
+    if (s.startsWith(basePath)) s = s.slice(basePath.length)
+    return s.split('/').filter(Boolean)
+  }
+  return []
+}
+
 /**
  * Retrieves the entire structured tree of nodes, representing the folder and page hierarchy.
  *
@@ -67,11 +77,14 @@ export function getTree(): Node[] {
 /**
  * Retrieves a specific Node (from the tree structure) by its slug.
  *
- * @param slug - The slug array representing the path.
+ * @param slug - The slug array or string representing the path.
  * @returns The matching Node if found, or null if not.
  */
-export function getNode(slug: string[] = []): NodePage | NodeFolder | null {
-  const slugPath = slug.join('/')
+export function getNode(
+  slug: string | string[] = []
+): NodePage | NodeFolder | null {
+  const normalized = normalizeSlug(slug)
+  const slugPath = normalized.join('/')
   const node = findNode(tree, slugPath)
   if (!node || node.type === 'label') return null
   return node
@@ -81,11 +94,12 @@ export function getNode(slug: string[] = []): NodePage | NodeFolder | null {
  * Retrieves the direct children of a folder node.
  * Returns an empty array if the node is not a folder or is not found.
  *
- * @param slug - The slug array of the folder.
+ * @param slug - The slug array or string of the folder.
  * @returns An array of child Nodes.
  */
-export function getNodeChildren(slug: string[] = []): Node[] {
-  const node = getNode(slug)
+export function getNodeChildren(slug: string | string[] = []): Node[] {
+  const normalized = normalizeSlug(slug)
+  const node = getNode(normalized)
   if (!node || node.type !== 'folder') return []
   return node.children
 }
@@ -94,24 +108,26 @@ export function getNodeChildren(slug: string[] = []): Node[] {
  * Retrieves the parent Node of a given slug.
  * Returns null if the node is at the root level or not found.
  *
- * @param slug - The slug array of the target node.
+ * @param slug - The slug array or string of the target node.
  * @returns The parent Node or null.
  */
-export function getNodeParent(slug: string[] = []): Node | null {
-  if (slug.length === 0) return null
-  return findParentNode(tree, slug.join('/'))
+export function getNodeParent(slug: string | string[] = []): Node | null {
+  const normalized = normalizeSlug(slug)
+  if (normalized.length === 0) return null
+  return findParentNode(tree, normalized.join('/'))
 }
 
 /**
  * Retrieves the sibling nodes at the same level as the given slug.
  * For root-level nodes, returns all other root-level non-label nodes.
  *
- * @param slug - The slug array of the target node.
+ * @param slug - The slug array or string of the target node.
  * @returns An array of sibling Nodes (excluding the current node).
  */
-export function getNodeSiblings(slug: string[] = []): Node[] {
-  if (slug.length === 0) return []
-  const slugPath = slug.join('/')
+export function getNodeSiblings(slug: string | string[] = []): Node[] {
+  const normalized = normalizeSlug(slug)
+  if (normalized.length === 0) return []
+  const slugPath = normalized.join('/')
 
   const parent = findParentNode(tree, slugPath)
   const siblings = parent && parent.type === 'folder' ? parent.children : tree
@@ -125,13 +141,14 @@ export function getNodeSiblings(slug: string[] = []): Node[] {
  * Retrieves the ancestor chain from root to the target node as an array of Nodes.
  * Similar to breadcrumbs but returns full Node objects instead of lightweight items.
  *
- * @param slug - The slug array of the target node.
+ * @param slug - The slug array or string of the target node.
  * @returns An ordered array of Nodes from root to the target.
  */
-export function getNodePath(slug: string[] = []): Node[] {
+export function getNodePath(slug: string | string[] = []): Node[] {
+  const normalized = normalizeSlug(slug)
   const path: Node[] = []
-  for (let i = 1; i <= slug.length; i++) {
-    const node = getNode(slug.slice(0, i))
+  for (let i = 1; i <= normalized.length; i++) {
+    const node = getNode(normalized.slice(0, i))
     if (node) path.push(node)
   }
   return path
@@ -141,12 +158,13 @@ export function getNodePath(slug: string[] = []): Node[] {
  * Retrieves the root-level folder section that contains the given slug.
  * Returns null if the node lives at the root level or is not found.
  *
- * @param slug - The slug array of the target node.
+ * @param slug - The slug array or string of the target node.
  * @returns The root NodeFolder or null.
  */
-export function getNodeSection(slug: string[] = []): NodeFolder | null {
-  if (slug.length === 0) return null
-  const root = getNode(slug.slice(0, 1))
+export function getNodeSection(slug: string | string[] = []): NodeFolder | null {
+  const normalized = normalizeSlug(slug)
+  if (normalized.length === 0) return null
+  const root = getNode(normalized.slice(0, 1))
   if (!root || root.type !== 'folder') return null
   return root as NodeFolder
 }
@@ -164,11 +182,12 @@ export function getBasePath(): string {
  * Retrieves the full flattened data for a specific node by its slug.
  * Includes raw content, frontmatter, and parsed table of contents.
  *
- * @param slug - The slug array representing the page path (e.g., ['guides', 'routing']).
+ * @param slug - The slug array or string representing the page path (e.g., ['guides', 'routing']).
  * @returns The NodeData object if found, or undefined if not.
  */
-export function getNodeData(slug: string[] = []): NodeData | undefined {
-  const slugPath = slug.join('/')
+export function getNodeData(slug: string | string[] = []): NodeData | undefined {
+  const normalized = normalizeSlug(slug)
+  const slugPath = normalized.join('/')
   return nodes.find((node: NodeData) => node.slug.join('/') === slugPath)
 }
 
@@ -234,14 +253,19 @@ export function getSlugs(): string[][] {
  * Checks whether a given slug is part of the active route.
  * Useful for highlighting active items in sidebars.
  *
- * @param slug - The slug to test.
- * @param currentSlug - The current page slug.
+ * @param slug - The slug array or string to test.
+ * @param currentSlug - The current page's slug array or string.
  * @returns True if slug is an ancestor of or equal to currentSlug.
  */
-export function isNodeActive(slug: string[], currentSlug: string[]): boolean {
-  if (slug.length === 0 || currentSlug.length === 0) return false
-  const slugPath = slug.join('/')
-  const currentPath = currentSlug.join('/')
+export function isNodeActive(
+  slug: string | string[],
+  currentSlug: string | string[]
+): boolean {
+  const normSlug = normalizeSlug(slug)
+  const normCurrent = normalizeSlug(currentSlug)
+  if (normSlug.length === 0 || normCurrent.length === 0) return false
+  const slugPath = normSlug.join('/')
+  const currentPath = normCurrent.join('/')
   return currentPath === slugPath || currentPath.startsWith(slugPath + '/')
 }
 
@@ -261,11 +285,12 @@ export interface Pagination {
  * Retrieves the previous and next page nodes for a given slug.
  * Perfect for implementing a "Next / Previous" pagination component.
  *
- * @param slug - The current page's slug array.
+ * @param slug - The current page's slug array or string.
  * @returns An object with `prev` and `next` PaginationItems, or null if not found.
  */
-export function getNodePagination(slug: string[] = []): Pagination | null {
-  const slugPath = slug.join('/')
+export function getNodePagination(slug: string | string[] = []): Pagination | null {
+  const normalized = normalizeSlug(slug)
+  const slugPath = normalized.join('/')
   const flatPages = nodes.filter((node: NodeData) => node.type === 'page')
   const index = flatPages.findIndex(
     (node: NodeData) => node.slug.join('/') === slugPath
@@ -289,14 +314,15 @@ export function getNodePagination(slug: string[] = []): Pagination | null {
 /**
  * Generates the breadcrumb trail for a given page slug, traversing its parent folders.
  *
- * @param slug - The current page's slug array.
+ * @param slug - The current page's slug array or string.
  * @returns An array of BreadcrumbItems representing the path from root to the current page.
  */
-export function getNodeBreadcrumbs(slug: string[] = []): BreadcrumbItem[] {
+export function getNodeBreadcrumbs(slug: string | string[] = []): BreadcrumbItem[] {
+  const normalized = normalizeSlug(slug)
   const crumbs: BreadcrumbItem[] = []
 
-  for (let i = 1; i <= slug.length; i++) {
-    const partialSlug = slug.slice(0, i)
+  for (let i = 1; i <= normalized.length; i++) {
+    const partialSlug = normalized.slice(0, i)
     const partialPath = partialSlug.join('/')
 
     const node = nodes.find(
@@ -319,11 +345,12 @@ export function getNodeBreadcrumbs(slug: string[] = []): BreadcrumbItem[] {
 /**
  * Returns the Table of Contents for a specific page node by slug.
  *
- * @param slug - The slug array representing the page path.
+ * @param slug - The slug array or string representing the page path.
  * @returns An array of TocItems, or an empty array if the node isn't found.
  */
-export function getNodeToc(slug: string[] = []): TocItem[] {
-  const node = getNodeData(slug)
+export function getNodeToc(slug: string | string[] = []): TocItem[] {
+  const normalized = normalizeSlug(slug)
+  const node = getNodeData(normalized)
   return node ? node.toc : []
 }
 
