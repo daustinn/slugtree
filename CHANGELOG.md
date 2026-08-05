@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.6.1](https://github.com/daustinn/slugtree/compare/slugtree-v0.6.0...slugtree-v0.6.1) (2026-08-05)
+
+
+### Bug Fixes
+
+* **astro:** resolve HMR infinite loop and vite optimization errors ([8cef61e](https://github.com/daustinn/slugtree/commit/8cef61e753c514bcec3b3b95a2806a2a88ae4d89))
+* **core:** add .md extension support alongside .mdx ([05ccbcd](https://github.com/daustinn/slugtree/commit/05ccbcd9a864bc3988e625abcf897518c25be7d5))
+* **deps:** configure workspaces and add vite devDependency ([31b062e](https://github.com/daustinn/slugtree/commit/31b062ec84781583d3be99380f9be5c0239682ba))
+
 ## [0.6.0](https://github.com/daustinn/slugtree/compare/slugtree-v0.5.1...slugtree-v0.6.0) (2026-08-05)
 
 
