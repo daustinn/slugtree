@@ -23,7 +23,7 @@ export async function startWatcher(
 
   let timeout: ReturnType<typeof setTimeout>
   watcher.on('all', (_event: string, filename: string) => {
-    if (filename && (filename.endsWith('.mdx') || filename.endsWith('.json'))) {
+    if (filename && (filename.endsWith('.mdx') || filename.endsWith('.md') || filename.endsWith('.json'))) {
       clearTimeout(timeout)
       timeout = setTimeout(() => {
         console.log(

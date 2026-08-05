@@ -16,7 +16,8 @@ export function buildPageNode(
   } catch {
     // ignore
   }
-  const fileName = path.basename(filePath, '.mdx')
+  const ext = filePath.endsWith('.md') ? '.md' : '.mdx'
+  const fileName = path.basename(filePath, ext)
   const fallbackTitle = capitalize(fileName)
   const { frontMatter, content } = parseFrontMatter(raw, fallbackTitle)
   const toc = extractToc(content)
@@ -58,15 +59,15 @@ export function buildDirNodes(
     // ignore
   }
 
-  const mdxFiles = entries.filter((f) => f.endsWith('.mdx'))
+  const mdxFiles = entries.filter((f) => f.endsWith('.mdx') || f.endsWith('.md'))
   const subDirs = entries.filter((f) =>
     fs.statSync(path.join(dir, f)).isDirectory()
   )
 
   const fileMap = new Map<string, string>()
   for (const f of mdxFiles) {
-    const stem = f.replace(/\.mdx$/, '')
-    fileMap.set(stem, path.join(dir, f))
+    const stem = f.replace(/\.(mdx|md)$/, '')
+    if (!fileMap.has(stem)) fileMap.set(stem, path.join(dir, f))
   }
 
   const dirMap = new Map<string, string>()
@@ -123,7 +124,9 @@ export function buildFolderNode(
   allNodesData: NodeData[]
 ): Node {
   const dirConfig = readConfigFromDir(dirPath)
-  const indexPath = path.join(dirPath, 'index.mdx')
+  const indexPathMdx = path.join(dirPath, 'index.mdx')
+  const indexPathMd = path.join(dirPath, 'index.md')
+  const indexPath = fs.existsSync(indexPathMdx) ? indexPathMdx : indexPathMd
   const hasIndex = fs.existsSync(indexPath)
 
   const folderHref: string | undefined = hasIndex
