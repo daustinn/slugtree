@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.6.0](https://github.com/daustinn/slugtree/compare/slugtree-v0.5.1...slugtree-v0.6.0) (2026-08-05)
+
+
+### Features
+
+* add astro integration ([dec0c92](https://github.com/daustinn/slugtree/commit/dec0c92085a123cde1a659c1243417e5d6685819))
+* update client provider ([2d91e4a](https://github.com/daustinn/slugtree/commit/2d91e4a5d616c9c66f56b1a6bd3a794680f4a3b1))
+* update server ([afb1dd6](https://github.com/daustinn/slugtree/commit/afb1dd627db7b5b71113b3a74a6354791140c70c))
+
+
+### Bug Fixes
+
+* resolve no-explicit-any lint error in astro.ts and ignore prof/ in eslint ([8f6e8e5](https://github.com/daustinn/slugtree/commit/8f6e8e56d91738e7657964e6aa13ccc55df96964))
+* update parser ([447e071](https://github.com/daustinn/slugtree/commit/447e071fcda909d3cd07f973011f3cf70341c7d1))
+
 ## [0.5.1](https://github.com/daustinn/slugtree/compare/slugtree-v0.5.0...slugtree-v0.5.1) (2026-06-06)
 
 
