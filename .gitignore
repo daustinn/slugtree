@@ -3,6 +3,7 @@ node_modules/
 
 # build output
 dist/
+prof/
 
 # generated data (written by the plugin at dev/build time)
 src/generated/
