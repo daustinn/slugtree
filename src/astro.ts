@@ -102,7 +102,7 @@ export default function slugtree(
  */
 export async function getAstroContent(
   slug: string | string[],
-  mdxGlob: Record<string, () => Promise<any>>
+  mdxGlob: Record<string, () => Promise<{ default: unknown; [key: string]: unknown }>>
 ) {
   const normSlug = Array.isArray(slug) ? slug : slug.split('/').filter(Boolean)
   const slugPath = normSlug.length === 0 ? 'index' : normSlug.join('/')
