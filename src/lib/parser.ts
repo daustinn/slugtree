@@ -66,7 +66,7 @@ export function extractToc(content: string): TocItem[] {
 
   const items: TocItem[] = []
   let inCodeBlock = false
-  const lines = content.split('\n')
+  const lines = content.split(/\r?\n/)
 
   for (const line of lines) {
     if (line.trim().startsWith('```')) {
