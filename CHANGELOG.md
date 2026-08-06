@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.3](https://github.com/daustinn/slugtree/compare/slugtree-v0.6.2...slugtree-v0.6.3) (2026-08-06)
+
+
+### Bug Fixes
+
+* improve getNodeLabel to bubble up through ancestors and add scope param ([10e1519](https://github.com/daustinn/slugtree/commit/10e1519e35e7c39fad03046a52a0cc736775f1d3))
+
 ## [0.6.2](https://github.com/daustinn/slugtree/compare/slugtree-v0.6.1...slugtree-v0.6.2) (2026-08-05)
 
 
