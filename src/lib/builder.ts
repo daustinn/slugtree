@@ -21,11 +21,12 @@ export function buildPageNode(
   const fallbackTitle = capitalize(fileName)
   const { frontMatter, content } = parseFrontMatter(raw, fallbackTitle)
   const toc = extractToc(content)
+  const href = frontMatter.href ?? slugToHref(slug, basePath)
 
   const nodeData: NodeData = {
     type: 'page',
     slug,
-    href: slugToHref(slug, basePath),
+    href,
     filePath,
     frontMatter,
     toc,
@@ -36,7 +37,7 @@ export function buildPageNode(
   return {
     type: 'page',
     slug,
-    href: slugToHref(slug, basePath),
+    href,
     title: frontMatter.title,
     description: frontMatter.description,
     icon: frontMatter.icon

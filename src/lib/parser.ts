@@ -54,9 +54,10 @@ export function parseFrontMatter(
   const description =
     typeof data.description === 'string' ? data.description : undefined
   const icon = typeof data.icon === 'string' ? data.icon : undefined
+  const href = typeof data.href === 'string' ? data.href : undefined
 
   return {
-    frontMatter: { title, description, icon },
+    frontMatter: { title, description, icon, href },
     content
   }
 }
