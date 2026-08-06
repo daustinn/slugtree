@@ -23,4 +23,6 @@ export {
   searchContent
 } from './server.js'
 
+export { slugify } from './lib/parser.js'
+
 export type { PaginationItem, Pagination, SearchResult } from './server.js'

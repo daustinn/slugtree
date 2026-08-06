@@ -62,6 +62,23 @@ export function parseFrontMatter(
   }
 }
 
+/**
+ * Generates a URL-friendly slug (ID) from a given text string.
+ *
+ * @param text - The raw string to be converted into a slug.
+ * @returns A normalized string containing only lowercase letters, numbers, and hyphens.
+ */
+export function slugify(text: string): string {
+  return text
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
 export function extractToc(content: string): TocItem[] {
   if (typeof content !== 'string') return []
 
@@ -81,12 +98,8 @@ export function extractToc(content: string): TocItem[] {
 
     const depth = match[1].length
     const text = match[2].trim().replace(/[*_`[\]]/g, '')
-    const id = text
-      .toLowerCase()
-      .replace(/[^\w\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .trim()
+
+    const id = slugify(text)
 
     if (id) {
       items.push({ id, text, depth })
