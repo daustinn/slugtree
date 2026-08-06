@@ -1,6 +1,6 @@
 {
   "name": "slugtree",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "Write in MDX. Let Slugtree build the tree",
   "type": "module",
   "main": "./dist/index.js",
