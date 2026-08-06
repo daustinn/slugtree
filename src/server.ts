@@ -56,29 +56,42 @@ function findParentNode(treeNodes: Node[], slugPath: string): Node | null {
   return null
 }
 
-// Sentinel to distinguish "node not in this list" from "node found, no label before it".
-const NOT_FOUND = Symbol('not_found')
-
-// Searches a flat sibling list for the last NodeLabel that precedes the node
-// identified by slugPath. Returns NOT_FOUND if the node is not in this list.
-function findPrecedingLabel(
-  siblings: Node[],
-  slugPath: string
-): NodeLabel | null | typeof NOT_FOUND {
-  let lastLabel: NodeLabel | null = null
-  for (const node of siblings) {
-    if (node.type === 'label') {
-      lastLabel = node
-      continue
+// Builds the ancestry chain from root down to the target node.
+// Each entry captures the sibling list at that depth and which slug to
+// search for within it (the node that contains or IS the target).
+// This avoids relying on findParentNode for bubble-up, which breaks when
+// a folder contains a page with the same slug as the folder itself.
+function buildAncestorChain(
+  treeNodes: Node[],
+  slugPath: string,
+  acc: Array<{ siblings: Node[]; targetSlug: string }> = []
+): Array<{ siblings: Node[]; targetSlug: string }> | null {
+  for (const node of treeNodes) {
+    if (node.type === 'label') continue
+    const nodeSlug = node.slug.join('/')
+    if (nodeSlug === slugPath) {
+      return [...acc, { siblings: treeNodes, targetSlug: nodeSlug }]
     }
-    if (node.slug.join('/') === slugPath) return lastLabel
+    if (node.type === 'folder') {
+      const result = buildAncestorChain(
+        node.children,
+        slugPath,
+        [...acc, { siblings: treeNodes, targetSlug: nodeSlug }]
+      )
+      if (result) return result
+    }
   }
-  return NOT_FOUND
+  return null
 }
 
-function getSiblings(slugPath: string): Node[] {
-  const parent = findParentNode(tree, slugPath)
-  return parent && parent.type === 'folder' ? parent.children : tree
+// Returns the last NodeLabel before targetSlug in a flat sibling list, or null.
+function findPrecedingLabel(siblings: Node[], targetSlug: string): NodeLabel | null {
+  let lastLabel: NodeLabel | null = null
+  for (const node of siblings) {
+    if (node.type === 'label') { lastLabel = node; continue }
+    if (node.slug.join('/') === targetSlug) return lastLabel
+  }
+  return null
 }
 
 export function normalizeSlug(slug: string | string[]): string[] {
@@ -187,7 +200,9 @@ export function getNodePath(slug: string | string[] = []): Node[] {
  * @param slug - The slug array or string of the target node.
  * @returns The root NodeFolder or null.
  */
-export function getNodeSection(slug: string | string[] = []): NodeFolder | null {
+export function getNodeSection(
+  slug: string | string[] = []
+): NodeFolder | null {
   const normalized = normalizeSlug(slug)
   if (normalized.length === 0) return null
   const root = getNode(normalized.slice(0, 1))
@@ -222,23 +237,18 @@ export function getNodeLabel(
   const normalized = normalizeSlug(slug)
   if (normalized.length === 0) return null
 
-  let currentPath = normalized.join('/')
+  const chain = buildAncestorChain(tree, normalized.join('/'))
+  if (!chain) return null
 
-  while (true) {
-    const siblings = getSiblings(currentPath)
-    const result = findPrecedingLabel(siblings, currentPath)
+  // Iterate from innermost to outermost level.
+  const levels = scope === 'local' ? [chain[chain.length - 1]] : [...chain].reverse()
 
-    if (result !== NOT_FOUND) {
-      if (result !== null) return result
-      if (scope === 'local') return null
-      // No label in this sibling list — bubble up to the parent level.
-      const parent = findParentNode(tree, currentPath)
-      if (!parent || parent.type !== 'folder') return null
-      currentPath = parent.slug.join('/')
-    } else {
-      return null
-    }
+  for (const { siblings, targetSlug } of levels) {
+    const label = findPrecedingLabel(siblings, targetSlug)
+    if (label) return label
   }
+
+  return null
 }
 
 /**
@@ -248,7 +258,9 @@ export function getNodeLabel(
  * @param slug - The slug array or string representing the page path (e.g., ['guides', 'routing']).
  * @returns The NodeData object if found, or undefined if not.
  */
-export function getNodeData(slug: string | string[] = []): NodeData | undefined {
+export function getNodeData(
+  slug: string | string[] = []
+): NodeData | undefined {
   const normalized = normalizeSlug(slug)
   const slugPath = normalized.join('/')
   return nodes.find((node: NodeData) => node.slug.join('/') === slugPath)
@@ -351,7 +363,9 @@ export interface Pagination {
  * @param slug - The current page's slug array or string.
  * @returns An object with `prev` and `next` PaginationItems, or null if not found.
  */
-export function getNodePagination(slug: string | string[] = []): Pagination | null {
+export function getNodePagination(
+  slug: string | string[] = []
+): Pagination | null {
   const normalized = normalizeSlug(slug)
   const slugPath = normalized.join('/')
   const flatPages = nodes.filter((node: NodeData) => node.type === 'page')
@@ -380,7 +394,9 @@ export function getNodePagination(slug: string | string[] = []): Pagination | nu
  * @param slug - The current page's slug array or string.
  * @returns An array of BreadcrumbItems representing the path from root to the current page.
  */
-export function getNodeBreadcrumbs(slug: string | string[] = []): BreadcrumbItem[] {
+export function getNodeBreadcrumbs(
+  slug: string | string[] = []
+): BreadcrumbItem[] {
   const normalized = normalizeSlug(slug)
   const crumbs: BreadcrumbItem[] = []
 
