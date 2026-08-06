@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.7.0](https://github.com/daustinn/slugtree/compare/slugtree-v0.6.3...slugtree-v0.7.0) (2026-08-06)
+
+
+### Features
+
+* support custom href in MDX frontmatter to override auto-generated href ([39f702d](https://github.com/daustinn/slugtree/commit/39f702db84ced632edeb4cba1d94f96f48d76e9e))
+
+
+### Bug Fixes
+
+* rewrite getNodeLabel with ancestor chain to prevent infinite loop ([7c73e01](https://github.com/daustinn/slugtree/commit/7c73e01c8f10e4174d8e37eb5bb81d9ab29026e5))
+
 ## [0.6.3](https://github.com/daustinn/slugtree/compare/slugtree-v0.6.2...slugtree-v0.6.3) (2026-08-06)
 
 
