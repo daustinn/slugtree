@@ -56,29 +56,29 @@ function findParentNode(treeNodes: Node[], slugPath: string): Node | null {
   return null
 }
 
-// Returns the last NodeLabel preceding the target node in its sibling list.
-// Returns null when the node is not found. Returns a sentinel symbol when the
-// node was found but had no preceding label, so the caller can distinguish
-// "found with no label" from "not found at all".
+// Sentinel to distinguish "node not in this list" from "node found, no label before it".
 const NOT_FOUND = Symbol('not_found')
 
-function findNodeLabel(
-  treeNodes: Node[],
+// Searches a flat sibling list for the last NodeLabel that precedes the node
+// identified by slugPath. Returns NOT_FOUND if the node is not in this list.
+function findPrecedingLabel(
+  siblings: Node[],
   slugPath: string
 ): NodeLabel | null | typeof NOT_FOUND {
   let lastLabel: NodeLabel | null = null
-  for (const node of treeNodes) {
+  for (const node of siblings) {
     if (node.type === 'label') {
       lastLabel = node
       continue
     }
     if (node.slug.join('/') === slugPath) return lastLabel
-    if (node.type === 'folder') {
-      const found = findNodeLabel(node.children, slugPath)
-      if (found !== NOT_FOUND) return found
-    }
   }
   return NOT_FOUND
+}
+
+function getSiblings(slugPath: string): Node[] {
+  const parent = findParentNode(tree, slugPath)
+  return parent && parent.type === 'folder' ? parent.children : tree
 }
 
 export function normalizeSlug(slug: string | string[]): string[] {
@@ -205,21 +205,40 @@ export function getBasePath(): string {
 }
 
 /**
- * Retrieves the last NodeLabel that groups the node identified by the given slug.
- * A NodeLabel is a non-navigable label node used to visually group sibling nodes
- * in the tree. This function searches at every depth level and returns the closest
- * label that precedes the target node within its sibling list.
+ * Returns the nearest NodeLabel that groups the node identified by the given slug.
+ *
+ * With scope `'deep'` (default) it first looks for a label preceding the node
+ * among its siblings, then bubbles up through each ancestor until one is found.
+ * With scope `'local'` it only searches the node's immediate sibling list.
  *
  * @param slug - The slug array or string of the target node.
- * @returns The NodeLabel if one precedes the node, or null if none exists or the node is not found.
+ * @param scope - `'deep'` to bubble up through parents (default), `'local'` for siblings only.
+ * @returns The nearest NodeLabel, or null if none exists.
  */
-export function getNodeLabel(slug: string | string[] = []): NodeLabel | null {
+export function getNodeLabel(
+  slug: string | string[] = [],
+  scope: 'local' | 'deep' = 'deep'
+): NodeLabel | null {
   const normalized = normalizeSlug(slug)
   if (normalized.length === 0) return null
-  const slugPath = normalized.join('/')
-  const result = findNodeLabel(tree, slugPath)
-  if (result === NOT_FOUND) return null
-  return result
+
+  let currentPath = normalized.join('/')
+
+  while (true) {
+    const siblings = getSiblings(currentPath)
+    const result = findPrecedingLabel(siblings, currentPath)
+
+    if (result !== NOT_FOUND) {
+      if (result !== null) return result
+      if (scope === 'local') return null
+      // No label in this sibling list — bubble up to the parent level.
+      const parent = findParentNode(tree, currentPath)
+      if (!parent || parent.type !== 'folder') return null
+      currentPath = parent.slug.join('/')
+    } else {
+      return null
+    }
+  }
 }
 
 /**
