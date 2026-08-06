@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/daustinn/slugtree/compare/slugtree-v0.7.0...slugtree-v0.8.0) (2026-08-06)
+
+
+### Features
+
+* export slugify function and handle diacritics ([bd5ccc3](https://github.com/daustinn/slugtree/commit/bd5ccc38d963dc80d31061711eec13a38eb23a24))
+
 ## [0.7.0](https://github.com/daustinn/slugtree/compare/slugtree-v0.6.3...slugtree-v0.7.0) (2026-08-06)
 
 
