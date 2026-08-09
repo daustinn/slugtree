@@ -282,7 +282,10 @@ export function getAllNodes(): NodeData[] {
  * @returns An array of NodeData objects where type is 'page'.
  */
 export function getPageNodes(): NodeData[] {
-  return nodes.filter((node: NodeData) => node.type === 'page')
+  return nodes.filter(
+    (node: NodeData) =>
+      node.type === 'page' || (node.type === 'folder' && node.href !== undefined)
+  )
 }
 
 /**
@@ -368,7 +371,10 @@ export function getNodePagination(
 ): Pagination | null {
   const normalized = normalizeSlug(slug)
   const slugPath = normalized.join('/')
-  const flatPages = nodes.filter((node: NodeData) => node.type === 'page')
+  const flatPages = nodes.filter(
+    (node: NodeData) =>
+      node.type === 'page' || (node.type === 'folder' && node.href !== undefined)
+  )
   const index = flatPages.findIndex(
     (node: NodeData) => node.slug.join('/') === slugPath
   )
@@ -511,7 +517,9 @@ export function searchContent(query: string): SearchResult[] {
   const results: SearchResult[] = []
 
   for (const node of nodes) {
-    if (node.type !== 'page') continue
+    const isPageLike =
+      node.type === 'page' || (node.type === 'folder' && node.href !== undefined)
+    if (!isPageLike) continue
 
     const title = (node.frontMatter.title || '').toLowerCase()
     const description = (node.frontMatter.description || '').toLowerCase()

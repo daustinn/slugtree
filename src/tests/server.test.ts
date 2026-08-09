@@ -235,8 +235,13 @@ describe('server utilities', () => {
   describe('getPageNodes', () => {
     it('returns only page nodes', () => {
       const pages = getPageNodes()
-      expect(pages).toHaveLength(3)
-      expect(pages.every((p) => p.type === 'page')).toBe(true)
+      expect(pages).toHaveLength(4)
+      expect(
+        pages.every(
+          (p) =>
+            p.type === 'page' || (p.type === 'folder' && p.href !== undefined)
+        )
+      ).toBe(true)
     })
   })
 
@@ -327,10 +332,10 @@ describe('server utilities', () => {
       })
 
       expect(pagination?.next).toEqual({
-        title: 'Routing',
-        description: 'Routing guide',
-        href: '/docs/guides/routing',
-        slug: ['guides', 'routing']
+        title: 'Guides',
+        description: undefined,
+        href: '/docs/guides',
+        slug: ['guides']
       })
     })
 
@@ -339,10 +344,10 @@ describe('server utilities', () => {
       expect(pagination).not.toBeNull()
 
       expect(pagination?.prev).toEqual({
-        title: 'Installation',
-        description: 'Install guide',
-        href: '/docs/installation',
-        slug: ['installation']
+        title: 'Guides',
+        description: undefined,
+        href: '/docs/guides',
+        slug: ['guides']
       })
       expect(pagination?.next).toBeNull()
     })
