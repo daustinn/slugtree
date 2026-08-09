@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.0](https://github.com/daustinn/slugtree/compare/slugtree-v0.8.0...slugtree-v0.9.0) (2026-08-09)
+
+
+### Features
+
+* treat folders with href as page-like nodes in getPageNodes, pagination and search ([f975008](https://github.com/daustinn/slugtree/commit/f975008e59a3620f683da753e998c0e9d32d7448))
+
 ## [0.8.0](https://github.com/daustinn/slugtree/compare/slugtree-v0.7.0...slugtree-v0.8.0) (2026-08-06)
 
 
