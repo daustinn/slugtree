@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.1](https://github.com/daustinn/slugtree/compare/slugtree-v0.9.0...slugtree-v0.9.1) (2026-08-10)
+
+
+### Bug Fixes
+
+* extract slugify to standalone file to avoid bundling gray-matter ([a536853](https://github.com/daustinn/slugtree/commit/a53685345a254f26203364cec7bd6a71a9aab688))
+
 ## [0.9.0](https://github.com/daustinn/slugtree/compare/slugtree-v0.8.0...slugtree-v0.9.0) (2026-08-09)
 
 
