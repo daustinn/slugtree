@@ -2,6 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import matter from 'gray-matter'
 import type { FrontMatter, DirConfig, TocItem } from '../types.js'
+import { slugify } from './slugify.js'
 
 export function parseFrontMatter(
   raw: string,
@@ -60,23 +61,6 @@ export function parseFrontMatter(
     frontMatter: { title, description, icon, href },
     content
   }
-}
-
-/**
- * Generates a URL-friendly slug (ID) from a given text string.
- *
- * @param text - The raw string to be converted into a slug.
- * @returns A normalized string containing only lowercase letters, numbers, and hyphens.
- */
-export function slugify(text: string): string {
-  return text
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/[\s_-]+/g, '-')
-    .replace(/^-+|-+$/g, '')
 }
 
 export function extractToc(content: string): TocItem[] {
