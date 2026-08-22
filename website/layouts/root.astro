@@ -1,0 +1,67 @@
+---
+import '#/styles/global.css'
+import { seo } from '#/const/seo'
+import base from '#/lib/base'
+import PixelBlastBackground from '#/components/pixel-blast-background.astro'
+
+type Props = {
+  title?: string
+  description?: string
+  image?: string
+  noindex?: boolean
+}
+
+const {
+  description = seo.description,
+  title = seo.title,
+  image = seo.ogImage,
+  noindex = false
+} = Astro.props
+
+const pageTitle =
+  title === seo.title ? `${seo.name} — ${title}` : `${title} — ${seo.name}`
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href={base('/favicon.svg')} />
+    <link rel="icon" href={base('/favicon.ico')} />
+    <meta name="generator" content={Astro.generator} />
+    <title>
+      {pageTitle}
+    </title>
+  </head>
+  <body class="flex flex-col min-h-svh">
+    <!-- <div class="fixed inset-0">
+      <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+        <PixelBlastBackground
+          variant="circle"
+          pixelSize={4}
+          color="black"
+          patternScale={1}
+          patternDensity={0.6}
+          enableRipples={false}
+          rippleSpeed={0.15}
+          rippleThickness={0.05}
+          rippleIntensityScale={1}
+          speed={0.2}
+          transparent
+          edgeFade={0.25}
+        />
+      </div>
+    </div> -->
+    <slot />
+  </body>
+</html>
+
+<style>
+  html,
+  body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+  }
+</style>
