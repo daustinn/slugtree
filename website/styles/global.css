@@ -1,0 +1,37 @@
+@import 'tailwindcss';
+
+@font-face {
+  font-family: 'Geist Pixel';
+  src: url('./slugtree/geist-pixel.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+
+:root {
+  --backoground: white;
+  --foreground: black;
+  --border: rgba(0, 0, 0, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --backoground: black;
+    --foreground: white;
+    --border: rgba(255, 255, 255, 0.1);
+  }
+}
+@theme inline {
+  --font-pixel: 'Geist Pixel';
+  --color-foreground: var(--foreground);
+  --color-background: var(--backoground);
+  --color-border: var(--border);
+}
+
+body {
+  background-color: var(--backoground);
+  color: var(--foreground);
+}
+
+* {
+  border-color: var(--border);
+}

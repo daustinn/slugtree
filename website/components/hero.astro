@@ -1,0 +1,60 @@
+---
+import ArrowLeft from '#/assets/arrow-left.svg'
+import Github from '#/assets/github.svg'
+import Slugtree from '#/assets/slugtree.svg'
+import ByDaustinn from '#/assets/by-daustinn.svg'
+import { SLUGTREE } from '#/const'
+import base from '#/lib/base'
+---
+
+<main class="relative grow">
+  <section class="pt-25 text-center">
+    <div class="flex justify-center gap-1 pb-10">
+      <Slugtree width={30} class="inline-block" />
+      <h2 class="font-mono font-semibold text-2xl tracking-tight">slugtree</h2>
+    </div>
+    <h1 class="font-semibold leading-20 pb-10 text-7xl tracking-tight">
+      Write in MDX. <br /> Let Slugtree build the tree
+    </h1>
+    <div
+      class="flex pb-10 gap-2 *:shadow-md [&>a]:hover:[&>svg]:scale-110 justify-center *:flex *:gap-2 *:py-4 font-semibold *:rounded-2xl"
+    >
+      <a href={base('/docs')} class="bg-foreground px-18 group text-background">
+        Docs
+        <ArrowLeft
+          width={20}
+          class="rotate-180 group-hover:translate-x-2 transition-[translate,scale]"
+        />
+      </a>
+      <a
+        href={SLUGTREE.githubURL}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="border px-5 bg-background shadow-xs"
+      >
+        <Github width={20} class="transition-[scale]" />
+        Github
+      </a>
+    </div>
+    <!--
+    <div class="flex justify-center pb-10">
+      <pre
+        class="bg-background shadow-sm border py-2 rounded-xl inline-block p-1"> ~ pnpm add slugtree@latest </pre>
+    </div> -->
+  </section>
+</main>
+<footer
+  class="flex justify-center *:hover:underline font-semibold *:p-1 *:flex items-center gap-3 text-foreground/60 text-sm p-5"
+>
+  <a href={base('/docs')}> Docs </a>
+  <a href={SLUGTREE.githubURL} target="_blank" rel="noopener noreferrer">
+    Github
+  </a>
+  <a href={SLUGTREE.npmURL} target="_blank" rel="noopener noreferrer"> NPM </a>
+  <a
+    href="https://daustinn.com"
+    class="opacity-70 inline-flex transition-[translate] hover:-translate-y-1"
+  >
+    <ByDaustinn width={90} />
+  </a>
+</footer>
