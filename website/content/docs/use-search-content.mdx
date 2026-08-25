@@ -1,0 +1,74 @@
+---
+title: useSearchContent
+description: Memoized full-text search hook across all page nodes in the client context.
+---
+
+`useSearchContent` is a client hook that runs a full-text search across all documentation pages, titles, descriptions, and headings in the current context. Results are memoized and sorted by relevance score.
+
+```tsx
+'use client'
+
+import React, { useState } from 'react'
+import { useSearchContent } from 'slugtree/react'
+
+export function SearchBox() {
+  const [query, setQuery] = useState('')
+  const results = useSearchContent(query)
+
+  return (
+    <div>
+      <input
+        type="search"
+        placeholder="Search documentation..."
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+      />
+      <ul>
+        {results.map((item) => (
+          <li key={item.id}>
+            <a href={item.href}>{item.title}</a>
+            {item.children.map((child) => (
+              <a key={child.id} href={child.href} className="heading-result">
+                {child.title}
+              </a>
+            ))}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+```
+
+## Parameters
+
+| Parameter | Type     | Description                                      |
+| --------- | -------- | ------------------------------------------------ |
+| `query`   | `string` | The search string to query. Case-insensitive.    |
+
+## Return value
+
+Returns `SearchResult[]` sorted by `matchScore` descending. Returns an empty array for empty or whitespace-only queries.
+
+```ts
+interface SearchResult {
+  id: string
+  title: string
+  description?: string
+  icon?: string
+  href: string
+  matchScore: number
+  children: SearchResultChild[]
+}
+
+interface SearchResultChild {
+  id: string
+  title: string
+  href: string
+  type: 'title' | 'subtitle'
+  content: string // excerpt (~200 chars)
+  matchScore: number
+}
+```
+
+Must be used inside a component wrapped by `SlugtreeProvider`.

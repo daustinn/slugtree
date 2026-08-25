@@ -1,0 +1,58 @@
+---
+title: Is Node Children Active
+description: Checks whether any child or descendant of a folder is currently active.
+---
+
+Returns `true` if `currentSlug` is a descendant of `folderSlug` (and not `folderSlug` itself). Perfect for automatically expanding collapsible accordion folders in navigation sidebars.
+
+```ts
+import { isNodeChildrenActive } from 'slugtree'
+
+isNodeChildrenActive(['guides'], ['guides', 'routing']) // true  — child is active
+isNodeChildrenActive(['guides'], ['guides'])            // false — folder itself is active
+isNodeChildrenActive(['guides'], ['api', 'endpoints'])   // false — unrelated
+```
+
+## Parameters
+
+| Parameter     | Type                  | Description                               |
+| ------------- | --------------------- | ----------------------------------------- |
+| `folderSlug`  | `string \| string[]`  | The slug of the folder to test.           |
+| `currentSlug` | `string \| string[]`  | The slug of the currently active page.    |
+
+## Return value
+
+Returns `boolean`. Returns `false` if either argument is empty or if `currentSlug` matches `folderSlug` exactly.
+
+## Usage
+
+Use `isNodeChildrenActive` to control the `open` state of sidebar accordions:
+
+```tsx
+import { isNodeChildrenActive } from 'slugtree'
+
+export function FolderAccordion({
+  folder,
+  currentSlug
+}: {
+  folder: { slug: string[]; title: string; children: any[] }
+  currentSlug: string[]
+}) {
+  const isExpanded = isNodeChildrenActive(folder.slug, currentSlug)
+
+  return (
+    <details open={isExpanded}>
+      <summary>{folder.title}</summary>
+      <ul>
+        {folder.children.map((child) => (
+          <li key={child.href}>
+            <a href={child.href}>{child.title}</a>
+          </li>
+        ))}
+      </ul>
+    </details>
+  )
+}
+```
+
+For client components, use [`useIsNodeChildrenActive()`](/docs/use-is-node-children-active) from `slugtree/react`.

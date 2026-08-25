@@ -3,10 +3,15 @@ node_modules/
 
 # build output
 dist/
-prof/
+.next/
+.astro/
+.wrangler/
+.agents/
+skills-lock.json
 
 # generated data (written by the plugin at dev/build time)
 src/generated/
+.slugtree/
 
 # turbo
 .turbo/

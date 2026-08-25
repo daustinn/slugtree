@@ -1,0 +1,85 @@
+---
+import { getTree } from 'slugtree'
+import { $, $$ } from '#/lib/dom'
+import nodeIcons from './node-icons'
+
+const tree = getTree()
+
+const { pathname } = Astro.url
+---
+
+<aside
+  id="primary-sidebar"
+  aria-label="Documentation navigation"
+  class:list={[
+    'sticky w-60 min-w-60 top-20 h-[calc(100svh-5rem)] flex flex-col overflow-y-auto'
+  ]}
+>
+  <nav
+    aria-label="Documentation pages"
+    class="flex flex-col px-3 tree__content grow overflow-y-auto text-sm space-y-0.5"
+  >
+    <ul class="text-base pb-2">
+      {
+        tree
+          .filter((n) => n.type !== 'label')
+          .map((node) => {
+            const Icon = nodeIcons[node.icon as keyof typeof nodeIcons]
+            const isActive = pathname.startsWith(node.href || '')
+            return (
+              <li>
+                <a
+                  data-active={isActive ? '' : undefined}
+                  href={node.href}
+                  class="flex tracking-tight items-center hover:opacity-60 group data-active:font-semibold data-active:opacity-100 opacity-70 gap-2 py-1.5"
+                >
+                  {Icon && (
+                    <span class="inline-block aspect-square rounded-md p-1 group-data-active:bg-foreground bg-foreground/10 group-data-active:text-background">
+                      <Icon width={17} />
+                    </span>
+                  )}
+                  {node.title}
+                </a>
+              </li>
+            )
+          })
+      }
+    </ul>
+    <ul class="text-[14px] overflow-y-auto">
+      {
+        tree
+          .filter((n) => n.type === 'folder')
+          .find((n) => n.slug.includes('docs'))
+          ?.children.map((node) => {
+            if (!node) return null
+
+            if (node.type === 'label')
+              return (
+                <span class="uppercase font-medium text-xs inline-block mt-10 mb-1">
+                  {node.label}
+                </span>
+              )
+
+            const Icon = nodeIcons[node.icon as keyof typeof nodeIcons]
+            const isActive = pathname === node.href
+            return (
+              <li>
+                <a
+                  data-active={isActive ? '' : undefined}
+                  href={node.href}
+                  class="flex tracking-tight items-center hover:opacity-60 group data-active:font-semibold data-active:opacity-100 opacity-70 gap-2 py-1"
+                >
+                  {Icon && (
+                    <span class="inline-block aspect-square rounded-md p-1 group-data-active:bg-foreground bg-foreground/10 group-data-active:text-background">
+                      <Icon width={17} />
+                    </span>
+                  )}
+                  {node.title}
+                </a>
+              </li>
+            )
+          })
+      }
+    </ul>
+  </nav>
+</aside>

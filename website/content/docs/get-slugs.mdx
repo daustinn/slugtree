@@ -1,0 +1,47 @@
+---
+title: Get Slugs
+description: Returns all valid slugs for static route generation.
+---
+
+Returns a `string[][]` array of every page slug known to slugtree. Each entry is an array of path segments (e.g. `[]` for root index, `['guides', 'routing']` for nested pages).
+
+```ts
+import { getSlugs } from 'slugtree'
+
+export function generateStaticParams() {
+  return getSlugs().map((slug) => ({ slug }))
+}
+```
+
+## Return value
+
+Returns `string[][]`. Each element is a slug array. Slugs are deduplicated and match all navigable pages and folders with an index file.
+
+## Usage
+
+### Next.js App Router
+
+```ts
+import { getSlugs } from 'slugtree'
+
+export function generateStaticParams() {
+  return getSlugs().map((slug) => ({ slug }))
+}
+```
+
+### Astro `getStaticPaths`
+
+```astro
+---
+import { getSlugs } from 'slugtree'
+
+export async function getStaticPaths() {
+  return getSlugs().map((slug) => ({
+    params: {
+      slug: slug.length === 0 ? undefined : slug.join('/')
+    },
+    props: { slug }
+  }))
+}
+---
+```

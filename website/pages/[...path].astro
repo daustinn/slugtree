@@ -1,0 +1,82 @@
+---
+import { getNode, getSlugs } from 'slugtree'
+import Root from '#/layouts/root.astro'
+import Nav from '#/components/nav.astro'
+import MdxRenderer from '#/components/mdx-renderer.astro'
+import NotFound from '#/pages/404.astro'
+import Sidebar from '#/components/sidebar.astro'
+import HeaderArticle from '#/components/header-article.astro'
+import FooterArticle from '#/components/footer-article.astro'
+import TocSidebar from '#/components/toc-sidebar.astro'
+
+export async function getStaticPaths() {
+  return getSlugs().map((slug) => ({
+    params: {
+      path: Array.isArray(slug) ? slug.join('/') : slug
+    },
+    props: {
+      slug
+    }
+  }))
+}
+
+const { slug } = Astro.props
+
+const node = getNode(slug)
+---
+
+{
+  node ? (
+    <Root
+      class="dark:bg-[#09090b]!"
+      title={node.title}
+      description={node.description}
+    >
+      <Nav />
+      <main class="flex grow container">
+        <Sidebar />
+        <div class="flex grow">
+          <article class="flex px-15 w-full flex-col">
+            <HeaderArticle node={node} />
+            <div class="prose__content grow pt-6">
+              <MdxRenderer node={node} />
+            </div>
+            <FooterArticle node={node} />
+          </article>
+          <TocSidebar node={node} />
+        </div>
+      </main>
+    </Root>
+  ) : (
+    <NotFound />
+  )
+}
+<script>
+  import { $$, $ } from '#/lib/dom'
+  const $headings = $$('.prose__heading')
+
+  $headings.forEach(($heading) => {
+    const $icon = $('.prose__heading__icon', $heading)
+
+    if (!$icon) return
+
+    $icon.addEventListener('click', (e) => {
+      e.stopPropagation()
+      e.preventDefault()
+
+      const slugId = $icon.dataset['slugId']
+      const currentFullPath = location.href
+      const url = new URL(currentFullPath)
+
+      url.hash = `#${slugId}`
+
+      window.navigator.clipboard.writeText(url.toString())
+
+      $heading.dataset.copied = 'true'
+
+      setTimeout(() => {
+        delete $heading.dataset.copied
+      }, 2000)
+    })
+  })
+</script>

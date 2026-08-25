@@ -1,0 +1,57 @@
+---
+title: Vite
+description: Full setup guide for using slugtree with Vite and Single Page Applications.
+icon: ViteOutline
+---
+
+`slugtree/vite` is a Vite plugin that scans your content directory, builds navigation metadata in `.slugtree`, provides the `virtual:slugtree` virtual module, and delivers instant Hot Module Replacement (HMR).
+
+## Setup
+
+Add `slugtree` to your `vite.config.ts`:
+
+```ts
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import slugtree from 'slugtree/vite'
+
+export default defineConfig({
+  plugins: [slugtree(), react()]
+})
+```
+
+### Plugin Options
+
+| Option       | Type     | Default                              | Description                                                    |
+| ------------ | -------- | ------------------------------------ | -------------------------------------------------------------- |
+| `basePath`   | `string` | `'/'`                                | Base URL path prefix for all generated links.                  |
+| `contentDir` | `string` | `'./src/content'` (or `'./content'`) | Directory where your MDX and `config.json` files reside.       |
+| `outputDir`  | `string` | `'.slugtree'`                        | Directory where generated JSON metadata is cached and bundled. |
+
+## Virtual Module
+
+The plugin exposes a virtual module `virtual:slugtree` (or alias `slugtree/generated`) which exports the pre-built dataset:
+
+```ts
+import data from 'virtual:slugtree'
+
+console.log(data.tree) // Node[]
+console.log(data.nodes) // NodeData[]
+console.log(data.basePath) // string
+```
+
+## Hot Module Replacement (HMR)
+
+During development, when you add, rename, or edit any `.mdx` or `config.json` file in your content directory:
+
+1. The plugin regenerates the navigation tree and page data.
+2. It notifies the browser via WebSocket with a `slugtree:update` custom event.
+3. `<SlugtreeProvider>` listens for `slugtree:update` and updates state in real-time without requiring a full page refresh.
+
+```ts
+// Custom HMR event listener (already handled automatically by SlugtreeProvider)
+window.addEventListener('slugtree:update', (event) => {
+  const updatedData = (event as CustomEvent).detail
+  console.log('Navigation tree updated:', updatedData)
+})
+```

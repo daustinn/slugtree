@@ -1,3 +1,13 @@
-export const $ = document.querySelector.bind(document)
-export const $$ = document.querySelectorAll.bind(document)
-export const $html = document.documentElement
+export function $<T extends Element = HTMLElement>(
+  selector: string,
+  scope: ParentNode = document
+): T | null {
+  return scope.querySelector<T>(selector)
+}
+
+export function $$<T extends Element = HTMLElement>(
+  selector: string,
+  scope: ParentNode = document
+): T[] {
+  return Array.from(scope.querySelectorAll<T>(selector))
+}

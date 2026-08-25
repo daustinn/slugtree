@@ -1,0 +1,26 @@
+---
+title: .md Files
+description: Standard Markdown documentation pages in slugtree.
+---
+
+`slugtree` provides full support for standard `.md` Markdown files alongside `.mdx`.
+
+```md
+---
+title: Changelog
+description: Release notes and version history.
+---
+
+# Changelog
+
+## v1.0.0
+- Initial release of slugtree
+- Automatic hierarchy generation
+```
+
+## Features
+
+- **Frontmatter Parsing**: Full YAML frontmatter support (`title`, `description`, `icon`, `href`, custom keys).
+- **Table of Contents**: Automatic extraction of `#`, `##`, `###` headings.
+- **Search Indexing**: Raw content is indexed for full-text search with [`searchContent()`](/docs/search-content).
+- **Interchangeable**: Can be freely mixed with `.mdx` files within the same directory.

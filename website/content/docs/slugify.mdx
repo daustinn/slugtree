@@ -1,0 +1,37 @@
+---
+title: Slugify
+description: Utility to convert arbitrary text strings into clean, URL-safe slugs.
+---
+
+Generates a normalized, URL-friendly slug from any given text string. Removes accents, diacritics, special characters, and trims redundant hyphens.
+
+```ts
+import { slugify } from 'slugtree'
+
+slugify('Hello World!')         // 'hello-world'
+slugify('Guides & Tutorials')    // 'guides-tutorials'
+slugify('Café & Résumé 101')    // 'cafe-resume-101'
+```
+
+## Parameters
+
+| Parameter | Type     | Description                                  |
+| --------- | -------- | -------------------------------------------- |
+| `text`    | `string` | The raw text string to convert into a slug.  |
+
+## Return value
+
+Returns a lowercase, hyphen-delimited `string`.
+
+## Usage
+
+Use `slugify` to generate anchor IDs for custom headings or dynamic route segments:
+
+```ts
+import { slugify } from 'slugtree'
+
+export function createHeadingAnchor(headingText: string) {
+  const id = slugify(headingText)
+  return `<h2 id="${id}">${headingText}</h2>`
+}
+```
