@@ -1,0 +1,114 @@
+---
+title: Quick start
+description: Get up and running with slugtree in less than two minutes.
+icon: Rocket
+---
+
+`slugtree` transforms your directory of markdown files into a strongly typed navigation tree. Follow these steps to get started immediately.
+
+## 1. Installation
+
+Install `slugtree` with your package manager of choice:
+
+```bash
+bun add slugtree
+# or
+pnpm add slugtree
+# or
+npm install slugtree
+```
+
+## 2. Configure your content directory
+
+Create a `content/` folder in your project root (or inside `src/content/`) with a `config.json` file to control the sidebar hierarchy:
+
+```bash
+content/
+├── config.json
+└── index.mdx
+```
+
+Add your pages in `content/config.json`:
+
+```json
+{
+  "$schema": "https://slugtree.daustinn.com/config.schema.json",
+  "title": "Docs",
+  "nodes": [
+    "index"
+  ]
+}
+```
+
+Write frontmatter at the top of your `.mdx` files:
+
+```mdx
+---
+title: Welcome
+description: My documentation built with slugtree.
+---
+
+# Welcome
+
+Welcome to your documentation!
+```
+
+## 3. Set up your framework integration
+
+Choose your framework:
+
+### Next.js (App Router)
+
+Wrap your config in `next.config.mjs`:
+
+```ts
+import { withSlugtree } from 'slugtree/next'
+
+export default withSlugtree({
+  // your nextConfig
+})
+```
+
+### Astro
+
+Add the integration in `astro.config.mjs`:
+
+```ts
+import { defineConfig } from 'astro/config'
+import slugtree from 'slugtree/astro'
+
+export default defineConfig({
+  integrations: [slugtree()]
+})
+```
+
+### Vite / React
+
+Add the plugin in `vite.config.ts`:
+
+```ts
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import slugtree from 'slugtree/vite'
+
+export default defineConfig({
+  plugins: [slugtree(), react()]
+})
+```
+
+## 4. Query your tree
+
+Query your navigation tree anywhere in your app:
+
+```ts
+import { getTree, getNode, getNodeData } from 'slugtree'
+
+// Get the full navigation tree for your sidebar
+const tree = getTree()
+
+// Get metadata and raw content for a specific page
+const page = getNodeData([])
+```
+
+For client-side React apps, wrap your layout with `<SlugtreeProvider>` and use hooks like `useTree()` and `useNode()`.
+

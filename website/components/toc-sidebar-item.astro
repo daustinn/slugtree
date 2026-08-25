@@ -1,0 +1,21 @@
+---
+import type { TocItem } from 'slugtree'
+
+export type Props = {
+  tocItem: TocItem
+}
+
+const { tocItem } = Astro.props
+
+const paddingLeft = (tocItem.depth - 2) * 1 + 'rem'
+---
+
+<li style={{ paddingLeft }}>
+  <a
+    href={`#${tocItem.id}`}
+    data-slug-id={tocItem.id}
+    class="py-0.5 toc__item text-sm leading-snug hover:opacity-70 data-highlighted:font-semibold inline-block"
+  >
+    {tocItem.text}
+  </a>
+</li>

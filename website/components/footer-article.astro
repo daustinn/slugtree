@@ -1,0 +1,81 @@
+---
+import { getNodePagination, type NodeFolder, type NodePage } from 'slugtree'
+import ChevronRight from '#/assets/chevron-right.svg'
+
+export type Prop = {
+  node: NodePage | NodeFolder
+}
+
+const { node } = Astro.props
+
+const pagination = getNodePagination(node.slug)
+---
+
+<footer class="border-t border-border/60 mt-16 pt-8 pb-14">
+  {
+    pagination && (
+      <nav
+        aria-label="Documentation pagination"
+        class="grid grid-cols-1 sm:grid-cols-2 gap-4"
+      >
+        {pagination.prev ? (
+          <a
+            rel="prev"
+            aria-label={`Previous page: ${pagination.prev.title}`}
+            class="group flex items-center gap-4 text-left"
+            href={pagination.prev.href}
+          >
+            <ChevronRight
+              class="opacity-50 group-hover:opacity-100 group-hover:text-accent rotate-180 min-w-4 transition-all group-hover:-translate-x-0.5"
+              width={18}
+              height={18}
+            />
+            <div class="grow overflow-hidden">
+              <span class="text-xs font-semibold tracking-wider uppercase text-foreground/45 block mb-1">
+                Previous
+              </span>
+              <p class="text-sm md:text-[15px] font-semibold text-foreground group-hover:text-accent transition-colors truncate">
+                {pagination.prev.title}
+              </p>
+              {pagination.prev.description && (
+                <p class="text-xs text-foreground/60 line-clamp-1 mt-0.5 max-sm:hidden">
+                  {pagination.prev.description}
+                </p>
+              )}
+            </div>
+          </a>
+        ) : (
+          <div class="hidden sm:block" />
+        )}
+
+        {pagination.next ? (
+          <a
+            rel="next"
+            aria-label={`Next page: ${pagination.next.title}`}
+            class="group p-4 md:p-5 flex items-center gap-4 text-right justify-end ml-auto w-full"
+            href={pagination.next.href}
+          >
+            <div class="grow overflow-hidden">
+              <span class="text-xs font-semibold tracking-wider uppercase text-foreground/45 block mb-1">
+                Next
+              </span>
+              <p class="text-sm md:text-[15px] font-semibold text-foreground group-hover:text-accent transition-colors truncate">
+                {pagination.next.title}
+              </p>
+              {pagination.next.description && (
+                <p class="text-xs text-foreground/60 line-clamp-1 mt-0.5 max-sm:hidden">
+                  {pagination.next.description}
+                </p>
+              )}
+            </div>
+            <ChevronRight
+              class="opacity-50 group-hover:opacity-100 group-hover:text-accent min-w-4 transition-all group-hover:translate-x-0.5"
+              width={18}
+              height={18}
+            />
+          </a>
+        ) : null}
+      </nav>
+    )
+  }
+</footer>

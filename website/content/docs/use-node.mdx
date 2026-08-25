@@ -1,0 +1,32 @@
+---
+title: useNode
+description: Returns a specific Node from the tree by its slug.
+---
+
+Client hook equivalent of `getNode()`. Traverses the context tree and returns the matching `Node`, or `null` if not found.
+
+```tsx
+'use client'
+
+import { useNode } from 'slugtree/react'
+
+export default function NodeTitle({ slug }: { slug: string[] }) {
+  const node = useNode(slug)
+
+  if (!node || node.type === 'label') return null
+
+  return <span>{node.title}</span>
+}
+```
+
+## Parameters
+
+| Parameter | Type                  | Default | Description                                                    |
+| --------- | --------------------- | ------- | -------------------------------------------------------------- |
+| `slug`    | `string \| string[]`  | `[]`    | Path string or array of path segments identifying target node. |
+
+## Return value
+
+Returns `NodePage | NodeFolder | null`. Narrow the type using `node.type` before accessing type-specific fields.
+
+Must be used inside a component wrapped by `SlugtreeProvider`.

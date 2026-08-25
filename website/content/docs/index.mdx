@@ -1,0 +1,71 @@
+---
+title: Introduction
+description: slugtree is a lightweight content layer for building MDX documentation sites with a strongly-typed navigation tree.
+icon: BookOutline
+---
+
+`slugtree` is a lightweight, framework-agnostic content layer designed for modern MDX documentation sites. It transforms a folder of markdown files into a **strongly-typed navigation tree** with automatic breadcrumbs, pagination, table of contents, and search.
+
+## Content Structure
+
+`slugtree` builds its navigation hierarchy directly from your file system (`content` or `src/content`):
+
+```bash
+content/
+├── config.json           # Root configuration
+├── index.mdx             # /docs
+└── guides/               # /docs/guides/*
+    ├── config.json       # Subdirectory configuration
+    ├── index.mdx         # /docs/guides
+    └── routing.mdx       # /docs/guides/routing
+```
+
+## Supported Files
+
+`slugtree` exclusively scans and processes the following files inside your content folders:
+
+- **`config.json`**: Controls sidebar ordering, labels, section titles, and icons for each folder.
+- **`.mdx`**: Markdown files with embedded JSX component support.
+- **`.md`**: Standard Markdown files.
+
+## Configuration (`config.json`)
+
+Each directory uses a `config.json` file to control the exact order and visibility of sidebar items:
+
+```json
+{
+  "$schema": "https://slugtree.daustinn.com/config.schema.json",
+  "title": "Documentation",
+  "nodes": ["--- Overview ---", "index", "--- Guides ---", "guides"]
+}
+```
+
+- **`title`**: (Optional) Display title for this documentation section.
+- **`icon`**: (Optional) Icon identifier for the section or folder.
+- **`nodes`**: Ordered list of items:
+  - **Labels**: Strings like `"--- Section Name ---"` (rendered as non-clickable headers).
+  - **Pages**: Name of an `.mdx` file without extension (e.g. `"index"`).
+  - **Folders**: Name of a subdirectory (e.g. `"guides"`).
+
+## Page Frontmatter
+
+Each `.mdx` file defines metadata in YAML frontmatter:
+
+```mdx
+---
+title: Page Title
+description: Short summary for SEO and search.
+icon: Book
+href: /custom-url # (Optional) Custom URL override
+---
+
+# Page Title
+
+Your documentation content...
+```
+
+## Next Steps
+
+- Check out the [Quick Start](/quick-start) for a 2-minute setup.
+- Set up your framework: [Next.js](/docs/nextjs), [Astro](/docs/astro), [React](/docs/react), or [Vite](/docs/vite).
+- Browse the [Core API Reference](/docs/get-tree) for available query functions.

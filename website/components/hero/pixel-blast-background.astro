@@ -1,0 +1,115 @@
+---
+import type { PixelBlastOptions } from '#/scripts/pixel-blast'
+
+type Props = PixelBlastOptions & {
+  class?: string
+}
+
+const {
+  class: className,
+  variant = 'square',
+  pixelSize = 3,
+  color = '#B497CF',
+  antialias = true,
+  patternScale = 2,
+  patternDensity = 1,
+  liquid = false,
+  liquidStrength = 0.1,
+  liquidRadius = 1,
+  pixelSizeJitter = 0,
+  enableRipples = true,
+  rippleIntensityScale = 1,
+  rippleThickness = 0.1,
+  rippleSpeed = 0.3,
+  liquidWobbleSpeed = 4.5,
+  autoPauseOffscreen = true,
+  speed = 0.5,
+  transparent = true,
+  edgeFade = 0.5,
+  noiseAmount = 0
+} = Astro.props
+---
+
+<div
+  class:list={['w-full h-full relative overflow-hidden', className]}
+  aria-label="PixelBlast interactive background"
+  data-pixel-blast
+  data-variant={variant}
+  data-pixel-size={pixelSize}
+  data-color={color}
+  data-antialias={antialias}
+  data-pattern-scale={patternScale}
+  data-pattern-density={patternDensity}
+  data-liquid={liquid}
+  data-liquid-strength={liquidStrength}
+  data-liquid-radius={liquidRadius}
+  data-pixel-size-jitter={pixelSizeJitter}
+  data-enable-ripples={enableRipples}
+  data-ripple-intensity-scale={rippleIntensityScale}
+  data-ripple-thickness={rippleThickness}
+  data-ripple-speed={rippleSpeed}
+  data-liquid-wobble-speed={liquidWobbleSpeed}
+  data-auto-pause-offscreen={autoPauseOffscreen}
+  data-speed={speed}
+  data-transparent={transparent}
+  data-edge-fade={edgeFade}
+  data-noise-amount={noiseAmount}
+>
+</div>
+
+<script>
+  import { initPixelBlast } from '#/scripts/pixel-blast'
+
+  function parseBool(v: string | null): boolean {
+    return v === 'true'
+  }
+
+  function initAll() {
+    document
+      .querySelectorAll<HTMLElement>('[data-pixel-blast]')
+      .forEach((el) => {
+        const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+
+        const d = el.dataset
+        const cleanup = initPixelBlast(el, {
+          variant:
+            (d.variant as 'square' | 'circle' | 'triangle' | 'diamond') ??
+            'square',
+          pixelSize: Number(d.pixelSize ?? 3),
+          color: isDark ? 'white' : 'black',
+          antialias: parseBool(d.antialias ?? 'true'),
+          patternScale: Number(d.patternScale ?? 2),
+          patternDensity: Number(d.patternDensity ?? 1),
+          liquid: parseBool(d.liquid ?? 'false'),
+          liquidStrength: Number(d.liquidStrength ?? 0.1),
+          liquidRadius: Number(d.liquidRadius ?? 1),
+          pixelSizeJitter: Number(d.pixelSizeJitter ?? 0),
+          enableRipples: parseBool(d.enableRipples ?? 'true'),
+          rippleIntensityScale: Number(d.rippleIntensityScale ?? 1),
+          rippleThickness: Number(d.rippleThickness ?? 0.1),
+          rippleSpeed: Number(d.rippleSpeed ?? 0.3),
+          liquidWobbleSpeed: Number(d.liquidWobbleSpeed ?? 4.5),
+          autoPauseOffscreen: parseBool(d.autoPauseOffscreen ?? 'true'),
+          speed: Number(d.speed ?? 0.5),
+          transparent: parseBool(d.transparent ?? 'true'),
+          edgeFade: Number(d.edgeFade ?? 0.5),
+          noiseAmount: Number(d.noiseAmount ?? 0)
+        })
+        document.addEventListener('astro:before-swap', cleanup, { once: true })
+      })
+  }
+
+  function scheduleInit() {
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(initAll, { timeout: 3000 })
+    } else {
+      setTimeout(initAll, 200)
+    }
+  }
+
+  if (document.readyState === 'complete') {
+    scheduleInit()
+  } else {
+    window.addEventListener('load', scheduleInit, { once: true })
+  }
+</script>
