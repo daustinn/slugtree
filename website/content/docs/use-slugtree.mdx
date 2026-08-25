@@ -1,0 +1,62 @@
+---
+title: useSlugtree
+description: Returns the entire Slugtree context value including state and all query methods.
+---
+
+`useSlugtree` is an all-in-one hook that returns the complete context state along with bound query methods. It allows calling any slugtree helper without needing separate hook imports.
+
+```tsx
+'use client'
+
+import { useSlugtree } from 'slugtree/react'
+
+export function NavigationDashboard() {
+  const {
+    tree,
+    nodes,
+    basePath,
+    slugs,
+    getNode,
+    getNodeBreadcrumbs,
+    getNodeToc,
+    searchContent
+  } = useSlugtree()
+
+  return <div>Loaded {nodes.length} pages under {basePath}</div>
+}
+```
+
+## Return value
+
+Returns `SlugtreeContextValue`:
+
+### State Properties
+
+| Property   | Type          | Description                                      |
+| ---------- | ------------- | ------------------------------------------------ |
+| `tree`     | `Node[]`      | Hierarchical tree of pages, folders, and labels. |
+| `nodes`    | `NodeData[]`  | All flattened nodes with content and frontmatter.|
+| `basePath` | `string`      | Base path prefix for all doc routes.             |
+| `slugs`    | `string[][]`  | Array of all valid slug arrays.                  |
+
+### Bound Methods
+
+- `getNode(slug)`
+- `getNodeChildren(slug)`
+- `getNodeParent(slug)`
+- `getNodeSiblings(slug)`
+- `getNodePath(slug)`
+- `getNodeSection(slug)`
+- `getNodeLabel(slug, scope)`
+- `getNodeData(slug)`
+- `getAllNodes()`
+- `getPageNodes()`
+- `findNodes(predicate)`
+- `getNodesByFrontMatter(key, value)`
+- `getSlugs()`
+- `isNodeActive(slug, currentSlug)`
+- `isNodeChildrenActive(folderSlug, currentSlug)`
+- `getNodeBreadcrumbs(slug)`
+- `getNodeToc(slug)`
+- `getNodePagination(slug)`
+- `searchContent(query)`
