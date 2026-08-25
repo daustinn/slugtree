@@ -1,0 +1,40 @@
+---
+title: useNodeLabel
+description: Returns the nearest section label that groups the node from the client context.
+---
+
+Client hook equivalent of `getNodeLabel()`. Returns the nearest `NodeLabel` grouping the node identified by `slug`.
+
+```tsx
+'use client'
+
+import { useNodeLabel } from 'slugtree/react'
+
+export default function GroupBadge({ slug }: { slug: string[] }) {
+  const label = useNodeLabel(slug)
+
+  if (!label) return null
+
+  return <span className="group-label">{label.label}</span>
+}
+```
+
+## Parameters
+
+| Parameter | Type                  | Default   | Description                                                                              |
+| --------- | --------------------- | --------- | ---------------------------------------------------------------------------------------- |
+| `slug`    | `string \| string[]`  | `[]`      | Slug of the target node.                                                                 |
+| `scope`   | `'local' \| 'deep'`   | `'deep'`  | `'deep'` bubbles up to parent folders if none is found locally; `'local'` checks siblings only. |
+
+## Return value
+
+Returns `NodeLabel | null`.
+
+```ts
+interface NodeLabel {
+  type: 'label'
+  label: string
+}
+```
+
+Must be used inside a component wrapped by `SlugtreeProvider`.

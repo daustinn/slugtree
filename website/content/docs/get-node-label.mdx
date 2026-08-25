@@ -1,0 +1,53 @@
+---
+title: Get Node Label
+description: Returns the nearest section label that groups the node.
+---
+
+Returns the nearest `NodeLabel` (defined as `"--- Label Name ---"` in `config.json`) preceding the node in the sidebar hierarchy.
+
+```ts
+import { getNodeLabel } from 'slugtree'
+
+const label = getNodeLabel(['guides', 'routing'])
+// { type: 'label', label: 'Guides' }
+```
+
+## Parameters
+
+| Parameter | Type                  | Default   | Description                                                                              |
+| --------- | --------------------- | --------- | ---------------------------------------------------------------------------------------- |
+| `slug`    | `string \| string[]`  | `[]`      | Slug of the target node.                                                                 |
+| `scope`   | `'local' \| 'deep'`   | `'deep'`  | `'deep'` bubbles up to parent folders if none is found locally; `'local'` checks siblings only. |
+
+## Return value
+
+Returns `NodeLabel | null`.
+
+```ts
+interface NodeLabel {
+  type: 'label'
+  label: string
+}
+```
+
+## Usage
+
+Use `getNodeLabel` to display the section or group badge above page titles:
+
+```tsx
+import { getNode, getNodeLabel } from 'slugtree'
+
+export default function ArticleHeader({ slug }: { slug: string[] }) {
+  const node = getNode(slug)
+  const label = getNodeLabel(slug)
+
+  return (
+    <header>
+      {label && <span className="badge">{label.label}</span>}
+      <h1>{node?.title}</h1>
+    </header>
+  )
+}
+```
+
+For client components, use [`useNodeLabel()`](/docs/use-node-label).

@@ -1,0 +1,123 @@
+---
+import {
+  getNodeToc,
+  type NodeFolder,
+  type NodePage,
+  getNodeData
+} from 'slugtree'
+import Item from './toc-sidebar-item.astro'
+import fs from 'node:fs'
+import ArrowLeft from '#/assets/arrow-left.svg'
+import getModifiedDate from '#/lib/get-modified-date'
+
+export type Props = {
+  node?: NodePage | NodeFolder
+}
+
+const { node } = Astro.props
+const toc = node?.slug ? getNodeToc(node.slug) : []
+const nodeData = node?.slug ? getNodeData(node.slug) : null
+const modifiedAt = nodeData?.filePath
+  ? getModifiedDate(nodeData.filePath)
+  : null
+---
+
+<aside
+  aria-label="Table of contents"
+  class="sticky hidden xl:flex w-60 min-w-60 top-20 h-[calc(100svh-5rem)] flex-col overflow-y-auto"
+>
+  <div class="pb-2 text-xs font-semibold tracking-wider">ON THIS PAGE</div>
+  <nav aria-label="Page outline">
+    <ul class="space-y-0.5">
+      {toc.map((item) => <Item tocItem={item} />)}
+    </ul>
+  </nav>
+  <div class="pt-10">
+    <p class="text-xs text-accent">{modifiedAt}</p>
+    <button
+      id="scroll-to-top"
+      class="text-xs text-accent flex py-1 items-center gap-1"
+    >
+      <ArrowLeft width={14} class="rotate-90" />
+      Scroll to top
+    </button>
+  </div>
+</aside>
+
+<script>
+  import { $$, $ } from '#/lib/dom'
+
+  const $tocItems = $$('.toc__item')
+  const $headings = $$('.prose__heading')
+  const $scrollToTop = $('#scroll-to-top')
+
+  $scrollToTop?.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  })
+
+  let activeId = ''
+
+  const handleScroll = () => {
+    const threshold = 122
+    let closestHeading = null
+    const isAtBottom =
+      window.innerHeight + window.scrollY >= document.body.offsetHeight - 10
+
+    if (isAtBottom && $headings.length > 0) {
+      closestHeading = $headings[$headings.length - 1]
+    } else {
+      for (let i = $headings.length - 1; i >= 0; i--) {
+        const $heading = $headings[i]
+        const rect = $heading.getBoundingClientRect()
+        if (rect.top <= threshold) {
+          closestHeading = $heading
+          break
+        }
+      }
+    }
+
+    if (!closestHeading && $headings.length > 0) {
+      closestHeading = $headings[0]
+    }
+
+    if (closestHeading) {
+      const $icon = $('.prose__heading__icon', closestHeading)
+      const id = $icon?.dataset['slugId']
+      if (id && id !== activeId) {
+        activeId = id
+        $tocItems.forEach(($item) => {
+          if ($item.dataset['slugId'] === activeId) {
+            $item.dataset['highlighted'] = 'true'
+          } else {
+            delete $item.dataset['highlighted']
+          }
+        })
+      }
+    }
+  }
+
+  $tocItems.forEach(($item) => {
+    $item.addEventListener('click', () => {
+      const slugId = $item.dataset['slugId']
+      if (!slugId) return
+      activeId = slugId
+      $tocItems.forEach(($i) => {
+        if ($i.dataset['slugId'] === activeId) {
+          $i.dataset['highlighted'] = 'true'
+        } else {
+          delete $i.dataset['highlighted']
+        }
+      })
+    })
+  })
+
+  window.addEventListener(
+    'scroll',
+    () => {
+      requestAnimationFrame(handleScroll)
+    },
+    { passive: true }
+  )
+
+  handleScroll()
+</script>

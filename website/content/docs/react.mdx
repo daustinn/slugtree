@@ -1,0 +1,115 @@
+---
+title: React
+description: Setup guide for using slugtree with React applications and client hooks.
+icon: ReactOutline
+---
+
+`slugtree` provides React support through `<SlugtreeProvider>` and reactive hooks from `slugtree/react`.
+
+## Installation
+
+```bash
+bun add slugtree
+# or
+pnpm add slugtree
+# or
+npm install slugtree
+```
+
+## Setup Provider
+
+Wrap your app or layout with `<SlugtreeProvider>`:
+
+```tsx
+import { SlugtreeProvider } from 'slugtree/react'
+
+export function App({ children }: { children: React.ReactNode }) {
+  return (
+    <SlugtreeProvider>
+      {children}
+    </SlugtreeProvider>
+  )
+}
+```
+
+## Navigation Sidebar
+
+Use `useTree` inside any component:
+
+```tsx
+import { useTree } from 'slugtree/react'
+
+export function Sidebar() {
+  const tree = useTree()
+
+  return (
+    <nav>
+      {tree.map((node) => {
+        if (node.type === 'label') {
+          return <p key={node.label}>{node.label}</p>
+        }
+        return (
+          <a key={node.href} href={node.href}>
+            {node.title}
+          </a>
+        )
+      })}
+    </nav>
+  )
+}
+```
+
+## Breadcrumbs
+
+```tsx
+import { useNodeBreadcrumbs } from 'slugtree/react'
+
+export function Breadcrumbs({ slug }: { slug: string[] }) {
+  const crumbs = useNodeBreadcrumbs(slug)
+
+  return (
+    <nav>
+      {crumbs.map((crumb) => (
+        <a key={crumb.href} href={crumb.href}>
+          {crumb.title}
+        </a>
+      ))}
+    </nav>
+  )
+}
+```
+
+## Search
+
+```tsx
+import { useSearchContent } from 'slugtree/react'
+
+export function SearchResults({ query }: { query: string }) {
+  const results = useSearchContent(query)
+
+  return (
+    <ul>
+      {results.map((item) => (
+        <li key={item.id}>
+          <a href={item.href}>{item.title}</a>
+        </li>
+      ))}
+    </ul>
+  )
+}
+```
+
+## All-in-one: `useSlugtree`
+
+To access state and all query functions from one hook:
+
+```tsx
+import { useSlugtree } from 'slugtree/react'
+
+export function DocsInfo() {
+  const { nodes, basePath } = useSlugtree()
+
+  return <p>{nodes.length} pages loaded under {basePath}</p>
+}
+```
+
