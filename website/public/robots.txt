@@ -1,0 +1,5 @@
+﻿User-agent: *
+Allow: /
+
+Sitemap: https://slugtree.daustinn.com/sitemap.xml
+

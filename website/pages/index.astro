@@ -1,8 +1,43 @@
 ---
 import Hero from '#/components/hero/index.astro'
 import Root from '#/layouts/root.astro'
+import { seo } from '#/const/seo'
+import { SLUGTREE } from '#/const/index'
+
+const homeSchema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: seo.name,
+    url: seo.siteUrl,
+    description: seo.description,
+    author: {
+      '@type': 'Person',
+      name: seo.author
+    }
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: seo.name,
+    description: seo.description,
+    applicationCategory: 'DeveloperApplication',
+    operatingSystem: 'Any',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD'
+    },
+    author: {
+      '@type': 'Person',
+      name: seo.author
+    },
+    codeRepository: SLUGTREE.githubURL,
+    downloadUrl: SLUGTREE.npmURL
+  }
+]
 ---
 
-<Root>
+<Root schema={homeSchema}>
   <Hero />
 </Root>

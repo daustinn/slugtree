@@ -1,5 +1,5 @@
 ---
-import { getNode, getSlugs } from 'slugtree'
+import { getNode, getNodeBreadcrumbs, getNodeData, getSlugs } from 'slugtree'
 import Root from '#/layouts/root.astro'
 import Nav from '#/components/nav.astro'
 import MdxRenderer from '#/components/mdx-renderer.astro'
@@ -8,6 +8,8 @@ import Sidebar from '#/components/sidebar.astro'
 import HeaderArticle from '#/components/header-article.astro'
 import FooterArticle from '#/components/footer-article.astro'
 import TocSidebar from '#/components/toc-sidebar.astro'
+import getModifiedDate from '#/lib/get-modified-date'
+import { seo } from '#/const/seo'
 
 export async function getStaticPaths() {
   return getSlugs().map((slug) => ({
@@ -23,11 +25,64 @@ export async function getStaticPaths() {
 const { slug } = Astro.props
 
 const node = getNode(slug)
+const nodeData = node ? getNodeData(node.slug) : null
+const modifiedTime = nodeData ? getModifiedDate(nodeData.filePath) : null
+const breadcrumbs = node ? getNodeBreadcrumbs(node.slug) : []
+
+const siteOrigin = Astro.site
+  ? Astro.site.toString().replace(/\/$/, '')
+  : seo.siteUrl.replace(/\/$/, '')
+
+const canonicalUrl = new URL(Astro.url.pathname, siteOrigin).toString()
+
+const docSchemas = node
+  ? [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'TechArticle',
+        headline: node.title,
+        description: node.description || seo.description,
+        url: canonicalUrl,
+        author: {
+          '@type': 'Person',
+          name: seo.author
+        },
+        publisher: {
+          '@type': 'Organization',
+          name: seo.name,
+          url: siteOrigin
+        },
+        ...(modifiedTime ? { dateModified: modifiedTime.toISOString() } : {})
+      },
+      ...(breadcrumbs.length > 0
+        ? [
+            {
+              '@context': 'https://schema.org',
+              '@type': 'BreadcrumbList',
+              itemListElement: breadcrumbs.map((crumb, index) => ({
+                '@type': 'ListItem',
+                position: index + 1,
+                name: crumb.title,
+                item: crumb.href
+                  ? new URL(crumb.href, siteOrigin).toString()
+                  : canonicalUrl
+              }))
+            }
+          ]
+        : [])
+    ]
+  : undefined
 ---
 
 {
   node ? (
-    <Root title={node.title} description={node.description}>
+    <Root
+      title={node.title}
+      description={node.description}
+      type="article"
+      modifiedTime={modifiedTime ?? undefined}
+      schema={docSchemas}
+    >
       <Nav />
       <main class="flex grow container">
         <Sidebar />
