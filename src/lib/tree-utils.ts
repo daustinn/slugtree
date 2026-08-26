@@ -37,7 +37,10 @@ export function findNode(treeNodes: Node[], slugPath: string): Node | null {
   return null
 }
 
-export function findParentNode(treeNodes: Node[], slugPath: string): Node | null {
+export function findParentNode(
+  treeNodes: Node[],
+  slugPath: string
+): Node | null {
   for (const node of treeNodes) {
     if (node.type === 'folder') {
       const directChild = node.children.find(
@@ -146,8 +149,7 @@ export function queryNodeSiblings(
   if (normalized.length === 0) return []
   const slugPath = normalized.join('/')
   const parent = findParentNode(tree, slugPath)
-  const siblings =
-    parent && parent.type === 'folder' ? parent.children : tree
+  const siblings = parent && parent.type === 'folder' ? parent.children : tree
   return siblings.filter(
     (n) => n.type !== 'label' && n.slug.join('/') !== slugPath
   )
@@ -242,8 +244,7 @@ export function queryNodePagination(
   })
   return {
     prev: index > 0 ? mapToItem(flatPages[index - 1]) : null,
-    next:
-      index < flatPages.length - 1 ? mapToItem(flatPages[index + 1]) : null
+    next: index < flatPages.length - 1 ? mapToItem(flatPages[index + 1]) : null
   }
 }
 
@@ -309,7 +310,7 @@ export function extractHeadingContent(
 
   const text = contentLines
     .join(' ')
-    .replace(/[#*`_~\[\]()]/g, '')
+    .replace(/[#*`_~[\]()]/g, '')
     .replace(/\s+/g, ' ')
     .trim()
 
@@ -328,7 +329,8 @@ export function searchContentNodes(
 
   for (const node of nodes) {
     const isPageLike =
-      node.type === 'page' || (node.type === 'folder' && node.href !== undefined)
+      node.type === 'page' ||
+      (node.type === 'folder' && node.href !== undefined)
     if (!isPageLike) continue
 
     const title = (node.frontMatter.title || '').toLowerCase()

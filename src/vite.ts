@@ -1,6 +1,5 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
 import type { Plugin, ViteDevServer } from 'vite'
 import type { Node, NodeData } from './types.js'
 import { generateContent, formatModuleCode } from './lib/generator.js'
@@ -9,9 +8,6 @@ import { startWatcher } from './lib/watcher.js'
 import { hasFileContentChanged } from './lib/cache.js'
 import { logChange } from './lib/logger.js'
 import { setServerData } from './server.js'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
 
 const VIRTUAL_ID = 'virtual:slugtree'
 const RESOLVED_VIRTUAL_ID = '\0' + VIRTUAL_ID
@@ -164,6 +160,7 @@ function slugtree(options: PluginOptions = {}): Plugin {
         config.command === 'serve' &&
         (config.mode === 'production' ||
           process.argv.some((arg) => arg.includes('preview')) ||
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (config as any).isPreview)
 
       if (isPreview) {
