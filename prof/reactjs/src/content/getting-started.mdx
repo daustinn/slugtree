@@ -1,0 +1,32 @@
+---
+title: Getting Started
+description: Quick installation and setup guide for Slugtree in React
+---
+
+# Getting Started
+
+Install the `slugtree` package into your React project using your favorite package manager.
+
+## Installation
+
+```bash
+bun add slugtree
+```
+
+## Setup Vite Plugin
+
+Add `slugtree` to your `vite.config.ts` file:
+
+```ts
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import slugtree from 'slugtree/vite'
+
+export default defineConfig({
+  plugins: [slugtree(), react()]
+})
+```
+
+## Provider Setup
+
+Wrap your application root with `SlugtreeProvider` from `slugtree/react`.

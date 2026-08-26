@@ -1,0 +1,20 @@
+---
+title: React Hooks API
+description: Full reference of all React hooks provided by slugtree/react
+---
+
+# React Hooks API
+
+Slugtree exports lightweight, context-driven React hooks to query documentation metadata anywhere in your app.
+
+## Available Hooks
+
+- `useTree()`: Returns the full hierarchical tree of nodes.
+- `useAllNodes()`: Returns all flattened nodes.
+- `usePageNodes()`: Returns all page-only nodes.
+- `useNode(slug)`: Returns the Node object matching the specified slug.
+- `useNodeData(slug)`: Returns frontmatter, raw content, and TOC for the slug.
+- `useSearchContent(query)`: Searches across all documentation with match scoring.
+- `useNodeBreadcrumbs(slug)`: Returns the breadcrumbs path.
+- `useNodeToc(slug)`: Returns the table of contents headings.
+- `useNodePagination(slug)`: Returns previous and next navigation items.

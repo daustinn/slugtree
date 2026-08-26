@@ -1,0 +1,5 @@
+{
+  "title": "API Reference",
+  "description": "Complete reference of hooks and server utilities",
+  "nodes": ["server-functions", "react-hooks"]
+}
