@@ -1,15 +1,11 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
 import type { AstroIntegration } from 'astro'
 import type { Plugin, ViteDevServer, ModuleNode } from 'vite'
 import { generateContent } from './lib/generator.js'
 import { hasFileContentChanged } from './lib/cache.js'
 import { logChange } from './lib/logger.js'
 import { setServerData } from './server.js'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
 
 export interface PluginOptions {
   /**
