@@ -1,0 +1,5 @@
+{
+  "title": "Guides",
+  "description": "Step-by-step developer guides and implementation patterns",
+  "nodes": ["routing", "styling", "--- Advanced Topics ---", "advanced"]
+}

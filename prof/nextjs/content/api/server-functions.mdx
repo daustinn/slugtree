@@ -1,0 +1,30 @@
+---
+title: Server Functions
+description: getTree, getNode, getSlugs, and server-side utilities.
+icon: terminal
+---
+
+# Server Functions
+
+Functions available from `slugtree` for Server Components and static routes.
+
+## `getTree()`
+
+Returns the root hierarchical array of nodes.
+
+```ts
+import { getTree } from 'slugtree'
+
+export default function Page() {
+  const tree = getTree()
+  return <Sidebar tree={tree} />
+}
+```
+
+## `getNode(slug)`
+
+Returns node information for a specific slug path.
+
+## `getSlugs()`
+
+Retrieves all page slug arrays for `generateStaticParams`.
