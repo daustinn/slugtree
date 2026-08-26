@@ -1,6 +1,5 @@
 ---
 import { getTree } from 'slugtree'
-import { $, $$ } from '#/lib/dom'
 import nodeIcons from './node-icons'
 
 const tree = getTree()
@@ -60,7 +59,6 @@ const pathname = Astro.url.pathname.replace(/\/$/, '')
                 </span>
               )
 
-            const Icon = nodeIcons[node.icon as keyof typeof nodeIcons]
             const isActive = pathname.endsWith(node.href || '')
             return (
               <li>
