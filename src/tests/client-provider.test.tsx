@@ -1,7 +1,7 @@
 import React from 'react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import type { Node, NodeData, NodeFolder } from '../types.js'
-import ClientProvider, {
+import SlugtreeProvider, {
   ClientContext,
   useTree,
   useNode,
@@ -16,10 +16,13 @@ import ClientProvider, {
   usePageNodes,
   useFindNodes,
   useIsNodeActive,
+  useIsNodeChildrenActive,
+  useIsNodeChildrenAction,
   useNodeBreadcrumbs,
   useNodeToc,
-  useNodePagination
-} from '../client-provider.js'
+  useNodePagination,
+  useSlugtree
+} from '../react-provider.js'
 
 const mockTree: Node[] = [
   {
@@ -60,6 +63,7 @@ const mockNodes: NodeData[] = [
     slug: [],
     href: '/docs',
     filePath: 'content/index.mdx',
+    relativePath: 'content/index.mdx',
     frontMatter: { title: 'Home', description: 'Home description' },
     toc: [{ id: 'home', text: 'Home', depth: 1 }],
     rawContent: '# Home'
@@ -69,6 +73,7 @@ const mockNodes: NodeData[] = [
     slug: ['installation'],
     href: '/docs/installation',
     filePath: 'content/installation.mdx',
+    relativePath: 'content/installation.mdx',
     frontMatter: { title: 'Installation', description: 'Install guide' },
     toc: [{ id: 'install', text: 'Install', depth: 1 }],
     rawContent: '# Install'
@@ -78,6 +83,7 @@ const mockNodes: NodeData[] = [
     slug: ['guides', 'routing'],
     href: '/docs/guides/routing',
     filePath: 'content/guides/routing.mdx',
+    relativePath: 'content/guides/routing.mdx',
     frontMatter: { title: 'Routing', description: 'Routing guide' },
     toc: [{ id: 'routing', text: 'Routing', depth: 1 }],
     rawContent: '# Routing'
@@ -187,6 +193,15 @@ describe('client-provider hooks', () => {
     expect(useIsNodeActive([], ['guides'])).toBe(false)
   })
 
+  it('useIsNodeChildrenActive detects active children correctly', () => {
+    expect(useIsNodeChildrenActive(['guides'], ['guides', 'routing'])).toBe(true)
+    expect(useIsNodeChildrenActive('guides', 'guides/routing')).toBe(true)
+    expect(useIsNodeChildrenActive(['guides'], ['guides'])).toBe(false)
+    expect(useIsNodeChildrenActive('guides', 'guides')).toBe(false)
+    expect(useIsNodeChildrenActive(['guides'], ['installation'])).toBe(false)
+    expect(useIsNodeChildrenAction(['guides'], ['guides', 'routing'])).toBe(true)
+  })
+
   it('useNodeBreadcrumbs returns correct breadcrumb objects', () => {
     const crumbs = useNodeBreadcrumbs(['guides', 'routing'])
     expect(crumbs).toEqual([
@@ -217,13 +232,23 @@ describe('client-provider hooks', () => {
     expect(last?.next).toBeNull()
   })
 
-  it('ClientProvider renders context provider correctly', () => {
-    const element = ClientProvider({
-      slot: mockContextValue,
-      children: <div />
-    })
+  it('useSlugtree provides unified state and helper functions', () => {
+    const slugtree = useSlugtree()
+    expect(slugtree.tree).toEqual(mockTree)
+    expect(slugtree.nodes).toEqual(mockNodes)
+    expect(slugtree.basePath).toBe('/docs')
+    expect(slugtree.slugs).toEqual([[], ['installation'], ['guides', 'routing']])
+    expect(slugtree.isNodeActive(['guides'], ['guides', 'routing'])).toBe(true)
+    expect(slugtree.isNodeChildrenActive(['guides'], ['guides', 'routing'])).toBe(true)
+    expect(slugtree.getNode(['installation'])?.title).toBe('Installation')
+    expect(slugtree.getNodeBreadcrumbs(['guides', 'routing'])).toHaveLength(2)
+    expect(slugtree.searchContent('routing')).toHaveLength(1)
+  })
+
+  it('SlugtreeProvider renders context provider correctly', () => {
+    const element = <SlugtreeProvider slot={mockContextValue}><div /></SlugtreeProvider>
     expect(element).toBeDefined()
-    expect(element.type).toBe(ClientContext.Provider)
-    expect(element.props.value).toEqual(mockContextValue)
+    expect(element.type).toBe(SlugtreeProvider)
+    expect(element.props.slot).toEqual(mockContextValue)
   })
 })
