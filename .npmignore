@@ -1,39 +1,35 @@
-# website (docs site, not part of the npm package)
 website/
-
-# source code (consumers use dist/)
 src/
 scripts/
 prof/
-
-# generated data (user-specific, written at dev/build time)
 dist/generated/
-
-# config and tooling
+.github/
+.release-please-manifest.json
+release-please-config.json
 tsconfig*.json
 vitest.config.ts
 turbo.json
 .turbo/
 .prettierrc*
 .eslintrc*
-
-# lock files
+eslint.config.*
+.npmignore
+.gemini/
+.agents/
+skills-lock.json
 bun.lock
 bun.lockb
 package-lock.json
 yarn.lock
 pnpm-lock.yaml
-
-# editor and OS
+pnpm-workspace.yaml
 .vscode/
 .DS_Store
 Thumbs.db
-
-# git
 .git/
 .gitignore
-
-# misc
 *.tsbuildinfo
+*.log
+*.pem
 .env
 .env.*
