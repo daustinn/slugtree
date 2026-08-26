@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.0](https://github.com/daustinn/slugtree/compare/slugtree-v0.9.1...slugtree-v0.10.0) (2026-08-26)
+
+
+### Features
+
+* **core:** add jsdoc documentation to exported types ([74f7bc2](https://github.com/daustinn/slugtree/commit/74f7bc2aed44b89f2081ab0d8655d68e8ac445ba))
+
 ## [0.9.1](https://github.com/daustinn/slugtree/compare/slugtree-v0.9.0...slugtree-v0.9.1) (2026-08-10)
 
 
