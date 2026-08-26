@@ -2,12 +2,12 @@
 
 @font-face {
   font-family: 'Geist';
-  src: url('/slugtree/geist.ttf') format('truetype');
+  src: url('/geist.woff2') format('woff2');
   font-display: swap;
 }
 
 :root {
-  --backoground: white;
+  --background: white;
   --foreground: black;
   --border: rgba(0, 0, 0, 0.15);
   --accent: #2563eb;
@@ -15,9 +15,10 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --backoground: black;
+    --background: black;
     --foreground: white;
     --border: rgba(255, 255, 255, 0.15);
+    --accent: #60a5fa;
     color-scheme: dark;
   }
 }
@@ -25,7 +26,7 @@
 @theme inline {
   --font-geist: 'Geist';
   --color-foreground: var(--foreground);
-  --color-background: var(--backoground);
+  --color-background: var(--background);
   --color-border: var(--border);
   --color-accent: var(--accent);
 }
@@ -36,7 +37,7 @@ a {
 }
 
 body {
-  background-color: var(--backoground);
+  background-color: var(--background);
   color: var(--foreground);
 }
 

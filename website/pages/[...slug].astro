@@ -12,7 +12,7 @@ import TocSidebar from '#/components/toc-sidebar.astro'
 export async function getStaticPaths() {
   return getSlugs().map((slug) => ({
     params: {
-      path: Array.isArray(slug) ? slug.join('/') : slug
+      slug: Array.isArray(slug) ? slug.join('/') : slug
     },
     props: {
       slug
@@ -27,11 +27,7 @@ const node = getNode(slug)
 
 {
   node ? (
-    <Root
-      class="dark:bg-[#09090b]!"
-      title={node.title}
-      description={node.description}
-    >
+    <Root title={node.title} description={node.description}>
       <Nav />
       <main class="flex grow container">
         <Sidebar />
@@ -51,6 +47,15 @@ const node = getNode(slug)
     <NotFound />
   )
 }
+
+<style is:global>
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background: #0f0f0f;
+    }
+  }
+</style>
+
 <script>
   import { $$, $ } from '#/lib/dom'
   const $headings = $$('.prose__heading')

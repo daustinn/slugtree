@@ -5,7 +5,7 @@ import nodeIcons from './node-icons'
 
 const tree = getTree()
 
-const { pathname } = Astro.url
+const pathname = Astro.url.pathname.replace(/\/$/, '')
 ---
 
 <aside
@@ -61,7 +61,7 @@ const { pathname } = Astro.url
               )
 
             const Icon = nodeIcons[node.icon as keyof typeof nodeIcons]
-            const isActive = pathname === node.href
+            const isActive = pathname.endsWith(node.href || '')
             return (
               <li>
                 <a
@@ -69,11 +69,6 @@ const { pathname } = Astro.url
                   href={node.href}
                   class="flex tracking-tight items-center hover:opacity-60 group data-active:font-semibold data-active:opacity-100 opacity-70 gap-2 py-1"
                 >
-                  {Icon && (
-                    <span class="inline-block aspect-square rounded-md p-1 group-data-active:bg-foreground bg-foreground/10 group-data-active:text-background">
-                      <Icon width={17} />
-                    </span>
-                  )}
                   {node.title}
                 </a>
               </li>
