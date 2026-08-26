@@ -17,11 +17,17 @@ export interface TocItem {
   depth: number
 }
 
+/**
+ * Text separator or section heading in navigation tree
+ */
 export interface NodeLabel {
   type: 'label'
   label: string
 }
 
+/**
+ * Individual documentation page node
+ */
 export interface NodePage {
   type: 'page'
   slug: string[]
@@ -31,6 +37,9 @@ export interface NodePage {
   icon?: string
 }
 
+/**
+ * Directory or folder node containing child pages and folders
+ */
 export interface NodeFolder {
   type: 'folder'
   title: string
@@ -41,10 +50,19 @@ export interface NodeFolder {
   icon?: string
 }
 
+/**
+ * Union of all possible tree node items
+ */
 export type Node = NodeLabel | NodePage | NodeFolder
 
+/**
+ * Hierarchical tree structure of navigation nodes
+ */
 export type Tree = Node[]
 
+/**
+ * Full node metadata including frontmatter, table of contents, and raw content
+ */
 export interface NodeData {
   type: 'page' | 'folder'
   slug: string[]
