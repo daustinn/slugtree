@@ -72,11 +72,12 @@ function isDevMode(): boolean {
  * })
  * ```
  */
-export function withSlugtree<T extends Record<string, any> = Record<string, any>>(
-  nextConfig?: T,
-  options: PluginOptions = {}
-): T {
+export function withSlugtree<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  T extends Record<string, any> = Record<string, any>
+>(nextConfig?: T, options: PluginOptions = {}): T {
   const cfg = (nextConfig ?? {}) as T & {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     webpack?: (config: any, options: any) => any
   }
   const cwd = process.cwd()
@@ -121,6 +122,7 @@ export function withSlugtree<T extends Record<string, any> = Record<string, any>
       },
       ...(cfg.turbopack || {})
     },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     webpack(config: any, options: any) {
       config.resolve = config.resolve || {}
       config.resolve.alias = config.resolve.alias || {}
