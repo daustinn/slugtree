@@ -16,6 +16,7 @@ export {
   getNodesByFrontMatter,
   getSlugs,
   isNodeActive,
+  isNodeChildrenActive,
   getNodePagination,
   getNodeBreadcrumbs,
   getNodeToc,
