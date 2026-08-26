@@ -32,6 +32,9 @@
     },
     "start": {
       "persistent": true
+    },
+    "deploy": {
+      "dependsOn": ["build"]
     }
   }
 }

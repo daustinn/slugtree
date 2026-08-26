@@ -10,6 +10,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "lint": "eslint .",
+    "deploy": "wrangler deploy",
     "astro": "astro"
   },
   "dependencies": {
@@ -35,6 +36,7 @@
     "eslint": "10.9.1",
     "eslint-plugin-astro": "3.1.0",
     "prettier-plugin-astro": "0.14.1",
-    "typescript-eslint": "8.68.0"
+    "typescript-eslint": "8.68.0",
+    "wrangler": "4.126.0"
   }
 }

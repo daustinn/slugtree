@@ -1,6 +1,6 @@
 import { defineConfig } from 'astro/config'
 import process, { loadEnvFile } from 'node:process'
-// import cloudflare from '@astrojs/cloudflare'
+import cloudflare from '@astrojs/cloudflare'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'node:path'
 import preact from '@astrojs/preact'
@@ -26,9 +26,9 @@ export default defineConfig({
     }),
     preact({ compat: true })
   ],
-  // adapter: cloudflare({
-  //   prerenderEnvironment: 'node'
-  // }),
+  adapter: cloudflare({
+    prerenderEnvironment: 'node'
+  }),
   vite: {
     plugins: [tailwindcss()]
   }

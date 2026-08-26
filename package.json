@@ -71,7 +71,8 @@
     "dev:website": "turbo run dev --filter website",
     "build:website": "turbo run build --filter website",
     "preview:website": "turbo run preview --filter website",
-    "lint:website": "turbo run lint --filter website"
+    "lint:website": "turbo run lint --filter website",
+    "deploy:website": "turbo run deploy --filter website"
   },
   "repository": {
     "type": "git",
