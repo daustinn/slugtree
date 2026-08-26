@@ -1,0 +1,27 @@
+---
+title: Getting Started
+description: Quickstart guide to install and configure Slugtree in your Next.js project.
+icon: play
+---
+
+# Getting Started
+
+Learn how to get up and running with Slugtree in under 2 minutes.
+
+## Installation
+
+```bash
+bun add slugtree
+```
+
+## Setup Next.js Config
+
+Wrap your `next.config.ts` with `withSlugtree`:
+
+```ts
+import withSlugtree from 'slugtree/next'
+
+export default withSlugtree({
+  // your next config
+})
+```
