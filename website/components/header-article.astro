@@ -17,6 +17,8 @@ export type Props = {
   node: NodePage | NodeFolder
 }
 
+const { node } = Astro.props
+
 const siteOrigin = Astro.site
   ? Astro.site.toString()
   : (import.meta.env.SITE ?? 'https://slugtree.daustinn.com')
