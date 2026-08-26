@@ -1,0 +1,13 @@
+---
+title: Caching Strategies
+description: Optimizing static generation and memory footprints.
+icon: database
+---
+
+# Caching Strategies
+
+Slugtree uses content hash checks (`hasFileContentChanged`) to prevent redundant builds during development.
+
+## Incremental Build
+
+Only modified MDX documents trigger rebuild and hot updates.
