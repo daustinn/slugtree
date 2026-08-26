@@ -1,5 +1,5 @@
 export default (to: string) => {
-  let base = ''
+  let base: string
   try {
     const { pathname } = new URL(
       import.meta.env.SITE + (import.meta.env.SITE_BASE ?? '')

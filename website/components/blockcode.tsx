@@ -28,7 +28,6 @@ export interface BlockCodeProps extends Omit<
   lang?: string
   copy?: boolean
   lineNumbers?: boolean
-  title?: string
   children?: React.ReactNode
 }
 
@@ -38,7 +37,6 @@ export default function BlockCode({
   className,
   copy = true,
   lineNumbers = true,
-  title,
   ...props
 }: BlockCodeProps) {
   const codeContent =
@@ -48,9 +46,10 @@ export default function BlockCode({
         ? children.join('').trimEnd()
         : String(children || '').trimEnd()
 
-  let html = ''
+  let html: string
   try {
     const loadedLangs = highlighter.getLoadedLanguages()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const targetLang = loadedLangs.includes(lang as any) ? lang : 'text'
 
     html = highlighter.codeToHtml(codeContent, {
@@ -70,6 +69,7 @@ export default function BlockCode({
         'outline-4 outline-offset-0 group outline-border bg-black dark:bg-border/50 text-sm relative rounded-2xl overflow-hidden overflow-x-auto',
         className
       )}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       {...(props as any)}
     >
       <div className="overflow-x-auto">

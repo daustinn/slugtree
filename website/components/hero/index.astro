@@ -192,6 +192,8 @@ import PixelBlastBackground from './pixel-blast-background.astro'
         toast?.classList.remove('opacity-100')
         toast?.classList.add('opacity-0')
       }, 2000)
-    } catch {}
+    } catch {
+      // Ignore clipboard write error
+    }
   })
 </script>
