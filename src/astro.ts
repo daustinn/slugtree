@@ -1,10 +1,12 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import pc from 'picocolors'
 import type { AstroIntegration } from 'astro'
 import type { Plugin, ViteDevServer, ModuleNode } from 'vite'
 import { generateContent } from './lib/generator.js'
+import { hasFileContentChanged } from './lib/cache.js'
+import { logChange } from './lib/logger.js'
+import { setServerData } from './server.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -12,17 +14,24 @@ const __dirname = path.dirname(__filename)
 export interface PluginOptions {
   /**
    * The directory containing your MDX content files.
-   * @default './src/content'
+   * Resolves relative to project root.
+   *
+   * @default './src/content' (or './content' if src does not exist)
    */
   contentDir?: string
+
   /**
-   * The output directory for the generated metadata.
-   * @default './src/generated'
+   * The output directory for the generated metadata files.
+   * Resolves relative to project root.
+   *
+   * @default '.slugtree'
    */
   outputDir?: string
+
   /**
-   * The base URL path where your docs will be served.
-   * @default '/docs'
+   * The base URL path where your documentation is hosted (e.g. '/docs').
+   *
+   * @default '/'
    */
   basePath?: string
 }
@@ -35,8 +44,8 @@ interface InternalOptions {
 
 const DEFAULT_OPTIONS: InternalOptions = {
   contentDir: './src/content',
-  outputDir: path.resolve(__dirname, '..', 'src', 'generated'),
-  basePath: '/docs'
+  outputDir: '.slugtree',
+  basePath: '/'
 }
 
 const CONTENT_EXTENSIONS = ['.mdx', '.md', '.json']
@@ -45,12 +54,37 @@ function isContentFile(filepath: string): boolean {
   return CONTENT_EXTENSIONS.some((ext) => filepath.endsWith(ext))
 }
 
-export default function slugtree(
-  options: PluginOptions = {}
-): AstroIntegration {
+/**
+ * Astro integration for Slugtree documentation builder.
+ *
+ * Scans your MDX content folder during `astro:config:setup`, builds navigation
+ * hierarchies in `.slugtree`, configures Vite module aliases, and invalidates
+ * generated modules on content updates in dev mode.
+ *
+ * @param options - Configuration options for content directory, output path, and base URL.
+ * @returns Astro integration object.
+ *
+ * @example
+ * ```ts
+ * // astro.config.mjs
+ * import { defineConfig } from 'astro/config'
+ * import mdx from '@astrojs/mdx'
+ * import slugtree from 'slugtree/astro'
+ *
+ * export default defineConfig({
+ *   integrations: [
+ *     slugtree({
+ *       contentDir: './src/content',
+ *       basePath: '/docs'
+ *     }),
+ *     mdx()
+ *   ]
+ * })
+ * ```
+ */
+function slugtree(options: PluginOptions = {}): AstroIntegration {
   let resolvedContentDir: string
   let resolvedOutputDir: string
-  let resolvedDistOutputDir: string
   let basePath: string
 
   return {
@@ -75,25 +109,26 @@ export default function slugtree(
           : path.resolve(cwd, opts.outputDir)
         basePath = opts.basePath
 
-        resolvedDistOutputDir = path.resolve(
-          __dirname,
-          '..',
-          'dist',
-          'generated'
-        )
-
-        console.log(pc.magenta(`\n> slugtree initializing for astro...`))
-
-        generateContent(
+        const generatedData = generateContent(
           resolvedContentDir,
           resolvedOutputDir,
-          basePath,
-          resolvedDistOutputDir
+          basePath
         )
+        setServerData(generatedData)
 
         const vitePlugin: Plugin = {
           name: 'slugtree:hmr',
           enforce: 'pre',
+
+          config() {
+            return {
+              resolve: {
+                alias: {
+                  'slugtree/generated': resolvedOutputDir
+                }
+              }
+            }
+          },
 
           handleHotUpdate({
             file,
@@ -105,28 +140,23 @@ export default function slugtree(
             const normalized = file.replace(/\\/g, '/')
             const contentNorm = resolvedContentDir.replace(/\\/g, '/')
             const outputNorm = resolvedOutputDir.replace(/\\/g, '/')
-            const distNorm = resolvedDistOutputDir?.replace(/\\/g, '/')
 
             const isInsideContent = normalized.startsWith(contentNorm)
-            const isInsideOutput =
-              normalized.startsWith(outputNorm) ||
-              (distNorm != null && normalized.startsWith(distNorm))
+            const isInsideOutput = normalized.startsWith(outputNorm)
 
             if (!isInsideContent || isInsideOutput || !isContentFile(file))
               return
+            if (!hasFileContentChanged(file)) return
 
-            console.log(
-              pc.cyan(
-                `slugtree: change detected in ${path.relative(process.cwd(), file)}, rebuilding...`
-              )
-            )
+            const relativePath = path.relative(process.cwd(), file)
+            logChange(relativePath)
 
-            generateContent(
+            const data = generateContent(
               resolvedContentDir,
               resolvedOutputDir,
-              basePath,
-              resolvedDistOutputDir
+              basePath
             )
+            setServerData(data)
 
             if (file.endsWith('.json')) {
               server.restart()
@@ -135,11 +165,7 @@ export default function slugtree(
 
             const affectedModules: ModuleNode[] = []
             for (const mod of server.moduleGraph.idToModuleMap.values()) {
-              if (
-                mod.id &&
-                (mod.id.startsWith(outputNorm) ||
-                  (distNorm && mod.id.startsWith(distNorm)))
-              ) {
+              if (mod.id && mod.id.startsWith(outputNorm)) {
                 server.moduleGraph.invalidateModule(mod)
                 affectedModules.push(mod)
               }
@@ -149,12 +175,47 @@ export default function slugtree(
           }
         }
 
-        updateConfig({ vite: { plugins: [vitePlugin] } })
+        updateConfig({
+          vite: {
+            plugins: [vitePlugin],
+            resolve: {
+              alias: {
+                'slugtree/generated': resolvedOutputDir
+              }
+            }
+          }
+        })
       }
     }
   }
 }
 
+/**
+ * Resolves and returns the rendered MDX component for the specified slug in Astro.
+ *
+ * @param slug - The slug array or string (e.g. ['guides', 'routing'] or 'guides/routing').
+ * @param mdxGlob - The result of `import.meta.glob('./content/**\/*.mdx')`.
+ * @returns The MDX Content component, or null if not found.
+ *
+ * @example
+ * ```astro
+ * ---
+ * // src/pages/docs/[...slug].astro
+ * import { getAstroContent, getSlugs } from 'slugtree/astro'
+ *
+ * export async function getStaticPaths() {
+ *   return getSlugs().map((slug) => ({
+ *     params: { slug: slug.join('/') || undefined }
+ *   }))
+ * }
+ *
+ * const { slug } = Astro.params
+ * const Content = await getAstroContent(slug ?? '', import.meta.glob('../../content/**\/*.mdx'))
+ * ---
+ *
+ * <Content />
+ * ```
+ */
 export async function getAstroContent(
   slug: string | string[],
   mdxGlob: Record<
@@ -180,3 +241,5 @@ export async function getAstroContent(
 
   return null
 }
+
+export default slugtree
