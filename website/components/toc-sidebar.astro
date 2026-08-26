@@ -6,20 +6,22 @@ import {
   getNodeData
 } from 'slugtree'
 import Item from './toc-sidebar-item.astro'
-import fs from 'node:fs'
 import ArrowLeft from '#/assets/arrow-left.svg'
+import Github from '#/assets/github.svg'
 import getModifiedDate from '#/lib/get-modified-date'
+import { SLUGTREE } from '#/const'
 
 export type Props = {
   node?: NodePage | NodeFolder
 }
 
 const { node } = Astro.props
-const toc = node?.slug ? getNodeToc(node.slug) : []
-const nodeData = node?.slug ? getNodeData(node.slug) : null
-const modifiedAt = nodeData?.filePath
-  ? getModifiedDate(nodeData.filePath)
-  : null
+const toc = getNodeToc(node?.slug)
+const nodeData = getNodeData(node?.slug)
+const modifiedAt = getModifiedDate(nodeData?.filePath)
+
+const githubBlobUrl =
+  SLUGTREE.githubURL + '/blob/main/website/' + nodeData?.relativePath
 ---
 
 <aside
@@ -32,8 +34,25 @@ const modifiedAt = nodeData?.filePath
       {toc.map((item) => <Item tocItem={item} />)}
     </ul>
   </nav>
-  <div class="pt-10">
-    <p class="text-xs text-accent">{modifiedAt}</p>
+  <div class="pt-20">
+    <p class="text-xs mb-1">
+      Last edited on {
+        modifiedAt?.toLocaleString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric'
+        })
+      }
+    </p>
+    <a
+      id="github-blob"
+      class="text-xs text-accent flex py-1 items-center gap-1"
+      href={githubBlobUrl}
+      target="_blank"
+    >
+      <Github width={14} />
+      Edit this page on GitHub
+    </a>
     <button
       id="scroll-to-top"
       class="text-xs text-accent flex py-1 items-center gap-1"
