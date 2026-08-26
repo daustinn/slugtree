@@ -12,6 +12,7 @@ turbo.json
 .turbo/
 .prettierrc*
 .eslintrc*
+.slugtree*
 eslint.config.*
 .npmignore
 .gemini/
