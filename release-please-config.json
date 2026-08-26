@@ -3,7 +3,9 @@
     ".": {
       "release-type": "node",
       "exclude-paths": [
-        "website"
+        "website",
+        "prof",
+        ".github"
       ]
     }
   }
