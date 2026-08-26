@@ -3,6 +3,7 @@ import path from 'node:path'
 import type { Node, NodeData } from '../types.js'
 import { parseFrontMatter, extractToc, readConfigFromDir } from './parser.js'
 import { slugToHref, isLabel, extractLabelText, capitalize } from './utils.js'
+import { setCachedFileContent } from './cache.js'
 
 export function buildPageNode(
   filePath: string,
@@ -13,6 +14,7 @@ export function buildPageNode(
   let raw = ''
   try {
     raw = fs.readFileSync(filePath, 'utf-8')
+    setCachedFileContent(filePath, raw)
   } catch {
     // ignore
   }
@@ -23,11 +25,14 @@ export function buildPageNode(
   const toc = extractToc(content)
   const href = frontMatter.href ?? slugToHref(slug, basePath)
 
+  const relativePath = path.relative(process.cwd(), filePath).replace(/\\/g, '/')
+
   const nodeData: NodeData = {
     type: 'page',
     slug,
     href,
     filePath,
+    relativePath,
     frontMatter,
     toc,
     rawContent: content
@@ -147,6 +152,7 @@ export function buildFolderNode(
     let raw = ''
     try {
       raw = fs.readFileSync(indexPath, 'utf-8')
+      setCachedFileContent(indexPath, raw)
     } catch {
       // ignore
     }
@@ -161,11 +167,14 @@ export function buildFolderNode(
   const childNodesData: NodeData[] = []
   const children = buildDirNodes(dirPath, slug, basePath, childNodesData)
 
+  const folderRelativePath = path.relative(process.cwd(), folderFilePath).replace(/\\/g, '/')
+
   const folderNodeData: NodeData = {
     type: 'folder',
     slug,
     href: folderHref,
     filePath: folderFilePath,
+    relativePath: folderRelativePath,
     frontMatter: folderFrontMatter,
     toc: folderToc,
     rawContent: folderRawContent,

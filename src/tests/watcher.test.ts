@@ -30,8 +30,6 @@ describe('watcher', () => {
   })
 
   it('starts watcher and registers event listener', async () => {
-    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
-
     await startWatcher('/content', '/output', '/docs')
 
     expect(mockWatch).toHaveBeenCalledWith('/content', {
@@ -39,7 +37,6 @@ describe('watcher', () => {
       cwd: process.cwd()
     })
     expect(mockOn).toHaveBeenCalledWith('all', expect.any(Function))
-    expect(consoleSpy).toHaveBeenCalled()
   })
 
   it('triggers content generation on mdx change', async () => {
@@ -60,8 +57,7 @@ describe('watcher', () => {
     expect(generateContent).toHaveBeenCalledWith(
       '/content',
       '/output',
-      '/docs',
-      undefined
+      '/docs'
     )
   })
 

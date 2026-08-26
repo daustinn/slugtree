@@ -1,18 +1,24 @@
 import path from 'node:path'
-import pc from 'picocolors'
+import type { Node, NodeData } from '../types.js'
 import { generateContent } from './generator.js'
+import { hasFileContentChanged } from './cache.js'
+import { logChange, logWarn } from './logger.js'
 
 export async function startWatcher(
   resolvedContentDir: string,
   resolvedOutputDir: string,
   basePath: string,
-  resolvedDistOutputDir?: string
+  onChange?: (data: {
+    tree: Node[]
+    nodes: NodeData[]
+    basePath: string
+  }) => void
 ): Promise<void> {
   let chokidar: typeof import('chokidar')
   try {
     chokidar = await import('chokidar')
   } catch {
-    console.warn(pc.yellow('slugtree: chokidar not found, watching disabled'))
+    logWarn('chokidar not found, watching disabled')
     return
   }
 
@@ -23,24 +29,31 @@ export async function startWatcher(
 
   let timeout: ReturnType<typeof setTimeout>
   watcher.on('all', (_event: string, filename: string) => {
-    if (filename && (filename.endsWith('.mdx') || filename.endsWith('.md') || filename.endsWith('.json'))) {
+    if (
+      filename &&
+      (filename.endsWith('.mdx') ||
+        filename.endsWith('.md') ||
+        filename.endsWith('.json'))
+    ) {
+      const fullPath = path.isAbsolute(filename)
+        ? filename
+        : path.resolve(process.cwd(), filename)
+
+      if (!hasFileContentChanged(fullPath)) {
+        return
+      }
+
       clearTimeout(timeout)
       timeout = setTimeout(() => {
-        console.log(
-          pc.cyan(`slugtree: change detected in ${filename}, rebuilding...`)
-        )
-        generateContent(
+        const relativePath = path.relative(process.cwd(), fullPath)
+        logChange(relativePath)
+        const generatedData = generateContent(
           resolvedContentDir,
           resolvedOutputDir,
-          basePath,
-          resolvedDistOutputDir
+          basePath
         )
+        onChange?.(generatedData)
       }, 100)
     }
   })
-
-  console.log(
-    pc.blue('slugtree: watching for changes in ') +
-      pc.dim(path.relative(process.cwd(), resolvedContentDir))
-  )
 }
