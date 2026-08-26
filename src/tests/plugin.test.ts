@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { withSlugtree } from '../plugin.js'
+import { withSlugtree } from '../next.js'
 import fs from 'node:fs'
 import path from 'node:path'
 import os from 'node:os'
@@ -23,11 +23,11 @@ describe('plugin', () => {
       basePath: '/docs'
     })
 
-    expect(wrappedConfig).toBe(nextConfig)
     expect(wrappedConfig.reactStrictMode).toBe(true)
+    expect(typeof wrappedConfig.webpack).toBe('function')
 
     expect(fs.existsSync(outputDir)).toBe(true)
-    expect(fs.existsSync(path.join(outputDir, 'tree.ts'))).toBe(true)
+    expect(fs.existsSync(path.join(outputDir, 'tree.js'))).toBe(true)
 
     consoleSpy.mockRestore()
 
