@@ -21,6 +21,7 @@ export default function Heading<T extends HeadingTag = 'h2'>({
   const id = slugify(childrenText)
 
   return (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     <Tag {...(props as any)} id={id}>
       <a
         href={`#${id}`}

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import base from '#/lib/base'
 import BlockCode from './blockcode'
 import Heading, { type HeadingProps } from './heading'
