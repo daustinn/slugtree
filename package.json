@@ -7,14 +7,17 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "workspaces": [
-    "prof/*",
-    "website/",
-    "."
+    "website",
+    "prof/reactjs",
+    "prof/nextjs"
   ],
   "typesVersions": {
     "*": {
       "react": [
         "./dist/react.d.ts"
+      ],
+      "vite": [
+        "./dist/vite.d.ts"
       ],
       "next": [
         "./dist/next.d.ts"
@@ -33,6 +36,10 @@
       "types": "./dist/react.d.ts",
       "import": "./dist/react.js"
     },
+    "./vite": {
+      "types": "./dist/vite.d.ts",
+      "import": "./dist/vite.js"
+    },
     "./next": {
       "types": "./dist/next.d.ts",
       "import": "./dist/next.js",
@@ -42,15 +49,24 @@
       "types": "./dist/astro.d.ts",
       "import": "./dist/astro.js",
       "require": "./dist/astro.js"
+    },
+    "./generated": {
+      "types": "./dist/generated.d.ts",
+      "import": "./dist/generated.js"
+    },
+    "./generated/*": {
+      "types": "./dist/generated/*.d.ts",
+      "import": "./dist/generated/*.js"
     }
   },
   "files": [
     "dist"
   ],
   "scripts": {
-    "dev": "tsc --watch",
-    "build": "node scripts/mock-generated.js && tsc",
-    "test": "node scripts/mock-generated.js && vitest run",
+    "dev": "turbo run dev //#watch",
+    "watch": "tsc --watch",
+    "build": "tsc",
+    "test": "vitest run",
     "lint": "eslint ."
   },
   "repository": {
@@ -84,15 +100,16 @@
     "@types/chai": "5.2.3",
     "@types/node": "20",
     "@types/react": "19",
-    "astro": ">=6.0",
+    "astro": "7.2.6",
     "eslint": "10.4.1",
     "next": ">=16.0.0",
+    "prettier": "3.9.6",
     "react": ">=19.0.0",
     "react-dom": ">=19.0.0",
     "turbo": "2.9.16",
     "typescript": "5.9.2",
-    "vite": ">=5.0.0",
+    "vite": "8.2.2",
     "vitest": "2.0.0"
   },
-  "packageManager": "pnpm@9.4.0"
+  "packageManager": "bun@1.2.22"
 }
