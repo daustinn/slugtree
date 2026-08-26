@@ -1,19 +1,31 @@
 import { defineConfig } from 'astro/config'
-import process, { loadEnvFile } from 'node:process'
+import process from 'node:process'
 import cloudflare from '@astrojs/cloudflare'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'node:path'
 import preact from '@astrojs/preact'
 import slugtree from 'slugtree/astro'
 
-try {
-  loadEnvFile(path.resolve(import.meta.dirname, '../.env'))
-} catch {
-  // Ignore missing .env file
+import { loadEnv } from 'vite'
+
+const mode =
+  process.env.NODE_ENV ??
+  (process.argv.includes('build') ? 'production' : 'development')
+
+const env = {
+  ...loadEnv(mode, path.resolve(import.meta.dirname, '..'), ''),
+  ...loadEnv(mode, import.meta.dirname, ''),
+  ...process.env
 }
 
-const SITE = process.env.SITE ?? 'http://localhost:4321'
-const BASE = process.env.SITE_BASE ?? '/'
+const SITE =
+  env.SITE ||
+  env.ASTRO_SITE ||
+  env.PUBLIC_SITE ||
+  (mode === 'production'
+    ? 'https://slugtree.daustinn.com'
+    : 'http://localhost:4321')
+const BASE = env.SITE_BASE ?? env.BASE ?? '/'
 
 export default defineConfig({
   site: SITE,
