@@ -67,7 +67,11 @@
     "watch": "tsc --watch",
     "build": "tsc",
     "test": "vitest run",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "dev:website": "turbo run dev --filter website",
+    "build:website": "turbo run build --filter website",
+    "preview:website": "turbo run preview --filter website",
+    "lint:website": "turbo run lint --filter website"
   },
   "repository": {
     "type": "git",
@@ -108,6 +112,7 @@
     "react-dom": ">=19.0.0",
     "turbo": "2.9.16",
     "typescript": "5.9.2",
+    "typescript-eslint": "8.68.0",
     "vite": "8.2.2",
     "vitest": "2.0.0"
   },
