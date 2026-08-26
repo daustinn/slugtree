@@ -69,7 +69,7 @@
     "test": "vitest run",
     "lint": "eslint .",
     "dev:website": "turbo run dev --filter website",
-    "build:website": "turbo run build --filter website",
+    "build:website": "bun run build && turbo run build --filter website",
     "preview:website": "turbo run preview --filter website",
     "lint:website": "turbo run lint --filter website",
     "deploy:website": "turbo run deploy --filter website"
