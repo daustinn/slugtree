@@ -6,27 +6,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  lint:
-    name: Lint Code
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
-      - run: bun install --frozen-lockfile
-      - run: bun run lint && bun turbo run lint
-
-  test:
-    name: Run Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
-      - run: bun install --frozen-lockfile
-      - run: bun run test
-
   publish:
-    name: Publish to NPM
-    needs: [lint, test]
+    name: Build, Test & Publish to NPM
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -46,6 +27,12 @@ jobs:
 
       - name: Build
         run: bun run build
+
+      - name: Lint
+        run: bun run lint && bun turbo run lint
+
+      - name: Test
+        run: bun run test
 
       - name: Publish to NPM
         run: npm publish --access public
