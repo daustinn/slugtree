@@ -18,13 +18,14 @@ describe('generator', () => {
 
     generateContent(tmpContent, tmpOutput, '/docs')
 
-    expect(fs.existsSync(path.join(tmpOutput, 'tree.ts'))).toBe(true)
-    expect(fs.existsSync(path.join(tmpOutput, 'nodes.ts'))).toBe(true)
-    expect(fs.existsSync(path.join(tmpOutput, 'meta.ts'))).toBe(true)
-    expect(fs.existsSync(path.join(tmpOutput, 'slugs.ts'))).toBe(true)
+    expect(fs.existsSync(path.join(tmpOutput, 'tree.js'))).toBe(true)
+    expect(fs.existsSync(path.join(tmpOutput, 'nodes.js'))).toBe(true)
+    expect(fs.existsSync(path.join(tmpOutput, 'meta.js'))).toBe(true)
+    expect(fs.existsSync(path.join(tmpOutput, 'slugs.js'))).toBe(true)
+    expect(fs.existsSync(path.join(tmpOutput, 'index.js'))).toBe(true)
 
     const treeContent = fs.readFileSync(
-      path.join(tmpOutput, 'tree.ts'),
+      path.join(tmpOutput, 'tree.js'),
       'utf-8'
     )
     expect(treeContent).toContain('Home')
