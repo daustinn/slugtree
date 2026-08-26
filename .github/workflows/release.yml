@@ -1,10 +1,9 @@
 name: Build & Release
 
 on:
-  push:
-    tags:
-      - 'v*'
-      - 'slugtree-v*'
+  release:
+    types: [published]
+  workflow_dispatch:
 
 jobs:
   lint:
@@ -26,6 +25,7 @@ jobs:
       - run: bun run test
 
   publish:
+    name: Publish to NPM
     needs: [lint, test]
     runs-on: ubuntu-latest
     steps:
