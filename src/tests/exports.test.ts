@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import * as indexExports from '../index.js'
 import * as reactExports from '../react.js'
+import * as viteExports from '../vite.js'
 import * as nextExports from '../next.js'
 
 describe('entrypoint exports', () => {
@@ -21,6 +22,7 @@ describe('entrypoint exports', () => {
       expect(indexExports.getNodesByFrontMatter).toBeTypeOf('function')
       expect(indexExports.getSlugs).toBeTypeOf('function')
       expect(indexExports.isNodeActive).toBeTypeOf('function')
+      expect(indexExports.isNodeChildrenActive).toBeTypeOf('function')
       expect(indexExports.getNodePagination).toBeTypeOf('function')
       expect(indexExports.getNodeBreadcrumbs).toBeTypeOf('function')
       expect(indexExports.getNodeToc).toBeTypeOf('function')
@@ -28,7 +30,7 @@ describe('entrypoint exports', () => {
     })
   })
 
-  describe('react.tsx', () => {
+  describe('react.ts', () => {
     it('exports SlugtreeProvider component and hook functions', () => {
       expect(reactExports.SlugtreeProvider).toBeTypeOf('function')
       expect(reactExports.useTree).toBeTypeOf('function')
@@ -44,9 +46,20 @@ describe('entrypoint exports', () => {
       expect(reactExports.usePageNodes).toBeTypeOf('function')
       expect(reactExports.useFindNodes).toBeTypeOf('function')
       expect(reactExports.useIsNodeActive).toBeTypeOf('function')
+      expect(reactExports.useIsNodeChildrenActive).toBeTypeOf('function')
+      expect(reactExports.useIsNodeChildrenAction).toBeTypeOf('function')
       expect(reactExports.useNodeBreadcrumbs).toBeTypeOf('function')
       expect(reactExports.useNodeToc).toBeTypeOf('function')
       expect(reactExports.useNodePagination).toBeTypeOf('function')
+      expect(reactExports.useSearchContent).toBeTypeOf('function')
+      expect(reactExports.useSlugtree).toBeTypeOf('function')
+    })
+  })
+
+  describe('vite.ts', () => {
+    it('exports slugtree vite plugin', () => {
+      expect(viteExports.slugtree).toBeTypeOf('function')
+      expect(viteExports.default).toBeTypeOf('function')
     })
   })
 

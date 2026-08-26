@@ -1,14 +1,38 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import type { NodePage, NodeFolder } from '../types.js'
 
-// Mock the generated files before importing server
-vi.mock('../generated/nodes.js', () => ({
-  default: [
+import {
+  setServerData,
+  getTree,
+  getNode,
+  getNodeChildren,
+  getNodeParent,
+  getNodeSiblings,
+  getNodePath,
+  getNodeSection,
+  getBasePath,
+  getNodeData,
+  getAllNodes,
+  getPageNodes,
+  findNodes,
+  getNodesByFrontMatter,
+  getSlugs,
+  isNodeActive,
+  isNodeChildrenActive,
+  getNodePagination,
+  getNodeBreadcrumbs,
+  getNodeToc,
+  searchContent
+} from '../server.js'
+
+setServerData({
+  nodes: [
     {
       type: 'page',
       slug: [],
       href: '/docs',
       filePath: 'content/index.mdx',
+      relativePath: 'content/index.mdx',
       frontMatter: {
         title: 'Home',
         description: 'Home description',
@@ -22,6 +46,7 @@ vi.mock('../generated/nodes.js', () => ({
       slug: ['installation'],
       href: '/docs/installation',
       filePath: 'content/installation.mdx',
+      relativePath: 'content/installation.mdx',
       frontMatter: {
         title: 'Installation',
         description: 'Install guide',
@@ -35,6 +60,7 @@ vi.mock('../generated/nodes.js', () => ({
       slug: ['guides'],
       href: '/docs/guides',
       filePath: 'content/guides/index.mdx',
+      relativePath: 'content/guides/index.mdx',
       frontMatter: { title: 'Guides' },
       toc: [],
       rawContent: '',
@@ -45,6 +71,7 @@ vi.mock('../generated/nodes.js', () => ({
       slug: ['guides', 'routing'],
       href: '/docs/guides/routing',
       filePath: 'content/guides/routing.mdx',
+      relativePath: 'content/guides/routing.mdx',
       frontMatter: {
         title: 'Routing',
         description: 'Routing guide',
@@ -57,11 +84,8 @@ vi.mock('../generated/nodes.js', () => ({
       rawContent:
         '# Routing\nRouting details here.\n## Nested Routing\nNested routing details here.'
     }
-  ]
-}))
-
-vi.mock('../generated/tree.js', () => ({
-  default: [
+  ],
+  tree: [
     {
       type: 'page',
       slug: [],
@@ -88,35 +112,10 @@ vi.mock('../generated/tree.js', () => ({
         }
       ]
     }
-  ]
-}))
-
-vi.mock('../generated/meta.js', () => ({ default: '/docs' }))
-vi.mock('../generated/slugs.js', () => ({
-  default: [[], ['installation'], ['guides', 'routing']]
-}))
-
-import {
-  getTree,
-  getNode,
-  getNodeChildren,
-  getNodeParent,
-  getNodeSiblings,
-  getNodePath,
-  getNodeSection,
-  getBasePath,
-  getNodeData,
-  getAllNodes,
-  getPageNodes,
-  findNodes,
-  getNodesByFrontMatter,
-  getSlugs,
-  isNodeActive,
-  getNodePagination,
-  getNodeBreadcrumbs,
-  getNodeToc,
-  searchContent
-} from '../server.js'
+  ],
+  basePath: '/docs',
+  slugs: [[], ['installation'], ['guides', 'routing']]
+})
 
 describe('server utilities', () => {
   describe('getTree', () => {
@@ -218,6 +217,7 @@ describe('server utilities', () => {
       expect(data).toBeDefined()
       expect(data?.frontMatter.title).toBe('Installation')
       expect(data?.filePath).toBe('content/installation.mdx')
+      expect(data?.relativePath).toBe('content/installation.mdx')
     })
 
     it('returns undefined if not found', () => {
@@ -277,6 +277,21 @@ describe('server utilities', () => {
       )
       expect(isNodeActive(['installation'], ['guides'])).toBe(false)
       expect(isNodeActive([], ['installation'])).toBe(false)
+    })
+  })
+
+  describe('isNodeChildrenActive', () => {
+    it('returns true if a descendant of folder is active', () => {
+      expect(isNodeChildrenActive(['guides'], ['guides', 'routing'])).toBe(true)
+      expect(isNodeChildrenActive('guides', 'guides/routing')).toBe(true)
+      expect(isNodeChildrenActive(['guides'], ['guides', 'advanced', 'middleware'])).toBe(true)
+    })
+
+    it('returns false if the current slug is the folder itself or unrelated', () => {
+      expect(isNodeChildrenActive(['guides'], ['guides'])).toBe(false)
+      expect(isNodeChildrenActive('guides', 'guides')).toBe(false)
+      expect(isNodeChildrenActive(['guides'], ['installation'])).toBe(false)
+      expect(isNodeChildrenActive([], ['guides', 'routing'])).toBe(false)
     })
   })
 

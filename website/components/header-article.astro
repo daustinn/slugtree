@@ -1,0 +1,206 @@
+---
+import {
+  getNodeBreadcrumbs,
+  getNodeData,
+  getNodeLabel,
+  type NodeFolder,
+  type NodePage
+} from 'slugtree'
+import ChevronRight from '#/assets/chevron-right.svg'
+import OpenAi from '#/assets/openai.svg'
+import Claude from '#/assets/claude.svg'
+import Markdown from '#/assets/markdown.svg'
+import ArrowLeft from '#/assets/arrow-left.svg'
+import Copy from '#/assets/copy.svg'
+
+export type Props = {
+  node: NodePage | NodeFolder
+}
+
+const { node } = Astro.props
+
+const canonicalUrl = new URL(node.href || '', import.meta.env.SITE).href
+
+const label = getNodeLabel(node.slug)
+const raw = getNodeData(node.slug)?.rawContent
+const breadcrumbs = getNodeBreadcrumbs(node.slug)
+
+const links = [
+  {
+    type: 'link',
+    label: 'View as Markdown',
+    description: 'View the page as Plain Text',
+    href: `/blob${node.href}.md`,
+    icon: Markdown,
+    blank: true
+  },
+  {
+    type: 'divider'
+  },
+  {
+    type: 'link',
+    label: 'Open in ChatGPT',
+    description: 'Ask ChatGPT abaout this page',
+    href: `https://chat.openai.com/?q=${encodeURIComponent(
+      `Read ${canonicalUrl} and answer questions about the content.`
+    )}`,
+    icon: OpenAi,
+    blank: true
+  },
+  {
+    type: 'link',
+    label: 'Open in Claude',
+    description: 'Ask Claude abaout this page',
+    href: `https://claude.ai/?q=${encodeURIComponent(
+      `Read ${canonicalUrl} and answer questions about the content.`
+    )}`,
+    icon: Claude,
+    blank: true
+  }
+] as const
+---
+
+<header class="border-b pb-10">
+  {
+    (label || breadcrumbs.length > 1) && (
+      <nav aria-label="Breadcrumbs" class="mb-10">
+        <ol
+          class="flex flex-wrap items-center text-xs gap-1.5 text-foreground/50"
+          itemscope
+          itemtype="https://schema.org/BreadcrumbList"
+        >
+          {label && (
+            <li class="inline-flex items-center gap-1.5">
+              <span class="text-accent inline-flex items-center">
+                {label?.label}
+              </span>
+              {breadcrumbs.length > 1 && (
+                <ChevronRight width={15} height={15} class="opacity-40" />
+              )}
+            </li>
+          )}
+          {breadcrumbs.length > 1 &&
+            breadcrumbs.map((crumb, index) => {
+              const isLast = index === breadcrumbs.length - 1
+              return (
+                <li
+                  class="flex items-center gap-1.5"
+                  itemprop="itemListElement"
+                  itemscope
+                  itemtype="https://schema.org/ListItem"
+                >
+                  {isLast ? (
+                    <span
+                      class="text-foreground/60 font-medium"
+                      aria-current="page"
+                      itemprop="name"
+                    >
+                      {crumb.title}
+                    </span>
+                  ) : (
+                    <a
+                      class="text-foreground transition-colors"
+                      href={crumb.href}
+                      itemprop="item"
+                    >
+                      <span itemprop="name">{crumb.title}</span>
+                    </a>
+                  )}
+                  <meta itemprop="position" content={String(index + 1)} />
+                  {!isLast && (
+                    <ChevronRight width={15} height={15} class="opacity-40" />
+                  )}
+                </li>
+              )
+            })}
+        </ol>
+      </nav>
+    )
+  }
+  <div class="flex gap-10">
+    <div class="grow">
+      <h1 class="text-4xl font-extrabold tracking-tight mb-5">{node.title}</h1>
+      <p>{node.description}</p>
+    </div>
+    <div class="flex items-center">
+      <button
+        id="copy__button"
+        data-raw={raw}
+        class="text-sm border flex items-center gap-2 font-medium border-border/50 rounded-lg border-r-0 rounded-r-none h-8 p-1 px-3"
+      >
+        <Copy width={16} class="inline-block opacity-60" />
+        <span>Copy</span>
+      </button>
+      <div class="menu relative">
+        <button
+          class="menu__trigger h-8 border border-border/50 rounded-lg rounded-l-none flex items-center px-1.5"
+        >
+          <ChevronRight width={15} class="rotate-90" />
+        </button>
+        <div
+          class="menu__content scale-95 opacity-0 aria-expanded:scale-100 aria-expanded:opacity-100 absolute -right-full top-full
+          overflow-hidden pointer-events-none aria-expanded:pointer-events-auto
+          transition-[scale,opacity,translate] p-2 -translate-y-2 translate-x-2 aria-expanded:translate-y-0 aria-expanded:translate-x-0"
+        >
+          <ul
+            class="bg-background shadow-md border p-1 border-border/50! rounded-xl"
+          >
+            {
+              links.map((link) =>
+                link.type === 'divider' ? (
+                  <li>
+                    <hr class="my-1" />
+                  </li>
+                ) : (
+                  <li>
+                    <a
+                      href={link.href}
+                      target={link.blank ? '_blank' : undefined}
+                      rel={link.blank ? 'noopener noreferrer' : undefined}
+                      class="flex group group menu__item items-start text-sm gap-2 rounded-md hover:bg-foreground/5 p-1.5"
+                    >
+                      <link.icon width={18} class="min-w-4.5 opacity-70" />
+                      <div class="grow pr-5">
+                        <span class="block font-medium">{link.label}</span>
+                        <span class="text-xs text-nowrap text-foreground/70">
+                          {link.description}
+                        </span>
+                      </div>
+                      {link.blank && (
+                        <ArrowLeft
+                          width={12}
+                          class="transition-[translate] rotate-140 group-hover:-translate-y-1 group-hover:translate-x-1"
+                        />
+                      )}
+                    </a>
+                  </li>
+                )
+              )
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+  import { $ } from '#/lib/dom'
+  const $copyButton = $('#copy__button')
+
+  $copyButton?.addEventListener('click', () => {
+    const raw = $copyButton.dataset.raw
+
+    if (raw) navigator.clipboard.writeText(raw)
+
+    const $span = $('span', $copyButton)
+
+    if (!$span) return
+
+    $span.textContent = 'Copied!'
+
+    setTimeout(() => {
+      $span.textContent = 'Copy'
+    }, 3000)
+  })
+</script>

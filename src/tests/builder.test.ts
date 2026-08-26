@@ -59,6 +59,8 @@ describe('builder', () => {
 
       expect(allNodesData).toHaveLength(1)
       expect(allNodesData[0].frontMatter.title).toBe('About Us')
+      expect(allNodesData[0].relativePath).toBeDefined()
+      expect(typeof allNodesData[0].relativePath).toBe('string')
     })
 
     it('handles missing files gracefully', () => {

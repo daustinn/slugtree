@@ -1,0 +1,42 @@
+---
+title: SlugtreeProvider
+description: React context provider that supplies navigation state to all client hooks.
+---
+
+`SlugtreeProvider` is exported from `slugtree/react`. It supplies tree and page metadata to all client hooks and handles Hot Module Replacement updates in real time.
+
+```tsx
+import { SlugtreeProvider } from 'slugtree/react'
+
+export default function RootLayout({
+  children
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <SlugtreeProvider>
+      <div className="app-container">
+        {children}
+      </div>
+    </SlugtreeProvider>
+  )
+}
+```
+
+## Props
+
+| Prop       | Type                 | Default                           | Description                                                            |
+| ---------- | -------------------- | --------------------------------- | ---------------------------------------------------------------------- |
+| `children` | `React.ReactNode`    | Required                          | The React component subtree that can consume slugtree hooks.           |
+| `slot`     | `ClientContextState` | Pre-bundled metadata from plugin  | Optional custom state override (`{ tree, nodes, basePath }`).         |
+
+## Features
+
+- Automatically reads generated metadata bundled by Next.js, Vite, or Astro.
+- Listens for `slugtree:update` custom window events in development to sync state live without page reloads.
+- Required wrapper for all hooks exported from `slugtree/react`.
+
+## When to use Server Functions instead
+
+If you are inside an Astro component or Next.js React Server Component without client interactivity, use the core functions directly from `slugtree` (`getTree`, `getNodeData`, etc.) — they run at build/request time without context overhead.
+

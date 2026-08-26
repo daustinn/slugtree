@@ -1,0 +1,50 @@
+---
+title: config.json
+description: Directory-level configuration for sidebar hierarchy, ordering, and section labels.
+---
+
+`config.json` is a configuration file placed inside your content directories. It dictates the exact structure, ordering, and section labels for your documentation sidebar.
+
+```json
+{
+  "$schema": "https://slugtree.daustinn.com/config.schema.json",
+  "title": "Documentation",
+  "icon": "Package",
+  "nodes": [
+    "--- Getting Started ---",
+    "index",
+    "installation",
+    "--- Guides ---",
+    "guides"
+  ]
+}
+```
+
+## Options
+
+| Field     | Type       | Description                                                                              |
+| --------- | ---------- | ---------------------------------------------------------------------------------------- |
+| `$schema` | `string`   | Optional URL for JSON schema validation and editor autocomplete.                         |
+| `title`   | `string`   | Section title. Overrides default directory name in breadcrumbs and headers.              |
+| `icon`    | `string`   | Optional icon identifier mapped to your UI icon set.                                     |
+| `nodes`   | `string[]` | Ordered list of items to include in this level of the tree.                              |
+
+## Node Types in `nodes`
+
+### 1. Section Labels
+Strings wrapped with triple hyphens (e.g. `"--- Overview ---"`). These render as non-clickable section headers in your sidebar and group preceding nodes for [`getNodeLabel()`](/docs/get-node-label).
+
+### 2. Page Files
+The filename of a `.mdx` or `.md` file without its extension (e.g. `"index"` for `index.mdx`, `"quick-start"` for `quick-start.md`).
+
+### 3. Subdirectories
+The name of a child folder (e.g. `"guides"`). Subdirectories must also contain their own `config.json` to configure their child nodes.
+
+```bash
+content/
+├── config.json       # Root config
+├── index.mdx         # 'index' in nodes
+└── guides/
+    ├── config.json   # 'guides' subfolder config
+    └── routing.mdx   # 'routing' in guides/config.json
+```

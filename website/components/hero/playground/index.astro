@@ -1,0 +1,551 @@
+---
+import Explorer from './explorer.astro'
+import Preview from './preview.astro'
+---
+
+<div class="contents">
+  <div class="grow flex flex-col overflow-hidden border-b border-dashed">
+    <Explorer />
+  </div>
+
+  <div class="grow flex flex-col overflow-hidden">
+    <Preview />
+  </div>
+</div>
+
+<script>
+  interface StepFile {
+    type: 'file' | 'folder'
+    name: string
+    depth: number
+    isNew?: boolean
+  }
+
+  interface SidebarItem {
+    title: string
+    href: string
+    depth?: number
+    isFolder?: boolean
+    children?: SidebarItem[]
+  }
+
+  interface Step {
+    action: string
+    files: StepFile[]
+    json: object
+    activeUrl: string
+    breadcrumbs: string[]
+    pageTitle: string
+    sidebar: SidebarItem[]
+    prev: string | null
+    next: string | null
+  }
+
+  const steps: Step[] = [
+    {
+      action: 'write index.mdx',
+      files: [{ type: 'file', name: 'index.mdx', depth: 0, isNew: true }],
+      json: [
+        {
+          type: 'page',
+          slug: [],
+          href: '/docs',
+          title: 'Introduction'
+        }
+      ],
+      activeUrl: '/docs',
+      breadcrumbs: ['docs'],
+      pageTitle: 'Introduction',
+      sidebar: [{ title: 'Introduction', href: '/docs' }],
+      prev: null,
+      next: null
+    },
+    {
+      action: 'create installation.mdx',
+      files: [
+        { type: 'file', name: 'index.mdx', depth: 0 },
+        { type: 'file', name: 'installation.mdx', depth: 0, isNew: true }
+      ],
+      json: [
+        {
+          type: 'page',
+          slug: [],
+          href: '/docs',
+          title: 'Introduction'
+        },
+        {
+          type: 'page',
+          slug: ['installation'],
+          href: '/docs/installation',
+          title: 'Installation'
+        }
+      ],
+      activeUrl: '/docs/installation',
+      breadcrumbs: ['docs', 'installation'],
+      pageTitle: 'Installation',
+      sidebar: [
+        { title: 'Introduction', href: '/docs' },
+        { title: 'Installation', href: '/docs/installation' }
+      ],
+      prev: 'Introduction',
+      next: null
+    },
+    {
+      action: 'folder guides/ & guides/routing.mdx',
+      files: [
+        { type: 'file', name: 'index.mdx', depth: 0 },
+        { type: 'file', name: 'installation.mdx', depth: 0 },
+        { type: 'folder', name: 'guides/', depth: 0, isNew: true },
+        { type: 'file', name: 'routing.mdx', depth: 1, isNew: true }
+      ],
+      json: [
+        {
+          type: 'page',
+          slug: [],
+          href: '/docs',
+          title: 'Introduction'
+        },
+        {
+          type: 'page',
+          slug: ['installation'],
+          href: '/docs/installation',
+          title: 'Installation'
+        },
+        {
+          type: 'folder',
+          title: 'Guides',
+          slug: ['guides'],
+          children: [
+            {
+              type: 'page',
+              slug: ['guides', 'routing'],
+              href: '/docs/guides/routing',
+              title: 'Routing'
+            }
+          ]
+        }
+      ],
+      activeUrl: '/docs/guides/routing',
+      breadcrumbs: ['docs', 'guides', 'routing'],
+      pageTitle: 'Routing',
+      sidebar: [
+        { title: 'Introduction', href: '/docs' },
+        { title: 'Installation', href: '/docs/installation' },
+        {
+          title: 'Guides',
+          href: '#',
+          isFolder: true,
+          children: [
+            { title: 'Routing', href: '/docs/guides/routing', depth: 1 }
+          ]
+        }
+      ],
+      prev: 'Installation',
+      next: null
+    },
+    {
+      action: 'folder guides/advanced/ & middleware.mdx',
+      files: [
+        { type: 'file', name: 'index.mdx', depth: 0 },
+        { type: 'file', name: 'installation.mdx', depth: 0 },
+        { type: 'folder', name: 'guides/', depth: 0 },
+        { type: 'file', name: 'routing.mdx', depth: 1 },
+        { type: 'folder', name: 'advanced/', depth: 1, isNew: true },
+        { type: 'file', name: 'middleware.mdx', depth: 2, isNew: true }
+      ],
+      json: [
+        {
+          type: 'page',
+          slug: [],
+          href: '/docs',
+          title: 'Introduction'
+        },
+        {
+          type: 'folder',
+          title: 'Guides',
+          slug: ['guides'],
+          children: [
+            {
+              type: 'page',
+              slug: ['guides', 'routing'],
+              href: '/docs/guides/routing',
+              title: 'Routing'
+            },
+            {
+              type: 'folder',
+              title: 'Advanced',
+              slug: ['guides', 'advanced'],
+              children: [
+                {
+                  type: 'page',
+                  slug: ['guides', 'advanced', 'middleware'],
+                  href: '/docs/guides/advanced/middleware',
+                  title: 'Middleware'
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      activeUrl: '/docs/guides/advanced/middleware',
+      breadcrumbs: ['docs', 'guides', 'advanced', 'middleware'],
+      pageTitle: 'Middleware',
+      sidebar: [
+        { title: 'Introduction', href: '/docs' },
+        { title: 'Installation', href: '/docs/installation' },
+        {
+          title: 'Guides',
+          href: '#',
+          isFolder: true,
+          children: [
+            { title: 'Routing', href: '/docs/guides/routing', depth: 1 },
+            {
+              title: 'Advanced',
+              href: '#',
+              depth: 1,
+              isFolder: true,
+              children: [
+                {
+                  title: 'Middleware',
+                  href: '/docs/guides/advanced/middleware',
+                  depth: 2
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      prev: 'Routing',
+      next: null
+    },
+    {
+      action: 'write guides/config.json',
+      files: [
+        { type: 'file', name: 'index.mdx', depth: 0 },
+        { type: 'file', name: 'installation.mdx', depth: 0 },
+        { type: 'folder', name: 'guides/', depth: 0 },
+        { type: 'file', name: 'config.json', depth: 1, isNew: true },
+        { type: 'file', name: 'routing.mdx', depth: 1 },
+        { type: 'folder', name: 'advanced/', depth: 1 },
+        { type: 'file', name: 'middleware.mdx', depth: 2 }
+      ],
+      json: [
+        {
+          type: 'page',
+          slug: [],
+          href: '/docs',
+          title: 'Introduction'
+        },
+        {
+          type: 'folder',
+          title: 'Core Guides',
+          slug: ['guides'],
+          children: [
+            {
+              type: 'page',
+              slug: ['guides', 'routing'],
+              href: '/docs/guides/routing',
+              title: 'Routing'
+            },
+            {
+              type: 'folder',
+              title: 'Advanced',
+              slug: ['guides', 'advanced'],
+              children: [
+                {
+                  type: 'page',
+                  slug: ['guides', 'advanced', 'middleware'],
+                  href: '/docs/guides/advanced/middleware',
+                  title: 'Middleware'
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      activeUrl: '/docs/guides/advanced/middleware',
+      breadcrumbs: ['docs', 'guides', 'advanced', 'middleware'],
+      pageTitle: 'Middleware',
+      sidebar: [
+        { title: 'Introduction', href: '/docs' },
+        { title: 'Installation', href: '/docs/installation' },
+        {
+          title: 'Core Guides',
+          href: '#',
+          isFolder: true,
+          children: [
+            { title: 'Routing', href: '/docs/guides/routing', depth: 1 },
+            {
+              title: 'Advanced',
+              href: '#',
+              depth: 1,
+              isFolder: true,
+              children: [
+                {
+                  title: 'Middleware',
+                  href: '/docs/guides/advanced/middleware',
+                  depth: 2
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      prev: 'Routing',
+      next: null
+    },
+    {
+      action: 'folder api/ & api/get-node.mdx',
+      files: [
+        { type: 'file', name: 'index.mdx', depth: 0 },
+        { type: 'file', name: 'installation.mdx', depth: 0 },
+        { type: 'folder', name: 'guides/', depth: 0 },
+        { type: 'file', name: 'config.json', depth: 1 },
+        { type: 'file', name: 'routing.mdx', depth: 1 },
+        { type: 'folder', name: 'advanced/', depth: 1 },
+        { type: 'file', name: 'middleware.mdx', depth: 2 },
+        { type: 'folder', name: 'api/', depth: 0, isNew: true },
+        { type: 'file', name: 'get-node.mdx', depth: 1, isNew: true }
+      ],
+      json: [
+        {
+          type: 'page',
+          slug: [],
+          href: '/docs',
+          title: 'Introduction'
+        },
+        {
+          type: 'folder',
+          title: 'Core Guides',
+          slug: ['guides'],
+          children: [
+            {
+              type: 'page',
+              slug: ['guides', 'routing'],
+              href: '/docs/guides/routing',
+              title: 'Routing'
+            }
+          ]
+        },
+        {
+          type: 'folder',
+          title: 'API Reference',
+          slug: ['api'],
+          children: [
+            {
+              type: 'page',
+              slug: ['api', 'get-node'],
+              href: '/docs/api/get-node',
+              title: 'getNode'
+            }
+          ]
+        }
+      ],
+      activeUrl: '/docs/api/get-node',
+      breadcrumbs: ['docs', 'api', 'getNode'],
+      pageTitle: 'getNode',
+      sidebar: [
+        { title: 'Introduction', href: '/docs' },
+        { title: 'Installation', href: '/docs/installation' },
+        {
+          title: 'Core Guides',
+          href: '#',
+          isFolder: true,
+          children: [
+            { title: 'Routing', href: '/docs/guides/routing', depth: 1 },
+            {
+              title: 'Advanced',
+              href: '#',
+              depth: 1,
+              isFolder: true,
+              children: [
+                {
+                  title: 'Middleware',
+                  href: '/docs/guides/advanced/middleware',
+                  depth: 2
+                }
+              ]
+            }
+          ]
+        },
+        {
+          title: 'API Reference',
+          href: '#',
+          isFolder: true,
+          children: [{ title: 'getNode', href: '/docs/api/get-node', depth: 1 }]
+        }
+      ],
+      prev: 'Middleware',
+      next: null
+    }
+  ]
+
+  let currentStepIndex = 0
+
+  const treeContainer = document.getElementById('fs-tree-display')
+  const jsonOutput = document.getElementById('live-json-output')
+  const terminalText = document.getElementById('terminal-action-text')
+  const fsCountBadge = document.getElementById('fs-count-badge')
+
+  const previewUrl = document.getElementById('preview-url-bar')
+  const previewSidebar = document.getElementById('preview-sidebar-list')
+  const previewBreadcrumbs = document.getElementById('preview-breadcrumbs')
+  const previewTitle = document.getElementById('preview-page-title')
+  const prevBtn = document.getElementById('preview-prev-btn')
+  const nextBtn = document.getElementById('preview-next-btn')
+
+  function highlightJson(jsonString: string): string {
+    return jsonString
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(
+        /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+-]?\d+)?)/g,
+        (match) => {
+          if (/^"/.test(match)) {
+            if (/:$/.test(match)) {
+              return `<span class="text-foreground/75 font-medium">${match}</span>`
+            }
+            if (match === '"page"' || match === '"folder"') {
+              return `<span class="font-semibold">${match}</span>`
+            }
+            return `<span class="text-sky-700 dark:text-sky-300/80">${match}</span>`
+          }
+          return `<span class="text-blue-700 dark:text-blue-300">${match}</span>`
+        }
+      )
+  }
+
+  function renderStep(step: Step) {
+    if (
+      !treeContainer ||
+      !jsonOutput ||
+      !terminalText ||
+      !previewUrl ||
+      !previewSidebar ||
+      !previewBreadcrumbs ||
+      !previewTitle ||
+      !prevBtn ||
+      !nextBtn
+    )
+      return
+
+    terminalText.textContent = step.action
+    if (fsCountBadge) fsCountBadge.textContent = `${step.files.length} files`
+
+    treeContainer.innerHTML = ''
+    step.files.forEach((file) => {
+      const row = document.createElement('div')
+      const indent =
+        file.depth === 2
+          ? 'ml-6 pl-2 border-l border-dashed/30'
+          : file.depth === 1
+            ? 'ml-3 pl-2 border-l border-dashed border-border/60'
+            : ''
+      const highlight = file.isNew
+        ? 'font-medium -mx-1 px-1 rounded'
+        : 'text-foreground/60'
+
+      row.className = `flex items-center justify-between transition-all duration-300 ${indent} ${highlight}`
+
+      const icon =
+        file.type === 'folder'
+          ? `<span class="font-mono">/</span>`
+          : file.name.endsWith('.json')
+            ? `<span class="text-foreground/30 font-mono">{}</span>`
+            : `<span class="text-foreground/30 font-mono">#</span>`
+
+      row.innerHTML = `
+        <div class="flex items-center gap-2 truncate">
+          <span class="w-3 text-center inline-block text-[10px]">${icon}</span>
+          <span class="truncate">${file.name}</span>
+        </div>
+      `
+      treeContainer.appendChild(row)
+    })
+
+    const rawJson = JSON.stringify(step.json, null, 2)
+    jsonOutput.innerHTML = highlightJson(rawJson)
+
+    previewUrl.textContent = step.activeUrl
+
+    previewSidebar.innerHTML = ''
+    function renderSidebarItem(item: SidebarItem) {
+      if (item.isFolder) {
+        const folderEl = document.createElement('div')
+        const depthIndent =
+          item.depth === 1
+            ? 'ml-2 border-l border-dashed border-border/60 pl-2'
+            : item.depth === 2
+              ? 'ml-4 border-l border-dashed pl-2'
+              : ''
+        folderEl.className = `font-mono text-[10px] text-foreground/40 font-medium pt-1 px-1 ${depthIndent}`
+        folderEl.textContent = item.title
+        previewSidebar?.appendChild(folderEl)
+        item.children?.forEach(renderSidebarItem)
+      } else {
+        const linkEl = document.createElement('div')
+        const isActive = item.title === step.pageTitle
+        const depthIndent =
+          item.depth === 2
+            ? 'ml-4 border-l border-dashed pl-2'
+            : item.depth === 1
+              ? 'ml-2 border-l border-dashed border-border/60 pl-2'
+              : ''
+        linkEl.className = `px-1.5 py-1 rounded transition-colors truncate font-sans ${depthIndent} ${
+          isActive ? 'font-medium border-l-2' : 'text-foreground/50'
+        }`
+        linkEl.textContent = item.title
+        previewSidebar?.appendChild(linkEl)
+      }
+    }
+    step.sidebar.forEach(renderSidebarItem)
+
+    previewBreadcrumbs.innerHTML = ''
+    step.breadcrumbs.forEach((crumb, idx) => {
+      if (idx > 0) {
+        const sep = document.createElement('span')
+        sep.className = 'text-foreground/20'
+        sep.textContent = '/'
+        previewBreadcrumbs.appendChild(sep)
+      }
+      const span = document.createElement('span')
+      span.className =
+        idx === step.breadcrumbs.length - 1
+          ? 'font-medium'
+          : 'text-foreground/40'
+      span.textContent = crumb
+      previewBreadcrumbs.appendChild(span)
+    })
+
+    previewTitle.textContent = step.pageTitle
+
+    if (step.prev) {
+      prevBtn.className =
+        'p-1.5 rounded-md border border-dashed border-border/60 text-foreground/80 font-mono text-[9px] truncate'
+      prevBtn.innerHTML = `&larr; ${step.prev}`
+    } else {
+      prevBtn.className =
+        'p-1.5 rounded-md border border-dashed border-border/20 text-foreground/20 font-mono text-[9px] truncate'
+      prevBtn.textContent = '&mdash;'
+    }
+
+    if (step.next) {
+      nextBtn.className =
+        'p-1.5 rounded-md border border-dashed border-border/60 text-foreground/80 font-mono text-[9px] text-right truncate'
+      nextBtn.innerHTML = `${step.next} &rarr;`
+    } else {
+      nextBtn.className =
+        'p-1.5 rounded-md border border-dashed border-border/20 text-foreground/20 font-mono text-[9px] text-right truncate'
+      nextBtn.textContent = '&mdash;'
+    }
+  }
+
+  function nextStep() {
+    renderStep(steps[currentStepIndex])
+    currentStepIndex = (currentStepIndex + 1) % steps.length
+  }
+
+  nextStep()
+  setInterval(nextStep, 700)
+</script>

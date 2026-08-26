@@ -1,0 +1,44 @@
+---
+title: .mdx Files
+description: Writing documentation pages with Markdown and embedded JSX components.
+---
+
+`.mdx` files combine standard Markdown syntax with embedded React/JSX components. `slugtree` automatically parses frontmatter, extracts headings for table of contents, and indexes content for full-text search.
+
+```mdx
+---
+title: Routing Guide
+description: Learn how dynamic routing works in our documentation.
+icon: Route
+---
+
+# Routing Guide
+
+This is standard markdown with a custom component:
+
+<Callout type="info">
+  Make sure your routes match the folder hierarchy.
+</Callout>
+```
+
+## Frontmatter Fields
+
+| Field         | Type      | Required | Description                                                    |
+| ------------- | --------- | -------- | -------------------------------------------------------------- |
+| `title`       | `string`  | No       | Display name of the page. Fallback is title-cased filename.    |
+| `description` | `string`  | No       | Short summary for meta tags and search descriptions.           |
+| `icon`        | `string`  | No       | Icon identifier string.                                        |
+| `href`        | `string`  | No       | Custom URL override (useful for external links or redirects).  |
+
+Any custom frontmatter fields you add are preserved and queryable via [`getNodesByFrontMatter()`](/docs/get-nodes-by-front-matter) or `getNodeData().frontMatter`.
+
+## Heading Extraction (TOC)
+
+All Markdown headings (`#`, `##`, `###`) are extracted into structured table of contents items accessible with [`getNodeToc()`](/docs/get-node-toc):
+
+```ts
+import { getNodeToc } from 'slugtree'
+
+const toc = getNodeToc(['guides', 'routing'])
+// [{ id: 'routing-guide', text: 'Routing Guide', depth: 1 }]
+```

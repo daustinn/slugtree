@@ -3,6 +3,7 @@ import path from 'node:path'
 import matter from 'gray-matter'
 import type { FrontMatter, DirConfig, TocItem } from '../types.js'
 import { slugify } from './slugify.js'
+import { setCachedFileContent } from './cache.js'
 
 export function parseFrontMatter(
   raw: string,
@@ -115,12 +116,11 @@ export function readConfigFromDir(dir: string): DirConfig {
     const configPath = path.join(dir, 'config.json')
     if (fs.existsSync(configPath)) {
       const content = fs.readFileSync(configPath, 'utf-8')
+      setCachedFileContent(configPath, content)
       return parseDirConfig(content)
     }
   } catch {
     // ignore
   }
-  return {
-    // ignore
-  }
+  return {}
 }

@@ -1,0 +1,44 @@
+---
+
+---
+
+<div
+  class="relative grid grid-cols-2 grow divide-x divide-dashed overflow-hidden"
+>
+  <div class="p-4 flex flex-col justify-between overflow-hidden">
+    <div class="space-y-3">
+      <div class="flex items-center justify-between text-xs text-foreground/40">
+        <div class="flex items-center gap-1.5">
+          <span> /src/content </span>
+        </div>
+        <span id="fs-count-badge" class="text-foreground/60"></span>
+      </div>
+
+      <div id="fs-tree-display" class="space-y-1.5 text-xs"></div>
+    </div>
+
+    <div
+      class="pt-3 border-t border-dashed border-border/40 text-[10px] text-foreground/50 flex items-center gap-2"
+    >
+      <span class="font-bold">&gt;</span>
+      <span id="terminal-action-text" class="truncate text-foreground/80"
+      ></span>
+    </div>
+  </div>
+
+  <div class="p-4 flex flex-col justify-between overflow-hidden">
+    <div
+      class="flex items-center font-semibold justify-between text-xs text-foreground/40"
+    >
+      <div class="flex items-center gap-1.5">
+        <span class="w-1 h-1 rounded-full"></span>
+        <span>AST Graph</span>
+      </div>
+    </div>
+
+    <pre
+      id="live-json-output"
+      class="grow my-2 p-2.5 rounded-lg bg-foreground/2 text-[10px] leading-relaxed text-foreground/80 overflow-auto whitespace-pre selection:bg-foreground selection:text-background">
+    </pre>
+  </div>
+</div>

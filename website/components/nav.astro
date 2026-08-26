@@ -1,0 +1,49 @@
+---
+import Slugtree from '#/assets/slugtree.svg'
+import SlugtreeIcon from '#/assets/slugtree-icon.svg'
+import Github from '#/assets/github.svg'
+import Npm from '#/assets/npm.svg'
+
+import base from '#/lib/base'
+import { SLUGTREE } from '#/const'
+---
+
+<header class="h-20 z-10 bg-background min-h-20 sticky top-0">
+  <nav class="container justify-between h-full flex items-center">
+    <div class="flex basis-0 grow">
+      <a
+        aria-label="Slugtree logo"
+        href={base('/')}
+        class="group flex p-2 items-center gap-1"
+      >
+        <SlugtreeIcon
+          aria-label="Slugtree logo"
+          width={25}
+          class="group-hover:rotate-12 transition-[rotate]"
+        />
+        <Slugtree aria-label="Slugtree" width={90} />
+      </a>
+    </div>
+    <div></div>
+    <div
+      class="grow flex basis-0 items-center *:px-1.5 *:inline-flex justify-end"
+    >
+      <a
+        aria-label="GitHub"
+        href={SLUGTREE.githubURL}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Github aria-label="GitHub" width={20} />
+      </a>
+      <a
+        aria-label="NPM"
+        href={SLUGTREE.npmURL}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Npm aria-label="NPM" width={25} />
+      </a>
+    </div>
+  </nav>
+</header>

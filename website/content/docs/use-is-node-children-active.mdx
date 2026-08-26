@@ -1,0 +1,48 @@
+---
+title: useIsNodeChildrenActive
+description: Checks whether any descendant of a folder is active from the client context.
+---
+
+Client hook equivalent of `isNodeChildrenActive()`. Returns `true` if `currentSlug` is a descendant of `folderSlug` (and not the folder itself).
+
+```tsx
+'use client'
+
+import { useIsNodeChildrenActive } from 'slugtree/react'
+
+export function SidebarFolder({
+  folder,
+  currentSlug
+}: {
+  folder: { slug: string[]; title: string; children: any[] }
+  currentSlug: string[]
+}) {
+  const isExpanded = useIsNodeChildrenActive(folder.slug, currentSlug)
+
+  return (
+    <details open={isExpanded}>
+      <summary>{folder.title}</summary>
+      <ul>
+        {folder.children.map((child) => (
+          <li key={child.href}>
+            <a href={child.href}>{child.title}</a>
+          </li>
+        ))}
+      </ul>
+    </details>
+  )
+}
+```
+
+## Parameters
+
+| Parameter     | Type                  | Description                               |
+| ------------- | --------------------- | ----------------------------------------- |
+| `folderSlug`  | `string \| string[]`  | The slug of the folder to test.           |
+| `currentSlug` | `string \| string[]`  | The slug of the currently active page.    |
+
+## Return value
+
+Returns `boolean`. Returns `false` if either argument is empty or if `currentSlug` equals `folderSlug`.
+
+Must be used inside a component wrapped by `SlugtreeProvider`.

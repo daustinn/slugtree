@@ -1,0 +1,199 @@
+---
+import Github from '#/assets/github.svg'
+import Slugtree from '#/assets/slugtree.svg'
+import SlugtreeIcon from '#/assets/slugtree-icon.svg'
+import ByDaustinn from '#/assets/by-daustinn.svg'
+import { SLUGTREE, DAUSTINN } from '#/const'
+import base from '#/lib/base'
+import Playground from './playground/index.astro'
+import PixelBlastBackground from './pixel-blast-background.astro'
+---
+
+<div class="grid grid-cols-2 h-svh grow divide-x divide-dashed">
+  <div class="flex flex-col relative">
+    <div class="absolute inset-0 pointer-events-none opacity-50">
+      <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+        <PixelBlastBackground
+          variant="circle"
+          pixelSize={4}
+          patternScale={1}
+          patternDensity={0.6}
+          enableRipples={false}
+          rippleSpeed={0.15}
+          rippleThickness={0.05}
+          rippleIntensityScale={1}
+          speed={0.2}
+          transparent
+          edgeFade={0.25}
+        />
+      </div>
+    </div>
+    <header class="flex justify-center">
+      <a
+        href={base('/')}
+        class="flex p-5 items-center gap-1 group"
+        aria-label="Slugtree homepage"
+      >
+        <SlugtreeIcon
+          width={25}
+          class="transition-transform duration-300 group-hover:-rotate-4"
+        />
+        <Slugtree
+          width={100}
+          class="transition-transform duration-300 group-hover:rotate-4"
+        />
+      </a>
+    </header>
+    <main class="px-6 flex flex-col justify-center grow sm:px-10 py-6">
+      <h1
+        class="text-2xl relative text-center font-bold tracking-tight leading-[1.08] text-balance"
+      >
+        <span class="absolute pointer-events-none bg-background inset-0 blur-lg"
+        ></span>
+        <span class="relative"> Write in MDX. </span>
+        <span class="block text-foreground/60 font-normal relative"
+          >Slugtree builds the tree.</span
+        >
+      </h1>
+
+      <p
+        class="py-3 mt-3 relative text-center text-foreground/70 mx-auto max-w-lg font-normal leading-relaxed text-pretty"
+      >
+        <span class="absolute pointer-events-none bg-background inset-0 blur-lg"
+        ></span>
+        <span class="relative">
+          Turn flat content directories into typed navigation structures with
+          automatic breadcrumbs, pagination, and search data.
+        </span>
+      </p>
+
+      <div class="flex justify-center items-center mt-5 gap-5">
+        <div
+          id="copy-box"
+          class="group relative flex items-center justify-between w-full sm:w-auto gap-3 px-4 py-2.5 rounded-xl bg-foreground shadow-sm transition-all cursor-pointer font-mono text-background"
+          role="button"
+          tabindex="0"
+          aria-label="Copy install command"
+        >
+          <span class="select-none">$</span>
+          <code id="cmd-text" class="select-all">pnpm add slugtree</code>
+          <button
+            type="button"
+            class="ml-1 transition-colors"
+            aria-label="Copy to clipboard"
+          >
+            <svg
+              id="copy-icon"
+              class="w-3.5 h-3.5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
+              <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"
+              ></path>
+            </svg>
+            <svg
+              id="check-icon"
+              class="w-3.5 h-3.5 hidden text-emerald-500"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </button>
+          <span
+            id="copied-toast"
+            class="absolute -top-7 right-2 px-2 py-0.5 text-[10px] rounded bg-foreground text-background opacity-0 transition-opacity pointer-events-none"
+            >Copied</span
+          >
+        </div>
+
+        <a
+          href={SLUGTREE.githubURL}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-foreground text-background font-semibold hover:opacity-90 transition-opacity"
+        >
+          <Github width={17} height={17} />
+          <span>Github</span>
+        </a>
+      </div>
+      <div class="flex justify-center mt-5">
+        <a href={base('/quick-start')} class="flex p-1 text-sm underline">
+          Quick Start
+        </a>
+      </div>
+    </main>
+    <footer class="[&>a]:hover:underline text-sm text-foreground/90">
+      <div class="flex justify-center *:p-2">
+        <a
+          href={SLUGTREE.npmURL}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:text-foreground transition-colors"
+        >
+          <span>npm</span>
+        </a>
+        <span class="opacity-50">&bull;</span>
+        <a
+          href={SLUGTREE.githubURL}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:text-foreground transition-colors"
+        >
+          Github
+        </a>
+      </div>
+      <div class="flex justify-center">
+        <a
+          href={DAUSTINN.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="p-5 hover:-translate-y-1 transition-[translate]"
+          aria-label="By Daustinn"
+        >
+          <ByDaustinn width={90} />
+        </a>
+      </div>
+    </footer>
+  </div>
+  <div class="grow overflow-auto grid grid-rows-2">
+    <Playground />
+  </div>
+</div>
+
+<script>
+  const copyBox = document.getElementById('copy-box')
+  const copyIcon = document.getElementById('copy-icon')
+  const checkIcon = document.getElementById('check-icon')
+  const toast = document.getElementById('copied-toast')
+  const cmdText =
+    document.getElementById('cmd-text')?.innerText || 'pnpm add slugtree'
+
+  copyBox?.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(cmdText)
+      copyIcon?.classList.add('hidden')
+      checkIcon?.classList.remove('hidden')
+      toast?.classList.remove('opacity-0')
+      toast?.classList.add('opacity-100')
+
+      setTimeout(() => {
+        copyIcon?.classList.remove('hidden')
+        checkIcon?.classList.add('hidden')
+        toast?.classList.remove('opacity-100')
+        toast?.classList.add('opacity-0')
+      }, 2000)
+    } catch {
+      // Ignore clipboard write error
+    }
+  })
+</script>

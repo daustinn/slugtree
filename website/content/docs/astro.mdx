@@ -1,0 +1,79 @@
+---
+title: Astro
+description: Full setup guide for using slugtree with Astro.
+icon: AstroOutline
+---
+
+`slugtree` provides an integration for Astro (`slugtree/astro`) that automatically scans your content folder and generates the navigation tree.
+
+## Setup
+
+Add `slugtree` to your `astro.config.mjs`:
+
+```js
+import { defineConfig } from 'astro/config'
+import mdx from '@astrojs/mdx'
+import slugtree from 'slugtree/astro'
+
+export default defineConfig({
+  integrations: [slugtree(), mdx()]
+})
+```
+
+### Options
+
+| Option       | Type     | Default                              | Description                               |
+| ------------ | -------- | ------------------------------------ | ----------------------------------------- |
+| `basePath`   | `string` | `'/'`                                | Base URL path prefix for all doc links.   |
+| `contentDir` | `string` | `'./src/content'` (or `'./content'`) | Directory where your markdown files live. |
+| `outputDir`  | `string` | `'.slugtree'`                        | Output directory for generated metadata.  |
+
+## Dynamic Route
+
+Create `src/pages/docs/[...slug].astro`:
+
+```astro
+---
+import { getSlugs, getNodeData } from 'slugtree'
+
+export async function getStaticPaths() {
+  return getSlugs().map((slug) => ({
+    params: {
+      slug: slug.length === 0 ? undefined : slug.join('/')
+    },
+    props: { slug }
+  }))
+}
+
+const { slug } = Astro.props
+const data = getNodeData(slug)
+---
+
+<main>
+  <h1>{data?.frontMatter.title}</h1>
+  <p>{data?.frontMatter.description}</p>
+</main>
+```
+
+## Navigation Sidebar
+
+Render the navigation tree in any Astro component:
+
+```astro
+---
+import { getTree } from 'slugtree'
+
+const tree = getTree()
+---
+
+<nav>
+  {
+    tree.map((node) => {
+      if (node.type === 'label') {
+        return <p>{node.label}</p>
+      }
+      return <a href={node.href}>{node.title}</a>
+    })
+  }
+</nav>
+```

@@ -1,0 +1,5 @@
+{
+  "title": "Advanced",
+  "description": "Deep dive into caching and server runtime execution",
+  "nodes": ["middleware", "caching"]
+}

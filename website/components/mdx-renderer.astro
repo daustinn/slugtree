@@ -1,0 +1,49 @@
+---
+import { evaluate } from '@mdx-js/mdx'
+import remarkGfm from 'remark-gfm'
+import * as runtime from 'preact/jsx-runtime'
+import { getNodeData, type NodeFolder, type NodePage } from 'slugtree'
+import MDXComponents from './mdx-components'
+import base from '#/lib/base'
+
+export interface Props {
+  node: NodePage | NodeFolder
+}
+
+const { node } = Astro.props
+const data = getNodeData(node.slug)
+let Content = null
+
+if (data) {
+  const result = await evaluate(data.rawContent, {
+    ...runtime,
+    remarkPlugins: [remarkGfm],
+    baseUrl: import.meta.url
+  })
+  Content = result.default
+}
+---
+
+{
+  Content && (
+    <Content components={MDXComponents} base={base} env={import.meta.env} />
+  )
+}
+
+<script>
+  import { $$ } from '#/lib/dom'
+
+  const $blockCodeButtons = $$('.blockcode__button')
+
+  $blockCodeButtons.forEach(($button) => {
+    $button.addEventListener('click', () => {
+      const code = $button.getAttribute('data-code')
+      if (code) navigator.clipboard.writeText(code)
+
+      $button.textContent = 'Copied!'
+      setTimeout(() => {
+        $button.textContent = 'Copy'
+      }, 2000)
+    })
+  })
+</script>

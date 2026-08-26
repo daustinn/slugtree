@@ -1,0 +1,130 @@
+@import 'tailwindcss';
+
+@font-face {
+  font-family: 'Geist';
+  src: url('/geist.woff2') format('woff2');
+  font-display: swap;
+}
+
+:root {
+  --background: white;
+  --foreground: black;
+  --border: rgba(0, 0, 0, 0.15);
+  --accent: #2563eb;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: black;
+    --foreground: white;
+    --border: rgba(255, 255, 255, 0.15);
+    --accent: #60a5fa;
+    color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --font-geist: 'Geist';
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+}
+
+button,
+a {
+  cursor: pointer;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+* {
+  border-color: var(--border);
+}
+
+@utility container {
+  max-width: 97rem;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+  @apply max-lg:px-4;
+}
+
+.prose__content {
+  @apply text-base text-foreground/90 leading-relaxed;
+
+  p {
+    @apply leading-7 text-[15px] text-foreground/85 my-4;
+  }
+
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    &:first-child {
+      margin-top: 0 !important;
+    }
+    scroll-margin-top: 5rem;
+    @apply font-medium text-foreground tracking-tight;
+    a {
+      @apply inline-flex items-center text-foreground transition-colors;
+    }
+  }
+
+  h2 {
+    @apply text-2xl mt-12 mb-4 pb-2 border-b border-border/40 font-semibold;
+  }
+
+  h3 {
+    @apply text-xl mt-8 mb-3 font-semibold;
+  }
+
+  h4 {
+    @apply text-lg mt-6 mb-2 font-medium;
+  }
+
+  h5 {
+    @apply text-base mt-4 mb-2 font-medium;
+  }
+
+  h6 {
+    @apply text-xs mt-3 mb-1 uppercase tracking-wider text-foreground/60;
+  }
+
+  ul {
+    @apply my-4 pl-5 list-disc space-y-1.5 marker:text-foreground/40;
+  }
+
+  ol {
+    @apply my-4 pl-5 list-decimal space-y-1.5 marker:text-foreground/50 marker:font-medium;
+  }
+
+  li {
+    @apply leading-7 text-[15px] text-foreground/85 pl-1;
+  }
+
+  hr {
+    @apply my-8 border-border/50;
+  }
+}
+
+.lineNumbers {
+  code {
+    counter-reset: step;
+    counter-increment: step 0;
+    font-family: monospace;
+  }
+
+  code .line::before {
+    content: counter(step);
+    counter-increment: step;
+    width: 1rem;
+    margin-right: 1rem;
+    display: inline-block;
+    text-align: center;
+    color: color-mix(in oklab, white 50%, transparent);
+  }
+}
