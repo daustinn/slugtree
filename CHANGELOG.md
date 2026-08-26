@@ -1,5 +1,31 @@
 # Changelog
 
+## [1.0.0](https://github.com/daustinn/slugtree/compare/slugtree-v0.9.1...slugtree-v1.0.0) (2026-08-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* **react:** React hooks and provider consolidated under SlugtreeProvider in slugtree/react
+* **core:** Internal architecture refactored for shared utilities and dynamic synchronization
+
+### Features
+
+* **astro:** refactor astro integration with live watching and route injection ([94da2b1](https://github.com/daustinn/slugtree/commit/94da2b1bc7ffcaf1ebcc690063f08b083ea71c66))
+* **core:** add jsdoc documentation to exported types ([87b7cd5](https://github.com/daustinn/slugtree/commit/87b7cd5b3504f6e7e302cedf8998493b27239b56))
+* **generator:** enhance node builder, parser, and file watcher ([50262f5](https://github.com/daustinn/slugtree/commit/50262f5b4470caba1b316563ac1951e5dd5b20f7))
+* **vite:** add standalone vite plugin integration ([22f2adc](https://github.com/daustinn/slugtree/commit/22f2adccb79cdd0db99651df81d2221252df1de4))
+
+
+### Bug Fixes
+
+* **core:** resolve linter issues and update npmignore ([17b5798](https://github.com/daustinn/slugtree/commit/17b579894ff60d7c96253b6ea11f243b3d31f6f7))
+
+
+### Code Refactoring
+
+* **core:** extract tree utilities and implement disk sync with caching ([26bab29](https://github.com/daustinn/slugtree/commit/26bab29972b6b59897979bbbe3821d4be07dc089))
+* **react:** restructure react context provider and client hooks ([a2450b9](https://github.com/daustinn/slugtree/commit/a2450b95f6faaf14b1fa183a67b6d3b0c387af9e))
+
 ## [0.9.1](https://github.com/daustinn/slugtree/compare/slugtree-v0.9.0...slugtree-v0.9.1) (2026-08-10)
 
 
