@@ -50,6 +50,7 @@ export interface NodeData {
   slug: string[]
   href: string | undefined
   filePath: string
+  relativePath: string
   frontMatter: FrontMatter
   toc: TocItem[]
   rawContent: string
@@ -60,7 +61,39 @@ export interface BreadcrumbItem {
   title: string
   href: string | undefined
 }
+
 export interface NodeNavigation {
   prev: NodeData | null
   next: NodeData | null
+}
+
+export interface PaginationItem {
+  title: string
+  description?: string
+  href: string
+  slug: string[]
+}
+
+export interface Pagination {
+  prev: PaginationItem | null
+  next: PaginationItem | null
+}
+
+export interface SearchResultChild {
+  id: string
+  title: string
+  href: string
+  type: 'title' | 'subtitle'
+  content: string
+  matchScore: number
+}
+
+export interface SearchResult {
+  id: string
+  title: string
+  description?: string
+  icon?: string
+  href: string
+  matchScore: number
+  children: SearchResultChild[]
 }

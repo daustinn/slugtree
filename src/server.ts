@@ -1,8 +1,5 @@
-import tree from './generated/tree.js'
-import nodes from './generated/nodes.js'
-import basePath from './generated/meta.js'
-import slugs from './generated/slugs.js'
-
+import generated from 'slugtree/generated'
+import { readGeneratedContent } from './lib/sync.js'
 import type {
   BreadcrumbItem,
   Node,
@@ -10,98 +7,58 @@ import type {
   NodeFolder,
   NodeLabel,
   NodePage,
+  Pagination,
+  PaginationItem,
+  SearchResult,
+  SearchResultChild,
   TocItem
 } from './types.js'
 
-function findNode(treeNodes: Node[], slugPath: string): Node | null {
-  for (const node of treeNodes) {
-    if (node.type === 'label') continue
-    if (node.slug.join('/') === slugPath) return node
-    if (node.type === 'folder') {
-      const found = findNode(node.children, slugPath)
-      if (found) return found
-    }
+import {
+  normalizeSlug,
+  queryNode,
+  queryNodeChildren,
+  queryNodeParent,
+  queryNodeSiblings,
+  queryNodePath,
+  queryNodeSection,
+  queryNodeLabel,
+  queryNodeBreadcrumbs,
+  queryNodePagination,
+  queryNodeToc,
+  isNodeActive as checkNodeActive,
+  isNodeChildrenActive as checkNodeChildrenActive,
+  searchContentNodes
+} from './lib/tree-utils.js'
+
+let tree: Node[] = (generated?.tree as Node[]) || []
+let nodes: NodeData[] = (generated?.nodes as NodeData[]) || []
+let basePath: string = (generated?.basePath as string) || '/'
+let slugs: string[][] = (generated?.slugs as string[][]) || []
+let lastMtime = 0
+
+function syncFromDisk(): void {
+  const disk = readGeneratedContent(undefined, lastMtime)
+  if (disk) {
+    tree = disk.tree
+    nodes = disk.nodes
+    basePath = disk.basePath
+    slugs = disk.slugs
+    lastMtime = disk.mtime
   }
-  return null
 }
 
-function findFolderNode(
-  treeNodes: Node[],
-  targetSlug: string[]
-): { title: string; href: string | undefined } | null {
-  const target = targetSlug.join('/')
-  for (const node of treeNodes) {
-    if (node.type === 'folder') {
-      if (node.slug.join('/') === target) {
-        return { title: node.title, href: node.href }
-      }
-      const found = findFolderNode(node.children, targetSlug)
-      if (found) return found
-    }
-  }
-  return null
-}
-
-function findParentNode(treeNodes: Node[], slugPath: string): Node | null {
-  for (const node of treeNodes) {
-    if (node.type === 'folder') {
-      const directChild = node.children.find(
-        (c) => c.type !== 'label' && c.slug.join('/') === slugPath
-      )
-      if (directChild) return node
-      const found = findParentNode(node.children, slugPath)
-      if (found) return found
-    }
-  }
-  return null
-}
-
-// Builds the ancestry chain from root down to the target node.
-// Each entry captures the sibling list at that depth and which slug to
-// search for within it (the node that contains or IS the target).
-// This avoids relying on findParentNode for bubble-up, which breaks when
-// a folder contains a page with the same slug as the folder itself.
-function buildAncestorChain(
-  treeNodes: Node[],
-  slugPath: string,
-  acc: Array<{ siblings: Node[]; targetSlug: string }> = []
-): Array<{ siblings: Node[]; targetSlug: string }> | null {
-  for (const node of treeNodes) {
-    if (node.type === 'label') continue
-    const nodeSlug = node.slug.join('/')
-    if (nodeSlug === slugPath) {
-      return [...acc, { siblings: treeNodes, targetSlug: nodeSlug }]
-    }
-    if (node.type === 'folder') {
-      const result = buildAncestorChain(
-        node.children,
-        slugPath,
-        [...acc, { siblings: treeNodes, targetSlug: nodeSlug }]
-      )
-      if (result) return result
-    }
-  }
-  return null
-}
-
-// Returns the last NodeLabel before targetSlug in a flat sibling list, or null.
-function findPrecedingLabel(siblings: Node[], targetSlug: string): NodeLabel | null {
-  let lastLabel: NodeLabel | null = null
-  for (const node of siblings) {
-    if (node.type === 'label') { lastLabel = node; continue }
-    if (node.slug.join('/') === targetSlug) return lastLabel
-  }
-  return null
-}
-
-export function normalizeSlug(slug: string | string[]): string[] {
-  if (Array.isArray(slug)) return slug
-  if (typeof slug === 'string') {
-    let s = slug
-    if (s.startsWith(basePath)) s = s.slice(basePath.length)
-    return s.split('/').filter(Boolean)
-  }
-  return []
+export function setServerData(data: {
+  tree?: Node[]
+  nodes?: NodeData[]
+  basePath?: string
+  slugs?: string[][]
+}): void {
+  if (data.tree) tree = data.tree
+  if (data.nodes) nodes = data.nodes
+  if (data.basePath) basePath = data.basePath
+  if (data.slugs) slugs = data.slugs
+  lastMtime = Date.now()
 }
 
 /**
@@ -110,6 +67,7 @@ export function normalizeSlug(slug: string | string[]): string[] {
  * @returns An array of the root Nodes.
  */
 export function getTree(): Node[] {
+  syncFromDisk()
   return tree
 }
 
@@ -122,11 +80,8 @@ export function getTree(): Node[] {
 export function getNode(
   slug: string | string[] = []
 ): NodePage | NodeFolder | null {
-  const normalized = normalizeSlug(slug)
-  const slugPath = normalized.join('/')
-  const node = findNode(tree, slugPath)
-  if (!node || node.type === 'label') return null
-  return node
+  syncFromDisk()
+  return queryNode(tree, slug, basePath)
 }
 
 /**
@@ -137,10 +92,8 @@ export function getNode(
  * @returns An array of child Nodes.
  */
 export function getNodeChildren(slug: string | string[] = []): Node[] {
-  const normalized = normalizeSlug(slug)
-  const node = getNode(normalized)
-  if (!node || node.type !== 'folder') return []
-  return node.children
+  syncFromDisk()
+  return queryNodeChildren(tree, slug, basePath)
 }
 
 /**
@@ -151,9 +104,8 @@ export function getNodeChildren(slug: string | string[] = []): Node[] {
  * @returns The parent Node or null.
  */
 export function getNodeParent(slug: string | string[] = []): Node | null {
-  const normalized = normalizeSlug(slug)
-  if (normalized.length === 0) return null
-  return findParentNode(tree, normalized.join('/'))
+  syncFromDisk()
+  return queryNodeParent(tree, slug, basePath)
 }
 
 /**
@@ -164,16 +116,8 @@ export function getNodeParent(slug: string | string[] = []): Node | null {
  * @returns An array of sibling Nodes (excluding the current node).
  */
 export function getNodeSiblings(slug: string | string[] = []): Node[] {
-  const normalized = normalizeSlug(slug)
-  if (normalized.length === 0) return []
-  const slugPath = normalized.join('/')
-
-  const parent = findParentNode(tree, slugPath)
-  const siblings = parent && parent.type === 'folder' ? parent.children : tree
-
-  return siblings.filter(
-    (n: Node) => n.type !== 'label' && n.slug.join('/') !== slugPath
-  )
+  syncFromDisk()
+  return queryNodeSiblings(tree, slug, basePath)
 }
 
 /**
@@ -184,13 +128,8 @@ export function getNodeSiblings(slug: string | string[] = []): Node[] {
  * @returns An ordered array of Nodes from root to the target.
  */
 export function getNodePath(slug: string | string[] = []): Node[] {
-  const normalized = normalizeSlug(slug)
-  const path: Node[] = []
-  for (let i = 1; i <= normalized.length; i++) {
-    const node = getNode(normalized.slice(0, i))
-    if (node) path.push(node)
-  }
-  return path
+  syncFromDisk()
+  return queryNodePath(tree, slug, basePath)
 }
 
 /**
@@ -203,11 +142,8 @@ export function getNodePath(slug: string | string[] = []): Node[] {
 export function getNodeSection(
   slug: string | string[] = []
 ): NodeFolder | null {
-  const normalized = normalizeSlug(slug)
-  if (normalized.length === 0) return null
-  const root = getNode(normalized.slice(0, 1))
-  if (!root || root.type !== 'folder') return null
-  return root as NodeFolder
+  syncFromDisk()
+  return queryNodeSection(tree, slug, basePath)
 }
 
 /**
@@ -216,6 +152,7 @@ export function getNodeSection(
  * @returns The base path string (e.g. '/docs').
  */
 export function getBasePath(): string {
+  syncFromDisk()
   return basePath
 }
 
@@ -234,21 +171,8 @@ export function getNodeLabel(
   slug: string | string[] = [],
   scope: 'local' | 'deep' = 'deep'
 ): NodeLabel | null {
-  const normalized = normalizeSlug(slug)
-  if (normalized.length === 0) return null
-
-  const chain = buildAncestorChain(tree, normalized.join('/'))
-  if (!chain) return null
-
-  // Iterate from innermost to outermost level.
-  const levels = scope === 'local' ? [chain[chain.length - 1]] : [...chain].reverse()
-
-  for (const { siblings, targetSlug } of levels) {
-    const label = findPrecedingLabel(siblings, targetSlug)
-    if (label) return label
-  }
-
-  return null
+  syncFromDisk()
+  return queryNodeLabel(tree, slug, scope, basePath)
 }
 
 /**
@@ -261,7 +185,8 @@ export function getNodeLabel(
 export function getNodeData(
   slug: string | string[] = []
 ): NodeData | undefined {
-  const normalized = normalizeSlug(slug)
+  syncFromDisk()
+  const normalized = normalizeSlug(slug, basePath)
   const slugPath = normalized.join('/')
   return nodes.find((node: NodeData) => node.slug.join('/') === slugPath)
 }
@@ -272,6 +197,7 @@ export function getNodeData(
  * @returns An array of all NodeData objects.
  */
 export function getAllNodes(): NodeData[] {
+  syncFromDisk()
   return nodes
 }
 
@@ -282,9 +208,11 @@ export function getAllNodes(): NodeData[] {
  * @returns An array of NodeData objects where type is 'page'.
  */
 export function getPageNodes(): NodeData[] {
+  syncFromDisk()
   return nodes.filter(
     (node: NodeData) =>
-      node.type === 'page' || (node.type === 'folder' && node.href !== undefined)
+      node.type === 'page' ||
+      (node.type === 'folder' && node.href !== undefined)
   )
 }
 
@@ -300,6 +228,7 @@ export function getPageNodes(): NodeData[] {
  * findNodes((n) => n.frontMatter.icon === 'star')
  */
 export function findNodes(predicate: (node: NodeData) => boolean): NodeData[] {
+  syncFromDisk()
   return nodes.filter(predicate)
 }
 
@@ -311,6 +240,7 @@ export function findNodes(predicate: (node: NodeData) => boolean): NodeData[] {
  * @returns An array of NodeData objects whose frontmatter[key] equals value.
  */
 export function getNodesByFrontMatter(key: string, value: unknown): NodeData[] {
+  syncFromDisk()
   return nodes.filter(
     (node: NodeData) =>
       (node.frontMatter as unknown as Record<string, unknown>)[key] === value
@@ -324,12 +254,12 @@ export function getNodesByFrontMatter(key: string, value: unknown): NodeData[] {
  * @returns An array of string arrays representing the slugs.
  */
 export function getSlugs(): string[][] {
+  syncFromDisk()
   return slugs
 }
 
 /**
  * Checks whether a given slug is part of the active route.
- * Useful for highlighting active items in sidebars.
  *
  * @param slug - The slug array or string to test.
  * @param currentSlug - The current page's slug array or string.
@@ -339,24 +269,21 @@ export function isNodeActive(
   slug: string | string[],
   currentSlug: string | string[]
 ): boolean {
-  const normSlug = normalizeSlug(slug)
-  const normCurrent = normalizeSlug(currentSlug)
-  if (normSlug.length === 0 || normCurrent.length === 0) return false
-  const slugPath = normSlug.join('/')
-  const currentPath = normCurrent.join('/')
-  return currentPath === slugPath || currentPath.startsWith(slugPath + '/')
+  return checkNodeActive(slug, currentSlug, basePath)
 }
 
-export interface PaginationItem {
-  title: string
-  description?: string
-  href: string
-  slug: string[]
-}
-
-export interface Pagination {
-  prev: PaginationItem | null
-  next: PaginationItem | null
+/**
+ * Checks whether any child or descendant of a given folder slug is active.
+ *
+ * @param folderSlug - The folder slug array or string to test.
+ * @param currentSlug - The current active page's slug array or string.
+ * @returns True if currentSlug is a descendant of folderSlug (and not folderSlug itself).
+ */
+export function isNodeChildrenActive(
+  folderSlug: string | string[],
+  currentSlug: string | string[]
+): boolean {
+  return checkNodeChildrenActive(folderSlug, currentSlug, basePath)
 }
 
 /**
@@ -369,29 +296,8 @@ export interface Pagination {
 export function getNodePagination(
   slug: string | string[] = []
 ): Pagination | null {
-  const normalized = normalizeSlug(slug)
-  const slugPath = normalized.join('/')
-  const flatPages = nodes.filter(
-    (node: NodeData) =>
-      node.type === 'page' || (node.type === 'folder' && node.href !== undefined)
-  )
-  const index = flatPages.findIndex(
-    (node: NodeData) => node.slug.join('/') === slugPath
-  )
-
-  if (index === -1) return null
-
-  const mapToItem = (node: NodeData): PaginationItem => ({
-    title: node.frontMatter.title,
-    description: node.frontMatter.description,
-    href: node.href!,
-    slug: node.slug
-  })
-
-  return {
-    prev: index > 0 ? mapToItem(flatPages[index - 1]) : null,
-    next: index < flatPages.length - 1 ? mapToItem(flatPages[index + 1]) : null
-  }
+  syncFromDisk()
+  return queryNodePagination(nodes, slug, basePath)
 }
 
 /**
@@ -403,28 +309,8 @@ export function getNodePagination(
 export function getNodeBreadcrumbs(
   slug: string | string[] = []
 ): BreadcrumbItem[] {
-  const normalized = normalizeSlug(slug)
-  const crumbs: BreadcrumbItem[] = []
-
-  for (let i = 1; i <= normalized.length; i++) {
-    const partialSlug = normalized.slice(0, i)
-    const partialPath = partialSlug.join('/')
-
-    const node = nodes.find(
-      (node: NodeData) => node.slug.join('/') === partialPath
-    )
-    if (node) {
-      crumbs.push({ title: node.frontMatter.title, href: node.href })
-      continue
-    }
-
-    const folderNode = findFolderNode(tree, partialSlug)
-    if (folderNode) {
-      crumbs.push({ title: folderNode.title, href: folderNode.href })
-    }
-  }
-
-  return crumbs
+  syncFromDisk()
+  return queryNodeBreadcrumbs(tree, nodes, slug, basePath)
 }
 
 /**
@@ -434,71 +320,8 @@ export function getNodeBreadcrumbs(
  * @returns An array of TocItems, or an empty array if the node isn't found.
  */
 export function getNodeToc(slug: string | string[] = []): TocItem[] {
-  const normalized = normalizeSlug(slug)
-  const node = getNodeData(normalized)
-  return node ? node.toc : []
-}
-
-export interface SearchResultChild {
-  id: string
-  title: string
-  href: string
-  type: 'title' | 'subtitle'
-  content: string
-  matchScore: number
-}
-
-export interface SearchResult {
-  id: string
-  title: string
-  description?: string
-  icon?: string
-  href: string
-  matchScore: number
-  children: SearchResultChild[]
-}
-
-function extractHeadingContent(
-  rawContent: string,
-  headingText: string,
-  maxLength: number
-): string {
-  const lines = rawContent.split('\n')
-  const headingPattern = /^#{1,6}\s+/
-
-  let headingIndex = -1
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i]
-    if (
-      headingPattern.test(line) &&
-      line.replace(headingPattern, '').trim().toLowerCase() ===
-        headingText.toLowerCase()
-    ) {
-      headingIndex = i
-      break
-    }
-  }
-
-  if (headingIndex === -1) return ''
-
-  const contentLines: string[] = []
-  for (let i = headingIndex + 1; i < lines.length; i++) {
-    if (headingPattern.test(lines[i])) break
-    contentLines.push(lines[i])
-  }
-
-  const text = contentLines
-    .join(' ')
-    .replace(/```[\s\S]*?```/g, '')
-    .replace(/`[^`]+`/g, (m) => m.slice(1, -1))
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-    .replace(/[*_~]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim()
-
-  return text.length > maxLength
-    ? text.slice(0, maxLength).trimEnd() + '\u2026'
-    : text
+  syncFromDisk()
+  return queryNodeToc(nodes, slug, basePath)
 }
 
 /**
@@ -511,62 +334,9 @@ function extractHeadingContent(
  * @returns An array of SearchResult objects sorted by matchScore descending.
  */
 export function searchContent(query: string): SearchResult[] {
-  if (!query || query.trim() === '') return []
-
-  const lowerQuery = query.toLowerCase()
-  const results: SearchResult[] = []
-
-  for (const node of nodes) {
-    const isPageLike =
-      node.type === 'page' || (node.type === 'folder' && node.href !== undefined)
-    if (!isPageLike) continue
-
-    const title = (node.frontMatter.title || '').toLowerCase()
-    const description = (node.frontMatter.description || '').toLowerCase()
-    const content = (node.rawContent || '').toLowerCase()
-
-    let pageScore = 0
-    if (title.includes(lowerQuery)) pageScore += 10
-    if (description.includes(lowerQuery)) pageScore += 5
-
-    const contentMatches = content.split(lowerQuery).length - 1
-    pageScore += contentMatches
-
-    const matchingHeadings: SearchResultChild[] = []
-    for (const tocItem of node.toc) {
-      if (tocItem.text.toLowerCase().includes(lowerQuery)) {
-        const headingScore = tocItem.depth <= 2 ? 4 : 2
-        const headingType = tocItem.depth === 1 ? 'title' : 'subtitle'
-
-        const excerpt = extractHeadingContent(
-          node.rawContent || '',
-          tocItem.text,
-          200
-        )
-        matchingHeadings.push({
-          id: `${node.slug.join('/')}#${tocItem.id}`,
-          title: tocItem.text,
-          href: `${node.href}#${tocItem.id}`,
-          type: headingType,
-          content: excerpt,
-          matchScore: headingScore
-        })
-        pageScore += headingScore
-      }
-    }
-
-    if (pageScore > 0) {
-      results.push({
-        id: node.slug.join('/'),
-        title: node.frontMatter.title,
-        description: node.frontMatter.description,
-        icon: node.frontMatter.icon,
-        href: node.href!,
-        matchScore: pageScore,
-        children: matchingHeadings
-      })
-    }
-  }
-
-  return results.sort((a, b) => b.matchScore - a.matchScore)
+  syncFromDisk()
+  return searchContentNodes(nodes, query)
 }
+
+export { normalizeSlug }
+export type { PaginationItem, Pagination, SearchResult, SearchResultChild }
