@@ -21,6 +21,12 @@ describe('parser', () => {
       const result = parseFrontMatter(raw, 'Fallback')
       expect(result.frontMatter.title).toBe('"Test')
     })
+    it('handles UTF-8 BOM', () => {
+      const raw = `\uFEFF---\ntitle: "BOM Test"\n---\n# Content`
+      const result = parseFrontMatter(raw, 'Fallback')
+      expect(result.frontMatter.title).toBe('BOM Test')
+      expect(result.content.trim()).toBe('# Content')
+    })
   })
 
   describe('extractToc', () => {
@@ -45,6 +51,12 @@ describe('parser', () => {
       const config = parseDirConfig(raw)
       expect(config.title).toBe('My Folder')
       expect(config.nodes).toEqual(['index', 'other'])
+    })
+    it('handles UTF-8 BOM', () => {
+      const raw = `\uFEFF{"title": "BOM Folder", "nodes": ["index"]}`
+      const config = parseDirConfig(raw)
+      expect(config.title).toBe('BOM Folder')
+      expect(config.nodes).toEqual(['index'])
     })
     it('handles invalid json', () => {
       const raw = `{title: "My Folder"`

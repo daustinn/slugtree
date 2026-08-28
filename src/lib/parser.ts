@@ -19,15 +19,16 @@ export function parseFrontMatter(
     }
   }
 
+  const cleanRaw = raw.charCodeAt(0) === 0xFEFF ? raw.slice(1) : raw
   let data: Record<string, unknown> = {}
-  let content = raw
+  let content = cleanRaw
 
   try {
-    const parsed = matter(raw)
+    const parsed = matter(cleanRaw)
     data = parsed.data || {}
-    content = parsed.content ?? raw
+    content = parsed.content ?? cleanRaw
   } catch {
-    const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/)
+    const match = cleanRaw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/)
     if (match) {
       const fmStr = match[1]
       content = match[2]
@@ -96,7 +97,8 @@ export function extractToc(content: string): TocItem[] {
 export function parseDirConfig(raw: string): DirConfig {
   if (typeof raw !== 'string' || !raw.trim()) return {}
   try {
-    const parsed = JSON.parse(raw)
+    const clean = raw.charCodeAt(0) === 0xFEFF ? raw.slice(1) : raw
+    const parsed = JSON.parse(clean)
     if (!parsed || typeof parsed !== 'object') return {}
 
     return {
