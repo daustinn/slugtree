@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/daustinn/slugtree/compare/slugtree-v1.0.0...slugtree-v1.0.1) (2026-08-28)
+
+
+### Bug Fixes
+
+* **parser:** handle UTF-8 BOM in parseDirConfig and parseFrontMatter ([ecec3e9](https://github.com/daustinn/slugtree/commit/ecec3e9f8b29896066a6b3925ee8069985c9dd1d))
+
 ## [1.0.0](https://github.com/daustinn/slugtree/compare/slugtree-v0.9.1...slugtree-v1.0.0) (2026-08-26)
 
 
