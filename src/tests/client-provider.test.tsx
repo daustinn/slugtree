@@ -129,7 +129,9 @@ describe('client-provider hooks', () => {
   })
 
   it('useNodeChildren retrieves children for a folder node', () => {
-    expect(useNodeChildren(['guides'])).toEqual((mockTree[2] as NodeFolder).children)
+    expect(useNodeChildren(['guides'])).toEqual(
+      (mockTree[2] as NodeFolder).children
+    )
     expect(useNodeChildren(['installation'])).toEqual([])
   })
 
@@ -194,19 +196,27 @@ describe('client-provider hooks', () => {
   })
 
   it('useIsNodeChildrenActive detects active children correctly', () => {
-    expect(useIsNodeChildrenActive(['guides'], ['guides', 'routing'])).toBe(true)
+    expect(useIsNodeChildrenActive(['guides'], ['guides', 'routing'])).toBe(
+      true
+    )
     expect(useIsNodeChildrenActive('guides', 'guides/routing')).toBe(true)
     expect(useIsNodeChildrenActive(['guides'], ['guides'])).toBe(false)
     expect(useIsNodeChildrenActive('guides', 'guides')).toBe(false)
     expect(useIsNodeChildrenActive(['guides'], ['installation'])).toBe(false)
-    expect(useIsNodeChildrenAction(['guides'], ['guides', 'routing'])).toBe(true)
+    expect(useIsNodeChildrenAction(['guides'], ['guides', 'routing'])).toBe(
+      true
+    )
   })
 
   it('useNodeBreadcrumbs returns correct breadcrumb objects', () => {
     const crumbs = useNodeBreadcrumbs(['guides', 'routing'])
     expect(crumbs).toEqual([
       { title: 'Guides', href: '/docs/guides' },
-      { title: 'Routing', href: '/docs/guides/routing' }
+      {
+        title: 'Routing',
+        description: 'Routing guide',
+        href: '/docs/guides/routing'
+      }
     ])
   })
 
@@ -237,16 +247,26 @@ describe('client-provider hooks', () => {
     expect(slugtree.tree).toEqual(mockTree)
     expect(slugtree.nodes).toEqual(mockNodes)
     expect(slugtree.basePath).toBe('/docs')
-    expect(slugtree.slugs).toEqual([[], ['installation'], ['guides', 'routing']])
+    expect(slugtree.slugs).toEqual([
+      [],
+      ['installation'],
+      ['guides', 'routing']
+    ])
     expect(slugtree.isNodeActive(['guides'], ['guides', 'routing'])).toBe(true)
-    expect(slugtree.isNodeChildrenActive(['guides'], ['guides', 'routing'])).toBe(true)
+    expect(
+      slugtree.isNodeChildrenActive(['guides'], ['guides', 'routing'])
+    ).toBe(true)
     expect(slugtree.getNode(['installation'])?.title).toBe('Installation')
     expect(slugtree.getNodeBreadcrumbs(['guides', 'routing'])).toHaveLength(2)
     expect(slugtree.searchContent('routing')).toHaveLength(1)
   })
 
   it('SlugtreeProvider renders context provider correctly', () => {
-    const element = <SlugtreeProvider slot={mockContextValue}><div /></SlugtreeProvider>
+    const element = (
+      <SlugtreeProvider slot={mockContextValue}>
+        <div />
+      </SlugtreeProvider>
+    )
     expect(element).toBeDefined()
     expect(element.type).toBe(SlugtreeProvider)
     expect(element.props.slot).toEqual(mockContextValue)

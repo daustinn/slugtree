@@ -248,7 +248,9 @@ describe('server utilities', () => {
   describe('findNodes', () => {
     it('filters nodes based on predicate', () => {
       const matches = findNodes(
-        (n) => (n.frontMatter as { category?: string }).category === 'getting-started'
+        (n) =>
+          (n.frontMatter as { category?: string }).category ===
+          'getting-started'
       )
       expect(matches).toHaveLength(2)
     })
@@ -284,7 +286,9 @@ describe('server utilities', () => {
     it('returns true if a descendant of folder is active', () => {
       expect(isNodeChildrenActive(['guides'], ['guides', 'routing'])).toBe(true)
       expect(isNodeChildrenActive('guides', 'guides/routing')).toBe(true)
-      expect(isNodeChildrenActive(['guides'], ['guides', 'advanced', 'middleware'])).toBe(true)
+      expect(
+        isNodeChildrenActive(['guides'], ['guides', 'advanced', 'middleware'])
+      ).toBe(true)
     })
 
     it('returns false if the current slug is the folder itself or unrelated', () => {
@@ -300,7 +304,12 @@ describe('server utilities', () => {
       const crumbs = getNodeBreadcrumbs(['guides', 'routing'])
       expect(crumbs).toEqual([
         { title: 'Guides', href: '/docs/guides' },
-        { title: 'Routing', href: '/docs/guides/routing' }
+        {
+          title: 'Routing',
+          description: 'Routing guide',
+          icon: 'route',
+          href: '/docs/guides/routing'
+        }
       ])
     })
   })
@@ -330,6 +339,7 @@ describe('server utilities', () => {
       expect(pagination?.next).toEqual({
         title: 'Installation',
         description: 'Install guide',
+        category: 'getting-started',
         href: '/docs/installation',
         slug: ['installation']
       })
@@ -342,6 +352,7 @@ describe('server utilities', () => {
       expect(pagination?.prev).toEqual({
         title: 'Home',
         description: 'Home description',
+        category: 'getting-started',
         href: '/docs',
         slug: []
       })

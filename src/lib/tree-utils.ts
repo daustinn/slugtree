@@ -57,12 +57,12 @@ export function findParentNode(
 export function findFolderNode(
   treeNodes: Node[],
   targetSlug: string[]
-): { title: string; href: string | undefined } | null {
+): NodeFolder | null {
   const target = targetSlug.join('/')
   for (const node of treeNodes) {
     if (node.type === 'folder') {
       if (node.slug.join('/') === target) {
-        return { title: node.title, href: node.href }
+        return node
       }
       const found = findFolderNode(node.children, targetSlug)
       if (found) return found
@@ -213,12 +213,29 @@ export function queryNodeBreadcrumbs(
     const partialPath = partialSlug.join('/')
     const node = nodes.find((n) => n.slug.join('/') === partialPath)
     if (node) {
-      crumbs.push({ title: node.frontMatter.title, href: node.href })
+      crumbs.push({
+        ...node.frontMatter,
+        title: node.frontMatter.title,
+        href: node.href
+      })
       continue
     }
     const folderNode = findFolderNode(tree, partialSlug)
     if (folderNode) {
-      crumbs.push({ title: folderNode.title, href: folderNode.href })
+      const {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        children: _children,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        type: _type,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        slug: _slug,
+        ...rest
+      } = folderNode
+      crumbs.push({
+        ...rest,
+        title: folderNode.title,
+        href: folderNode.href
+      })
     }
   }
   return crumbs
@@ -237,6 +254,7 @@ export function queryNodePagination(
   const index = flatPages.findIndex((n) => n.slug.join('/') === slugPath)
   if (index === -1) return null
   const mapToItem = (node: NodeData): PaginationItem => ({
+    ...node.frontMatter,
     title: node.frontMatter.title,
     description: node.frontMatter.description,
     href: node.href!,
@@ -368,6 +386,7 @@ export function searchContentNodes(
 
     if (pageScore > 0) {
       results.push({
+        ...node.frontMatter,
         id: node.slug.join('/'),
         title: node.frontMatter.title,
         description: node.frontMatter.description,
