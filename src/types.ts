@@ -3,6 +3,7 @@ export interface FrontMatter {
   description?: string
   icon?: string
   href?: string
+  [key: string]: unknown
 }
 
 export interface DirConfig {

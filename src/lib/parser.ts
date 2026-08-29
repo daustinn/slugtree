@@ -60,7 +60,7 @@ export function parseFrontMatter(
   const href = typeof data.href === 'string' ? data.href : undefined
 
   return {
-    frontMatter: { title, description, icon, href },
+    frontMatter: { ...data, title, description, icon, href },
     content
   }
 }
