@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/daustinn/slugtree/compare/slugtree-v1.0.1...slugtree-v1.1.0) (2026-08-29)
+
+
+### Features
+
+* allow arbitrary frontmatter fields in FrontMatter type ([d9619d0](https://github.com/daustinn/slugtree/commit/d9619d0b7b4f4f3708da8956258f637e356278c6))
+
 ## [1.0.1](https://github.com/daustinn/slugtree/compare/slugtree-v1.0.0...slugtree-v1.0.1) (2026-08-28)
 
 
