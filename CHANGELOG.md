@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/daustinn/slugtree/compare/slugtree-v1.1.0...slugtree-v1.1.1) (2026-08-29)
+
+
+### Bug Fixes
+
+* add root wrangler.jsonc pointing to website assets ([bc1f8d4](https://github.com/daustinn/slugtree/commit/bc1f8d48fb7ac6e286e50beff79675cb066410a9))
+
 ## [1.1.0](https://github.com/daustinn/slugtree/compare/slugtree-v1.0.1...slugtree-v1.1.0) (2026-08-29)
 
 
