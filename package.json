@@ -65,7 +65,7 @@
   "scripts": {
     "dev": "turbo run dev //#watch",
     "watch": "tsc --watch",
-    "build": "tsc",
+    "build": "tsc && esbuild dist/**/*.js --minify --outdir=dist --allow-overwrite",
     "test": "vitest run",
     "lint": "eslint .",
     "dev:website": "turbo run dev --filter website",
@@ -106,6 +106,7 @@
     "@types/node": "20",
     "@types/react": "19",
     "astro": "7.2.6",
+    "esbuild": "0.28.2",
     "eslint": "10.4.1",
     "next": ">=16.0.0",
     "prettier": "3.9.6",
