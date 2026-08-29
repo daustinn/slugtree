@@ -40,6 +40,7 @@ export function buildPageNode(
   allNodesData.push(nodeData)
 
   return {
+    ...frontMatter,
     type: 'page',
     slug,
     href,
@@ -132,21 +133,23 @@ export function buildFolderNode(
   const dirConfig = readConfigFromDir(dirPath)
   const indexPathMdx = path.join(dirPath, 'index.mdx')
   const indexPathMd = path.join(dirPath, 'index.md')
-  const indexPath = fs.existsSync(indexPathMdx) ? indexPathMdx : indexPathMd
-  const hasIndex = fs.existsSync(indexPath)
+  const hasIndexMdx = fs.existsSync(indexPathMdx)
+  const hasIndexMd = fs.existsSync(indexPathMd)
+  const hasIndex = hasIndexMdx || hasIndexMd
+  const indexPath = hasIndexMdx ? indexPathMdx : indexPathMd
 
   const folderHref: string | undefined = hasIndex
     ? slugToHref(slug, basePath)
     : undefined
 
-  const folderTitle = dirConfig.title ?? capitalize(dirName)
+  let folderTitle = dirConfig.title ?? capitalize(dirName)
   let folderFrontMatter: NodeData['frontMatter'] = {
     title: folderTitle,
     icon: dirConfig.icon
   }
   let folderRawContent = ''
   let folderToc: NodeData['toc'] = []
-  const folderFilePath = indexPath
+  const folderFilePath = hasIndex ? indexPath : dirPath
 
   if (hasIndex) {
     let raw = ''
@@ -159,6 +162,7 @@ export function buildFolderNode(
     const { frontMatter, content } = parseFrontMatter(raw, folderTitle)
     const toc = extractToc(content)
 
+    folderTitle = dirConfig.title ?? frontMatter.title
     folderFrontMatter = { ...frontMatter, title: folderTitle }
     folderRawContent = content
     folderToc = toc
@@ -188,6 +192,7 @@ export function buildFolderNode(
   }
 
   return {
+    ...folderFrontMatter,
     type: 'folder',
     title: folderTitle,
     description: folderFrontMatter.description,

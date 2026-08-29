@@ -97,5 +97,37 @@ describe('builder', () => {
       expect((guideNode.children[1] as NodeLabel).label).toBe('Settings')
       expect(guideNode.children[2].type).toBe('page')
     })
+
+    it('sets filePath and relativePath to directory path when folder has no index file', () => {
+      const emptySubDir = path.join(tmpDir, 'no-index')
+      fs.mkdirSync(emptySubDir)
+      fs.writeFileSync(
+        path.join(emptySubDir, 'item.mdx'),
+        '---\ntitle: Item\nimage: /item.png\n---\n# Item'
+      )
+
+      const allNodesData: NodeData[] = []
+      const nodes = buildDirNodes(
+        emptySubDir,
+        ['no-index'],
+        '/docs',
+        allNodesData
+      )
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const folderData = allNodesData.find(
+        (n) => n.type === 'folder' && n.slug.includes('no-index')
+      )
+      expect(nodes.length).toBe(1)
+      expect(nodes[0].type).toBe('page')
+      expect((nodes[0] as NodePage).image).toBe('/item.png')
+
+      const folderNode = buildDirNodes(tmpDir, [], '/docs', [])
+      const noIndexFolder = folderNode.find(
+        (n) => n.type === 'folder' && n.slug[0] === 'no-index'
+      ) as NodeFolder
+      expect(noIndexFolder).toBeDefined()
+      expect(noIndexFolder.href).toBeUndefined()
+    })
   })
 })
