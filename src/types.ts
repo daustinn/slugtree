@@ -36,6 +36,7 @@ export interface NodePage {
   title: string
   description?: string
   icon?: string
+  [key: string]: unknown
 }
 
 /**
@@ -49,6 +50,7 @@ export interface NodeFolder {
   href: string | undefined
   children: Node[]
   icon?: string
+  [key: string]: unknown
 }
 
 /**
@@ -79,6 +81,7 @@ export interface NodeData {
 export interface BreadcrumbItem {
   title: string
   href: string | undefined
+  [key: string]: unknown
 }
 
 export interface NodeNavigation {
@@ -91,6 +94,7 @@ export interface PaginationItem {
   description?: string
   href: string
   slug: string[]
+  [key: string]: unknown
 }
 
 export interface Pagination {
@@ -115,4 +119,5 @@ export interface SearchResult {
   href: string
   matchScore: number
   children: SearchResultChild[]
+  [key: string]: unknown
 }
