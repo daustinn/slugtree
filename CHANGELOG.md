@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.2.0](https://github.com/daustinn/slugtree/compare/slugtree-v1.1.0...slugtree-v1.2.0) (2026-08-29)
+
+
+### Features
+
+* **tree-utils:** include full frontmatter in breadcrumbs, pagination and search results ([cb120eb](https://github.com/daustinn/slugtree/commit/cb120ebd7d6d740f689e05ddfec66f18e7f0a8ba))
+* **types:** allow arbitrary frontmatter properties on node and query types ([6220513](https://github.com/daustinn/slugtree/commit/622051397963710899994886e1ec5048269d6cce))
+
+
+### Bug Fixes
+
+* add root wrangler.jsonc pointing to website assets ([bc1f8d4](https://github.com/daustinn/slugtree/commit/bc1f8d48fb7ac6e286e50beff79675cb066410a9))
+* **builder:** use directory path for folder nodes when index is missing ([4286d15](https://github.com/daustinn/slugtree/commit/4286d1515701a9929650ad2a27c20a6cc91985ae))
+
 ## [1.1.0](https://github.com/daustinn/slugtree/compare/slugtree-v1.0.1...slugtree-v1.1.0) (2026-08-29)
 
 
